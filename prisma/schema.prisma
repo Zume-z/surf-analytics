@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// =================================================================================================
+// SCHEMA
+// =================================================================================================
+
+model Surfer {
+  id                String        @id @default(uuid())
+  slug              String        @unique
+  name              String
+  dob               String?
+  heightCm          Int?
+  weightKg          Int?
+  stance            Stance
+  hometown          String?
+  profileImage      String
+  gender            Gender
+  tourResults       TourResult[]
+  eventResults      EventResult[] @relation("Surfer")
+  heatResults       HeatResult[]  @relation("Surfer")
+  waves             Wave[]
+  countrySlug       String
+  country           Country       @relation(fields: [countrySlug], references: [slug])
+  surfersKnockedOut EventResult[] @relation("KnockedOutBy")
+
+  @@index([countrySlug])
+}
+
+model Tour {
+  id          String       @id @default(uuid())
+  slug        String       @unique
+  year        Int
+  gender      Gender
+  tourResults TourResult[]
+  events      Event[]
+  tourType    TourType
+  canceled    Boolean?
+}
+
+model TourResult {
+  surferRank   Int
+  surferPoints Int
+  worldTitle   Boolean?
+  surferSlug   String
+  tourSlug     String
+  surfer       Surfer   @relation(fields: [surferSlug], references: [slug])
+  tour         Tour     @relation(fields: [tourSlug], references: [slug])
+
+  @@id([tourSlug, surferSlug])
+  @@index([surferSlug])
+  @@index([tourSlug])
+}
+
+model Event {
+  id              String        @id @default(uuid())
+  slug            String        @unique
+  name            String
+  eventRound      Int
+  address         String
+  linkedEvent     Int
+  linkedEventSlug String?
+  timeZone        String
+  startDate       DateTime
+  endDate         DateTime
+  year            Int
+  wavePoolEvent   Boolean?
+  eventResults    EventResult[]
+  heats           Heat[]
+  tourSlug        String
+  countrySlug     String
+  locationSlug    String
+  eventStatus     Status
+  tour            Tour          @relation(fields: [tourSlug], references: [slug])
+  country         Country       @relation(fields: [countrySlug], references: [slug])
+  location        Location      @relation(fields: [locationSlug], references: [slug])
+
+  @@index([tourSlug])
+  @@index([countrySlug])
+  @@index([locationSlug])
+}
+
+model EventResult {
+  place            Int
+  points           Int
+  prizeMoney       Int
+  wildCard         Boolean
+  injured          Boolean
+  replacement      Boolean
+  throwaway        Boolean
+  withdrawn        Boolean
+  eventSlug        String
+  surferSlug       String
+  knockedOutBySlug String?
+  event            Event   @relation(fields: [eventSlug], references: [slug])
+  surfer           Surfer  @relation(name: "Surfer", fields: [surferSlug], references: [slug])
+  knockedOutBy     Surfer? @relation(name: "KnockedOutBy", fields: [knockedOutBySlug], references: [slug])
+
+  @@id([eventSlug, surferSlug])
+  @@index([surferSlug])
+  @@index([eventSlug])
+  @@index([knockedOutBySlug])
+}
+
+model Heat {
+  id             String       @id @default(uuid())
+  slug           String       @unique
+  heatNumber     Int
+  heatRound      String
+  roundNumber    Int
+  waveRange      String?
+  avgWaveHeight  Float?
+  windConditions String?
+  heatDuration   Int?
+  heatDate       String?
+  heatStatus     Status?
+  waves          Wave[]
+  heatResults    HeatResult[]
+  breakSlug      String
+  eventSlug      String
+  break          Break        @relation(fields: [breakSlug], references: [slug])
+  event          Event        @relation(fields: [eventSlug], references: [slug])
+
+  @@index([breakSlug])
+  @@index([eventSlug])
+}
+
+model HeatResult {
+  heatPlace         Int
+  heatTotal         Float?
+  heatDifferential  Float?
+  scoreOne          Float?
+  scoreTwo          Float?
+  interferenceOne   Int?
+  interferenceTwo   Int?
+  interferenceThree Int?
+  jerseyColor       String?
+  surferSlug        String
+  heatSlug          String
+  boardShaperSlug   String?
+  surfer            Surfer  @relation(name: "Surfer", fields: [surferSlug], references: [slug])
+  heat              Heat    @relation(fields: [heatSlug], references: [slug])
+  boardShaper       Shaper? @relation(fields: [boardShaperSlug], references: [slug])
+
+  // Update
+  // beatenBySlug      String?
+  // beatenBy          Surfer? @relation(name: "SurferBeatenBy", fields: [beatenBySlug], references: [slug])
+  // @@index([beatenBySlug])
+
+  @@id([heatSlug, surferSlug])
+  @@index([surferSlug])
+  @@index([heatSlug])
+  @@index([boardShaperSlug])
+}
+
+model Wave {
+  id            String               @id @default(uuid())
+  slug          String               @unique
+  waveScore     Float
+  waveNumber    Int
+  countedWave   Boolean
+  interference  Interference?
+  intPenalty    InterferencePenalty?
+  waveComplete  Boolean?
+  waveDirection WaveDirection?
+  brokenBoard   Boolean?
+  surferSlug    String
+  heatSlug      String
+  surfer        Surfer               @relation(fields: [surferSlug], references: [slug])
+  heat          Heat                 @relation(fields: [heatSlug], references: [slug])
+
+  @@index([surferSlug])
+  @@index([heatSlug])
+}
+
+model Shaper {
+  id          String       @id @default(uuid())
+  slug        String       @unique
+  name        String
+  heatResults HeatResult[]
+}
+
+model Country {
+  id        String     @id @default(uuid())
+  slug      String     @unique
+  name      String
+  iso       String
+  flagLink  String
+  surfers   Surfer[]
+  events    Event[]
+  breaks    Break[]
+  locations Location[]
+}
+
+model Break {
+  id            String        @id @default(uuid())
+  slug          String        @unique
+  name          String
+  waveType      WaveType
+  waveDirection WaveDirection
+  latitude      Float?
+  longitude     Float?
+  address       String?
+  heats         Heat[]
+  countrySlug   String
+  country       Country       @relation(fields: [countrySlug], references: [slug])
+
+  @@index([countrySlug])
+}
+
+model Location {
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  name        String
+  events      Event[]
+  countrySlug String
+  country     Country @relation(fields: [countrySlug], references: [slug])
+
+  @@index([countrySlug])
+}
+
+enum TourType {
+  CHAMPIONSHIPTOUR
+  CHALLENGERSERIES
+  QUALIFYINGSERIES
+  BIGWAVE
+  LONGBOARDTOUR
+  JUNIORTOUR
+  SPECIALITYEVENTS
+  VANSTRIPLECROWN
+}
+
+enum Status {
+  CANCELED
+  UPCOMING
+  COMPLETED
+}
+
+enum WaveType {
+  BEACHBREAK
+  POINTBREAK
+  REEFBREAK
+  WAVEPOOL
+}
+
+enum Interference {
+  PENALTYONE
+  PENALTYTWO
+  PENALTYTHREE
+}
+
+enum InterferencePenalty {
+  HALVED_ONE
+  ZEROED_TWO
+  ZEROED_THREE
+  ZEROED_MULTI // Zeroed => Multiple intf in heat
+}
+
+enum WaveDirection {
+  LEFT
+  RIGHT
+  BOTH
+}
+
+enum Stance {
+  REGULAR
+  GOOFY
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+// =================================================================================================
+// NEXT AUTHENTICATION
+// =================================================================================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

@@ -1,0 +1,87 @@
+import { z } from 'zod'
+import React, { useEffect } from 'react'
+import { api } from '@/utils/api'
+import Table from '@/components/Table'
+import { Gender } from '@prisma/client'
+import { useRouter } from 'next/router'
+import Layout from '@/components/Layout'
+import FilterBar from '@/components/FilterBar'
+import SubNavbar from '@/components/SubNavbar'
+import CardEvent from '@/components/CardEvent'
+import { windowSize } from '@/utils/windowSize'
+import CardSurfer from '@/components/CardSurfer'
+import { useQueryState } from 'next-usequerystate'
+import { Country, Event } from '@/utils/interfaces'
+import { SubheaderData } from '@/components/SubHeader'
+import { removeById } from '@/utils/format/removeById'
+import ButtonSelectX from '@/components/ButtonSelectX'
+import { EventSchema } from '@/server/api/routers/event'
+import { genderFormat } from '@/utils/format/genderFormat'
+import { breakPoint, genderOptions } from '@/utils/constants'
+import { CardEventStatus } from '@/components/CardEventStatus'
+import { countryEventStats } from '@/utils/format/subHeaderStats'
+import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
+import TableItemEventDate from '@/components/tableComponents/TableEventDate'
+import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
+
+export default function CountryEvents() {
+  const router = useRouter()
+  const countryId = router.query.countryId as string
+  const [year, setYear] = useQueryState('year')
+  const [gender, setGender] = useQueryState('gender')
+  const onSelectEvent = (item: Event) => (item.eventStatus == 'CANCELED' ? '' : router.push({ pathname: '/events/[eventId]/results', query: { eventId: item.slug } }))
+
+  const filters: z.infer<typeof EventSchema> = {
+    countrySlug: countryId,
+    year: Number(year) || undefined,
+    gender: (gender as Gender | undefined) || undefined,
+    sortStartDate: 'desc',
+    eventStatus: 'COMPLETED',
+  }
+
+  const eventQuery = api.event.getMany.useQuery(filters, { enabled: !!countryId })
+  const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
+  const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId })
+  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
+  const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
+
+  const tableData = [
+    { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} showYear={true} /> },
+    { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} /> },
+    { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
+    { name: '', id: 'link', width: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
+  ]
+  if (windowSize().width! < breakPoint.lg) removeById(tableData, 'winner')
+  if (windowSize().width! < breakPoint.md) tableData.pop()
+
+  const getSubHeaderData = () => {
+    if (eventQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
+    const subHeaderData: SubheaderData[] = [
+      { content: <SubHeaderCountry country={countryQuery.data as Country | undefined} routePath={{ pathname: '/country', query: {} }} />, primaryTab: true },
+      { content: <SubHeaderItem className="block sm:hidden" label="country" value={'Country'} active={false} routePath={{ pathname: '/country', query: {} }} /> },
+      { content: <SubHeaderItem className="block sm:hidden" label="surfers" value={'Surfers'} active={false} routePath={{ pathname: '/country/[countryId]/surfers', query: { ...router.query } }} /> },
+      { content: <SubHeaderItem className="block sm:hidden" label="events" value={'Events'} active={true} routePath={{ pathname: '/country/[countryId]/events', query: { ...router.query } }} /> },
+    ]
+    if (gender) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="gender" value={genderFormat(gender)} active={year ? false : true} /> })
+    if (year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="year" value={year.toString()} active={true} /> })
+    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="events" value="All" subvalue="Events" active={true} /> })
+    return subHeaderData
+  }
+
+  const subNavItems = [
+    { label: 'Country', active: false, router: { pathname: '/country', query: {} } },
+    { label: 'Surfers', active: false, router: { pathname: '/country/[countryId]/surfers', query: { countryId: filters.countrySlug } } },
+    { label: 'Events', active: true },
+  ]
+
+  return (
+    <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countryEventStats(countryEventStatQuery.data), statsLoading: countryEventStatQuery.isLoading }}>
+      <SubNavbar items={subNavItems} className="hidden sm:block" />
+      <FilterBar className="mt-8 justify-center sm:justify-start">
+        <ButtonSelectX placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
+        <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
+      </FilterBar>
+      <Table tableData={tableData} items={eventQuery.data || []} loading={eventQuery.isLoading} handleSelection={onSelectEvent} />
+    </Layout>
+  )
+}
