@@ -20,3 +20,10 @@ export const breakPoint = {
   lg: 1024,
   xl: 1280,
 }
+
+
+export const SOCIAL_MEDIA_URLS = {
+  INSTAGRAM: 'https://www.instagram.com/surf_analytics/',
+  TWITTER: 'https://twitter.com/Surf_Analytics'
+}
+
