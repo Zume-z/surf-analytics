@@ -1,13 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/legacy/image'
+import Iconlogo from './icons/IconLogo'
 import { useRouter } from 'next/router'
-import logo from '@/assets/images/logo.svg'
 import { Disclosure } from '@headlessui/react'
+import { SOCIAL_MEDIA_URLS } from '@/utils/constants'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import TransitionDropDown from './transitions/TransitionDropdown'
 import { TwitterLogoIcon, InstagramLogoIcon, GlobeIcon } from '@radix-ui/react-icons'
-import Iconlogo from './icons/IconLogo'
-import { SOCIAL_MEDIA_URLS } from '@/utils/constants'
 
 export default function Header() {
   const router = useRouter()
@@ -31,10 +29,10 @@ export default function Header() {
                 {/* <div className="flex flex-shrink-0 items-center rotate-180">
                   <Image className="h-8 w-auto cursor-pointer active:scale-[0.98] " height={42} width={42} src={logo} alt="Surf Analytics" onClick={() => router.push('/')} />
                 </div> */}
-                <div className="flex flex-shrink-0 items-center rounded group transition-200   " onClick={() => router.push('/')}>
-                  <Iconlogo className="h-7 text-gray-50 transition-200 hover-mod:group-hover:text-white w-auto cursor-pointer active:scale-[0.98]" />
+                <div className="transition-200 group flex flex-shrink-0 items-center rounded   " onClick={() => router.push('/')}>
+                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-gray-50 active:scale-[0.98] hover-mod:group-hover:text-white" />
                 </div>
-                
+
                 {/* Desktop NavBar */}
                 <div className="hidden sm:ml-6 sm:block ">
                   <div className="flex space-x-4">
@@ -42,7 +40,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`rounded-md px-3 py-2 text-base transition-200 font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white'}`}
+                        className={`transition-200 rounded-md px-3 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white'}`}
                         aria-current={routerPath == item.href ? 'page' : undefined}
                       >
                         {item.name}
@@ -53,7 +51,7 @@ export default function Header() {
 
                 {/* Mobile Menu Button*/}
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-md focus:outline-none transition-200 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white ">
+                  <Disclosure.Button className="transition-200 inline-flex items-center justify-center rounded-md p-2 text-gray-md focus:outline-none hover-mod:hover:bg-gray-700 hover-mod:hover:text-white ">
                     {open ? <XIcon className="block h-6 w-6" aria-hidden="true" /> : <MenuIcon className="block h-6 w-6" aria-hidden="true" />}
                   </Disclosure.Button>
                 </div>
@@ -61,12 +59,12 @@ export default function Header() {
 
               {/* Contact Button */}
               <div className="absolute inset-y-0 right-0  flex items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Link href={SOCIAL_MEDIA_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                <a target="_blank" href={SOCIAL_MEDIA_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <TwitterLogoIcon className="h-5 w-5 " />
-                </Link>
-                <Link href={SOCIAL_MEDIA_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                </a>
+                <a target="_blank" href={SOCIAL_MEDIA_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <InstagramLogoIcon className="h-5 w-5 " />
-                </Link>
+                </a>
                 <Link href={'/contact'} type="button" className="transition-200 cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] hover-mod:hover:text-white ">
                   <GlobeIcon className="h-5 w-5 " />
                 </Link>
