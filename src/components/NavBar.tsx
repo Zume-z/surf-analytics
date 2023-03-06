@@ -57,7 +57,7 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Contact Button */}
+              {/* Contact / Social Media */}
               <div className="absolute inset-y-0 right-0  flex items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <a target="_blank" href={SOCIAL_MEDIA_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <TwitterLogoIcon className="h-5 w-5 " />
@@ -65,9 +65,9 @@ export default function Header() {
                 <a target="_blank" href={SOCIAL_MEDIA_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <InstagramLogoIcon className="h-5 w-5 " />
                 </a>
-                <Link href={'/contact'} type="button" className="transition-200 cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] hover-mod:hover:text-white ">
+                {/* <Link href={'/contact'} type="button" className="transition-200 cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] hover-mod:hover:text-white ">
                   <GlobeIcon className="h-5 w-5 " />
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>

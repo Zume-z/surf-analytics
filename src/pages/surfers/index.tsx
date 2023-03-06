@@ -44,6 +44,7 @@ export default function Surfers() {
   const countryQuery = api.country.getManyBySurfer.useQuery({ gender: filters.gender, surferYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
   const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, sortYear: 'desc' })
+  console.log(yearQuery.data)
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   const tableData: TableData[] = [
