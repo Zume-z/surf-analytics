@@ -42,5 +42,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 # text 
-AA_TASKS.txt
-AA_ANALYTICS.txt
+.eslintrcSave.txt
