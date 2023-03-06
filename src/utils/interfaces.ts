@@ -1,4 +1,11 @@
 import { RouterOutputs } from './api'
+import { Prisma, PrismaClient } from '@prisma/client'
+import { Session } from 'next-auth'
+
+export interface Context {
+  session: Session | null
+  prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
+}
 
 export interface RouterType {
   pathname: string

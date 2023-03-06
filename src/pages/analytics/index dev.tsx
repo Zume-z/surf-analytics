@@ -31,25 +31,25 @@ export default function Analytics() {
   // }
   // getTableData(tourResultStatQuery.data ? tourResultStatQuery.data[0] : [])
 
-  // Surfer Events
-  const eventResultQuery = api.eventResult.getMany.useQuery({ surferId: filters.surferId, year: filters.year }, { enabled: !!filters.surferId && !!filters.year })
-  const events = eventResultQuery.data?.map((event) => event.eventId)
-  const eventResultStatQuery = api.eventResultStat.getAnalytics.useQuery({ surferId: filters.surferId, eventArr: events! }, { enabled: !!events && !!filters.surferId && !!filters.year })
+  // // Surfer Events
+  // const eventResultQuery = api.eventResult.getMany.useQuery({ surferId: filters.surferId, year: filters.year }, { enabled: !!filters.surferId && !!filters.year })
+  // const events = eventResultQuery.data?.map((event) => event.eventId)
+  // const eventResultStatQuery = api.eventResultStat.getAnalytics.useQuery({ surferId: filters.surferId, eventArr: events! }, { enabled: !!events && !!filters.surferId && !!filters.year })
 
 
-   const tableData: any = []
-  const getTableData = (query: any) => {
-    if (!query) return
-    Object.keys(query).forEach(function (key) {
-      tableData.push({ name: query[key].label, id: key, content: (item: any) => <div>{item[key].value}</div> })
-    })
-  }
-  getTableData(eventResultStatQuery.data ? eventResultStatQuery.data[0] : [])
+  //  const tableData: any = []
+  // const getTableData = (query: any) => {
+  //   if (!query) return
+  //   Object.keys(query).forEach(function (key) {
+  //     tableData.push({ name: query[key].label, id: key, content: (item: any) => <div>{item[key].value}</div> })
+  //   })
+  // }
+  // getTableData(eventResultStatQuery.data ? eventResultStatQuery.data[0] : [])
 
   return (
     <Layout>
       <h1 className="py-8 text-center text-3xl font-bold">Analytics</h1>
-      {eventResultStatQuery && <TableAnalyticsTest tableData={tableData} items={eventResultStatQuery.data || []} />}
+      {/* {eventResultStatQuery && <TableAnalyticsTest tableData={tableData} items={eventResultStatQuery.data || []} />} */}
     </Layout>
   )
 }
