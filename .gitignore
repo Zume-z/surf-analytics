@@ -42,4 +42,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 # text 
-.eslintrcSave.txt
+eslintrcSave.txt
