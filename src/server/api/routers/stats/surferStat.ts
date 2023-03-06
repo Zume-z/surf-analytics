@@ -4,6 +4,8 @@ import { getMoneyFormat } from '@/utils/format/moneyFormat'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
 import { queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { Context } from '@/utils/interfaces'
+import { Status } from '@prisma/client'
 
 const surferStatSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -23,7 +25,7 @@ export const surferStatRouter = createTRPCRouter({
   }),
 })
 
-const getAll = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = {
     ...(await surferRank_surferPoints(ctx, input)),
     ...(await worldTitles(ctx, input)),
@@ -56,7 +58,7 @@ const getAll = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
   return query
 }
 
-const getCareer = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const getCareer = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = {
     ...(await surferRank_surferPoints(ctx, input)),
     ...(await worldTitles(ctx, input)),
@@ -71,11 +73,11 @@ const getCareer = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
 }
 
 // FITERS
-const eventResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, NOT: { place: 0 }, event: { eventStatus: 'COMPLETED' } })
-const heatResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, heat: { heatStatus: 'COMPLETED' } })
+const eventResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, NOT: { place: 0 }, event: { eventStatus: 'COMPLETED' as Status } })
+const heatResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, heat: { heatStatus: 'COMPLETED' as Status } })
 
 // SURFER STATS QUERYS //
-const surferRank_surferPoints = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const surferRank_surferPoints = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.tourResult.findFirstOrThrow({
     where: { surfer: { slug: input.surferSlug } },
     orderBy: { tour: { year: 'desc' } },
@@ -88,114 +90,114 @@ const surferRank_surferPoints = async (ctx: any, input: z.infer<typeof surferSta
   }
 }
 
-const worldTitles = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const worldTitles = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.tourResult.count({ where: { surferSlug: input.surferSlug, worldTitle: true } })
   return { worldTitles: { label: 'World Titles', value: queryFormat(query) } }
 }
 
 // EVENTS //
-const totalEvents = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const totalEvents = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.eventResult.count({ where: eventResultFilter(input) })
   return { totalEvents: { label: 'Ct. Events', value: queryFormat(query) } }
 }
 
-const eventWins = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const eventWins = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.eventResult.count({ where: { surferSlug: input.surferSlug, place: 1 } })
   return { eventWins: { label: 'Ct. Event Wins', value: queryFormat(query) } }
 }
 
-const bestResult = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const bestResult = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug, NOT: { place: 0 } }, _min: { place: true } })
   return { bestResult: { label: 'Best Result', value: querySuffix(query._min.place) } }
 }
 
-const avgResult = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const avgResult = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: eventResultFilter(input), _avg: { place: true } })
-  const avgResult = query._avg.place !== undefined ? ordinalSuffix(Math.round(query._avg.place)) : '-'
+  const avgResult = query._avg && query._avg.place ? ordinalSuffix(Math.round(query._avg.place)) : '-'
   return { avgResult: { label: 'Avg. Event Result', value: avgResult } }
 }
 
-const eventWinPerc = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const eventWinPerc = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const totalEventsQuery = await totalEvents(ctx, input)
   const eventWinsQuery = await eventWins(ctx, input)
   return { eventWinPerc: { label: 'Event Win %', value: queryPerc(eventWinsQuery.eventWins.value, totalEventsQuery.totalEvents.value) } }
 }
 
 // HEATS //
-const totalHeats = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const totalHeats = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), NOT: { heatTotal: null } } })
   return { totalHeats: { label: 'Total Heats', value: queryFormat(query) } }
 }
 
-const heatWins = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const heatWins = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), heatPlace: 1, NOT: { heatTotal: null } } })
   return { heatWins: { label: 'Heat Wins', value: queryFormat(query) } }
 }
 
-const heatWinPerc = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const heatWinPerc = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const totalHeatsQ = await totalHeats(ctx, input)
   const totalHeatWinsQ = await heatWins(ctx, input)
   return { heatWinPerc: { label: 'Heat Win %', value: queryPerc(totalHeatWinsQ.heatWins.value, totalHeatsQ.totalHeats.value) } }
 }
 
-const avgHeatTotal = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const avgHeatTotal = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), NOT: { heatTotal: null } }, _avg: { heatTotal: true } })
   return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
 
-const highestHeatTotal = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const highestHeatTotal = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _max: { heatTotal: true } })
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-const heatTotalDifferential = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
   return { heatTotalDifferential: { label: 'Heat Differential', value: queryRound(query._sum.heatDifferential) } }
 }
 
-const avgHeatTotalDifferential = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })
   return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryRound(query._avg.heatDifferential) } }
 }
 
-const excellentHeats = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const excellentHeats = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), heatTotal: { gte: 16 } } })
   return { excellentHeats: { label: 'Excellent Heats', value: queryFormat(query) } }
 }
 
 // WAVES //
-const totalWaves = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const totalWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug } })
   return { totalWaves: { label: 'Total Waves', value: queryFormat(query) } }
 }
 
-const avgWaveScore = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const avgWaveScore = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: { surferSlug: input.surferSlug }, _avg: { waveScore: true } })
   return { avgWaveScore: { label: 'Avg. Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const totalCountedWaves = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, countedWave: true } })
   return { totalCountedWaves: { label: 'Total Counted Waves', value: queryFormat(query) } }
 }
 
-const avgCountedWaveScore = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: { surferSlug: input.surferSlug, countedWave: true }, _avg: { waveScore: true } })
   return { avgCountedWaveScore: { label: 'Avg. Counted Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const highestWaveScore = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const highestWaveScore = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: { surferSlug: input.surferSlug }, _max: { waveScore: true } })
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
-const excellentWaves = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const excellentWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
 }
 
 // OTHER
-const prizeMoney = async (ctx: any, input: z.infer<typeof surferStatSchema>) => {
+const prizeMoney = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Career Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }

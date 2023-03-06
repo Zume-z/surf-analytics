@@ -2,7 +2,7 @@ import { Surfer } from '../interfaces'
 import { calcAge, dobFormat, getAgeDob,  } from './calcAge';
 
 
-interface Stats {
+export interface Stats {
   surferRank?: { label: string; value: string | number }
   surferPoints?: { label: string; value: string | number }
   worldTitles?: { label: string; value: string | number }

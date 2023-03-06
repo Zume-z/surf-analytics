@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import * as Select from '@radix-ui/react-select'
-import { ButtonSelectProps } from './ButtonSelect'
-import { ChevronDownIcon, Cross2Icon } from '@radix-ui/react-icons'
+import type { ButtonSelectProps } from './ButtonSelect'
+import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { toString } from '@/utils/format/toString'
 
 const ButtonSelectGender = ({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) => {

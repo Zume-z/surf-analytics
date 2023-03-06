@@ -52,6 +52,7 @@ export default function ({ events, loading }: SliderHeaderProps) {
       <div className="w-full max-w-7xl justify-center">
         {!loading && (
           <Swiper
+
             freeMode={true}
             // initialSlide={2}
             modules={[Pagination, Navigation, FreeMode]}

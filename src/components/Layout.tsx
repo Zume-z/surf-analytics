@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Header from './NavBar'
 import SubHeader, { SubHeaderProps } from './SubHeader'
 import SliderHeader, { SliderHeaderProps } from './SliderHeader'
+import { Stats } from '@/utils/format/subHeaderStats'
 
 interface LayoutProps {
   title?: string

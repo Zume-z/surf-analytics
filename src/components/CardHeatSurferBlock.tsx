@@ -4,10 +4,12 @@ import { bgJerseyColor } from '@/utils/format/bgJerseyColor'
 import { configSurferImage } from '@/utils/format/configSurferImage'
 import TriangleFill from './icons/IconTriangleFill'
 import TriangleOutline from './icons/IconTriangleOutline'
+import { HeatResult } from '@/utils/interfaces'
 
-export default function CardHeatSurferBlock({ heatResult, place }: { heatResult: any; place?: boolean }) {
+export default function CardHeatSurferBlock({ heatResult, place }: { heatResult: HeatResult; place?: boolean }) {
   const surferProfile = configSurferImage(heatResult.surfer.profileImage, 96)
-  const interference = heatResult.interferenceOne || heatResult.interferenceTwo || heatResult.interferenceThree
+  const interference = !!heatResult.interferenceOne || !!heatResult.interferenceTwo || !!heatResult.interferenceThree
+  // console.log()
   return (
     <div className="flex justify-between border-t py-2 ">
       <div className="group flex items-center whitespace-nowrap text-sm">
@@ -25,7 +27,7 @@ export default function CardHeatSurferBlock({ heatResult, place }: { heatResult:
       </div>
       <div className="flex items-center ">
         <div className="text-end ">
-          <div className={`justify-end text-sm ${interference && 'text-red-500'} `}>{twoDec(heatResult.heatTotal)}</div>
+          <div className={`justify-end text-sm ${interference ? 'text-red-500': ''} `}>{twoDec(heatResult.heatTotal)}</div>
           <div className="flex items-center">
             {heatResult.interferenceOne && !heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleOutline className="mr-1 h-3 w-3 text-red-500 " />}
             {heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleFill className=" mr-1 h-3 w-3 text-red-500 " />}

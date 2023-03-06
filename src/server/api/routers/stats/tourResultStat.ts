@@ -1,8 +1,7 @@
 import { z } from 'zod'
+import { Status } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import { getPerc } from '@/utils/format/percFormat'
-import { twoDec } from '@/utils/format/roundTwoDec'
-import { getMoneyFormat } from '@/utils/format/moneyFormat'
+import { Context } from '@/utils/interfaces'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
 import { queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
@@ -35,7 +34,7 @@ export const tourResultStatRouter = createTRPCRouter({
   }),
 })
 
-const getAnalytics = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const getAnalytics = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const year = { year: { label: 'Year', value: input.year } }
   const query = {
     ...year,
@@ -69,7 +68,7 @@ const getAnalytics = async (ctx: any, input: z.infer<typeof tourResultStatSchema
   return query
 }
 
-const getAll = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = {
     ...(await surferRank_SurferRank(ctx, input)),
     // Events
@@ -101,7 +100,7 @@ const getAll = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => 
   return query
 }
 
-const getEvents = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const getEvents = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = {
     ...(await surferRank_SurferRank(ctx, input)),
     ...(await worldTitles(ctx, input)),
@@ -120,12 +119,12 @@ const getEvents = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) 
 }
 
 // FILTERS
-const eventResultFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, event: { year: input.year, eventStatus: 'COMPLETED' } })
-const heatResultFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, heat: { heatStatus: 'COMPLETED', event: { year: input.year } } })
-const waveFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, heat: { event: { year: input.year } }})
+const eventResultFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, event: { year: input.year, eventStatus: 'COMPLETED' as Status } })
+const heatResultFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, heat: { heatStatus: 'COMPLETED' as Status, event: { year: input.year } } })
+const waveFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, heat: { event: { year: input.year } } })
 
 // TOURESULT QUERYS //
-const surferRank_SurferRank = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const surferRank_SurferRank = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.tourResult.findFirstOrThrow({ where: { surfer: { slug: input.surferSlug }, tour: { year: input.year } }, select: { surferRank: true, surferPoints: true } })
   return {
     surferRank: { label: 'Rank', value: querySuffix(query?.surferRank) },
@@ -133,125 +132,125 @@ const surferRank_SurferRank = async (ctx: any, input: z.infer<typeof tourResultS
   }
 }
 
-const worldTitles = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const worldTitles = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.tourResult.count({ where: { surferSlug: input.surferSlug, worldTitle: true } })
   return { worldTitles: { label: 'World Titles', value: queryFormat(query) } }
 }
 
-const surferRank = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const surferRank = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.tourResult.findFirstOrThrow({ where: { surfer: { slug: input.surferSlug }, tour: { year: input.year } }, select: { surferRank: true } })
   return { surferRank: { label: 'Rank', value: querySuffix(query.surferRank) } }
 }
 
-const surferPoints = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const surferPoints = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.tourResult.findFirstOrThrow({ where: { surfer: { slug: input.surferSlug }, tour: { year: input.year } }, select: { surferPoints: true } })
   return { surferPoints: { label: 'Points', value: queryFormat(query.surferPoints) } }
 }
 
 // EVENTS //
-const totalEvents = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const totalEvents = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.count({ where: { ...eventResultFilter(input), NOT: { place: 0 } } })
   return { totalEvents: { label: 'Ct. Events', value: queryFormat(query) } }
 }
 
-const eventWins = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const eventWins = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.count({ where: { ...eventResultFilter(input), place: 1 } })
   return { eventWins: { label: 'Ct. Event Wins', value: queryFormat(query) } }
 }
 
-const bestResult = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const bestResult = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { ...eventResultFilter(input), NOT: { place: 0 } }, _min: { place: true } })
   return { bestResult: { label: 'Best Result', value: query._min.place ? ordinalSuffix(query._min.place) : '-' } }
 }
 
-const avgResult = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const avgResult = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { ...eventResultFilter(input), NOT: { place: 0 } }, _avg: { place: true } })
   const avgResult = query._avg.place ? ordinalSuffix(Math.round(query._avg.place)) : '-'
   return { avgResult: { label: 'Avg. Event Result', value: avgResult } }
 }
 
-const eventWinPerc = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const eventWinPerc = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const totalEventsQuery = await totalEvents(ctx, input)
   const eventWinsQuery = await eventWins(ctx, input)
   return { eventWinPerc: { label: 'Event Win %', value: queryPerc(eventWinsQuery.eventWins.value, totalEventsQuery.totalEvents.value) } }
 }
 
 // HEATS //
-const totalHeats = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const totalHeats = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), NOT: { heatTotal: null } } })
   return { totalHeats: { label: 'Total Heats', value: queryFormat(query) } }
 }
 
-const heatWins = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const heatWins = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), heatPlace: 1, NOT: { heatTotal: null } } })
   return { heatWins: { label: 'Heat Wins', value: queryFormat(query) } }
 }
 
-const heatWinPerc = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const heatWinPerc = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const totalHeatsQ = await totalHeats(ctx, input)
   const totalHeatWinsQ = await heatWins(ctx, input)
   return { heatWinPerc: { label: 'Heat Win %', value: queryPerc(totalHeatWinsQ.heatWins.value, totalHeatsQ.totalHeats.value) } }
 }
 
-const avgHeatTotal = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const avgHeatTotal = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), NOT: { heatTotal: null } }, _avg: { heatTotal: true } })
   return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
 
-const highestHeatTotal = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const highestHeatTotal = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _max: { heatTotal: true } })
   return { highestHeatTotal: { label: 'Highest Heat Total', value: query._max.heatTotal ?? '-' } }
 }
 
-const heatTotalDifferential = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _sum: { heatDifferential: true } })
   return { heatTotalDifferential: { label: 'Heat Differential', value: query._sum.heatDifferential ?? '-' } }
 }
 
-const avgHeatTotalDifferential = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _avg: { heatDifferential: true } })
   return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: query._avg.heatDifferential ?? '-' } }
 }
 
-const excellentHeats = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const excellentHeats = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.count({ where: { ...heatResultFilter(input), heatTotal: { gte: 16 } } })
   return { excellentHeats: { label: 'Excellent Heats', value: queryFormat(query) } }
 }
 
 // WAVES //
-const totalWaves = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const totalWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: waveFilter(input) })
-  
+
   return { totalWaves: { label: 'Total Waves', value: queryFormat(query) } }
 }
 
-const avgWaveScore = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const avgWaveScore = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: waveFilter(input), _avg: { waveScore: true } })
   return { avgWaveScore: { label: 'Avg. Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const totalCountedWaves = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const totalCountedWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), countedWave: true } })
   return { totalCountedWaves: { label: 'Total Counted Waves', value: queryFormat(query) } }
 }
 
-const avgCountedWaveScore = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: { ...waveFilter(input), countedWave: true }, _avg: { waveScore: true } })
   return { avgCountedWaveScore: { label: 'Avg. Counted Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const highestWaveScore = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const highestWaveScore = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: waveFilter(input), _max: { waveScore: true } })
   return { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) }
 }
 
-const excellentWaves = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const excellentWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
 }
 
 // OTHER //
-const prizeMoney = async (ctx: any, input: z.infer<typeof tourResultStatSchema>) => {
+const prizeMoney = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug, event: { year: input.year } }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Year Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }

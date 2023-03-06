@@ -1,4 +1,4 @@
-import { Heat } from '@/utils/interfaces'
+import type { Heat } from '@/utils/interfaces'
 
 export default function CardHeat({ heat, className }: { heat: Heat; className?: string }) {
   return (

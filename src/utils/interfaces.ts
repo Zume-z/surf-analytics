@@ -132,7 +132,7 @@ export interface HeatResult {
   surferSlug: string
   heat: Heat
   heatSlug: string
-  boardShaperSlug: String
+  boardShaperSlug: string
   boardShaper: Shaper
 }
 

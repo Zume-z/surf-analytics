@@ -5,6 +5,7 @@ import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { twoDec } from '@/utils/format/roundTwoDec'
 import { queryFormat, queryRound, querySuffix } from '@/utils/format/queryFormat'
 import { capitalizeFirst } from '@/utils/format/capitalizeFirst'
+import { Context } from '@/utils/interfaces'
 
 const heatResultStatSchema = z.object({
   surferSlug: z.string(),
@@ -20,7 +21,7 @@ export const heatResultStatRouter = createTRPCRouter({
   }),
 })
 
-const getAll = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const getAll = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = {
     ...(await heatPlace_heatTotal_heatDifferential(ctx, input)),
     ...(await conditions(ctx, input)),
@@ -35,7 +36,7 @@ const getAll = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => 
   return query
 }
 
-const getWaves = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const getWaves = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = {
     ...(await heatPlace_heatTotal_heatDifferential(ctx, input)),
     ...(await conditions(ctx, input)),
@@ -52,7 +53,7 @@ const getWaves = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) =
 // FILTERS
 const waveFilter = (input: z.infer<typeof heatResultStatSchema>) => ({ surferSlug: input.surferSlug, heatSlug: input.heatSlug })
 
-const heatPlace_heatTotal_heatDifferential = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const heatPlace_heatTotal_heatDifferential = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.findUniqueOrThrow({ where: { heatSlug_surferSlug: { heatSlug: input.heatSlug, surferSlug: input.surferSlug } }, select: { heatPlace: true, heatTotal: true, heatDifferential: true }}) // prettier-ignore
   return {
     heatPlace: { label: 'Place', value: querySuffix(query.heatPlace) },
@@ -61,43 +62,43 @@ const heatPlace_heatTotal_heatDifferential = async (ctx: any, input: z.infer<typ
   }
 }
 
-const conditions = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const conditions = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.findUniqueOrThrow({ where: { heatSlug_surferSlug: { heatSlug: input.heatSlug, surferSlug: input.surferSlug } }, select: { heat: { select: { waveRange: true, windConditions: true, break: { select: { waveType: true, name: true } } } } } }) // prettier-ignore
   const { waveRange,windConditions, break: { waveType, name }} = query.heat // prettier-ignore
   return {
     waveRange: { label: 'Wave Range', value: waveRange || '-' },
     windConditions: { label: 'Wind Conditions', value: windConditions || '-' },
-    waveType: { label: 'Wave Type', value: waveType ? capitalizeFirst(waveType) : '-' }, 
+    waveType: { label: 'Wave Type', value: waveType ? capitalizeFirst(waveType) : '-' },
     breakName: { label: 'Break', value: name || '-' },
   }
 }
 
-const totalWaves = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const totalWaves = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: waveFilter(input) })
   return { totalWaves: { label: 'Total Waves', value: queryFormat(query) } }
 }
 
-const avgWaveScore = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const avgWaveScore = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: waveFilter(input), _avg: { waveScore: true } })
   return { avgWaveScore: { label: 'Avg. Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const totalCountedWaves = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const totalCountedWaves = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), countedWave: true } })
   return { totalCountedWaves: { label: 'Total Counted Waves', value: queryFormat(query) } }
 }
 
-const avgCountedWaveScore = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: { ...waveFilter(input), countedWave: true }, _avg: { waveScore: true } })
   return { avgCountedWaveScore: { label: 'Avg. Counted Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
-const highestWaveScore = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const highestWaveScore = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: waveFilter(input), _max: { waveScore: true } })
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
-const excellentWaves = async (ctx: any, input: z.infer<typeof heatResultStatSchema>) => {
+const excellentWaves = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
 }

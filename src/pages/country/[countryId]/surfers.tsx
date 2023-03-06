@@ -25,8 +25,10 @@ export default function CountrySurfers() {
   const countryId = router.query.countryId as string
   const [year, setYear] = useQueryState('year', queryTypes.integer)
   const [gender, setGender] = useQueryState('gender')
+  const handleSetYear = (value: string | null) => setYear(Number(value))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   useEffect(() => void setYear(year || new Date().getFullYear()), [])
+
 
   const filters: z.infer<typeof TourResultSchema> = {
     countrySlug: countryId,
@@ -75,7 +77,7 @@ export default function CountrySurfers() {
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
         <ButtonSelectX placeHolder="GENDER" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="GENDER" />
-        <ButtonSelectX placeHolder="YEAR" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
+        <ButtonSelectX placeHolder="YEAR" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
       </FilterBar>
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />
     </Layout>

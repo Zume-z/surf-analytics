@@ -16,7 +16,7 @@ export const getHeatTableRows = (heats?: Heat[]) => {
     return {
       name: placeToString(heatResult.heatPlace),
       id: heatResult.heatPlace,
-      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] && <CardHeatSurferRow heatResult={item.heatResults[index]} />}</div>,
+      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] && <CardHeatSurferRow heatResult={item.heatResults[index]!} />}</div>,
     }
   })
   tableData.unshift({ name: 'Heat', id: 'heat', content: (item: Heat) => <div className={`${heatCanceled(item)  && 'opacity-50'}`}><CardHeat heat={item} /></div> }) //prettier-ignore
@@ -33,7 +33,7 @@ export const getHeatTableBlocks = (heats?: Heat[], place?: boolean) => {
     return {
       name: heatResult.heatPlace,
       id: heatResult.heatPlace,
-      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] ? <CardHeatSurferBlock heatResult={item.heatResults[index]} place={place} /> : <div></div>}</div>,
+      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] ? <CardHeatSurferBlock heatResult={item.heatResults[index]!} place={place} /> : <div></div>}</div>,
     }
   })
   tableData.unshift({

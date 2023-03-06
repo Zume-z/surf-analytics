@@ -1,6 +1,6 @@
-import { configSurferImage } from '@/utils/format/configSurferImage'
-import { Surfer } from '@/utils/interfaces'
 import Image from 'next/legacy/image'
+import type { Surfer } from '@/utils/interfaces'
+import { configSurferImage } from '@/utils/format/configSurferImage'
 
 interface CardSurferProps {
   surfer: Surfer

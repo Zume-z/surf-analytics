@@ -1,12 +1,13 @@
 import Image from 'next/legacy/image'
 import TriangleFill from './icons/IconTriangleFill'
 import { twoDec } from '@/utils/format/roundTwoDec'
+import type { HeatResult } from '@/utils/interfaces'
 import TriangleOutline from './icons/IconTriangleOutline'
 import { bgJerseyColor } from '@/utils/format/bgJerseyColor'
 import { configSurferImage } from '@/utils/format/configSurferImage'
 
 
-export default function CardHeatSurferRow({ heatResult }: { heatResult: any }) {
+export default function CardHeatSurferRow({ heatResult }: { heatResult: HeatResult }) {
   const surferProfile = configSurferImage(heatResult.surfer.profileImage, 96)
   const interference = heatResult.interferenceOne || heatResult.interferenceTwo || heatResult.interferenceThree
   return (

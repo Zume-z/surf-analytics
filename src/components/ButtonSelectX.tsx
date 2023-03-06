@@ -1,10 +1,18 @@
 import { useState } from 'react'
 import * as Select from '@radix-ui/react-select'
-import { ButtonSelectProps } from './ButtonSelect'
-import { ChevronDownIcon, Cross2Icon, DashIcon } from '@radix-ui/react-icons'
 import { toString } from '@/utils/format/toString'
+import { ChevronDownIcon, Cross2Icon, DashIcon } from '@radix-ui/react-icons'
 
-const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) => {
+export type ButtonSelectPropsX = {
+  placeHolder?: string
+  options: { label: string; value: string | number }[] | undefined
+  value?: string | number
+  setValue: (value: string | null ) => void
+  loading?: boolean
+  loadingText?: string
+}
+
+const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectPropsX) => {
   const selectedItem = options ? options.find((option) => value == option.value) : undefined
   const [btnOpen, setBtnOpen] = useState(false)
   return (

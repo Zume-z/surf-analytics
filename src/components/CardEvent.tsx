@@ -1,4 +1,4 @@
-import { Event } from '@/utils/interfaces'
+import type{ Event } from '@/utils/interfaces'
 import { windowSize } from '@/utils/windowSize'
 import { leadingZero } from '@/utils/format/leadingZero'
 import { genderFormat } from '@/utils/format/genderFormat'

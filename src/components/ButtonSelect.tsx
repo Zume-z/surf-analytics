@@ -5,9 +5,9 @@ import { toString } from '@/utils/format/toString'
 
 export type ButtonSelectProps = {
   placeHolder?: string
-  setValue: any // setValue: (value: string | null) => void
   options: { label: string; value: string | number }[] | undefined
   value?: string | number
+  setValue: (value: string ) => void
   loading?: boolean
   loadingText?: string
 }
@@ -29,7 +29,7 @@ export default function ButtonSelect({ placeHolder, value, setValue, options, lo
               <Select.Content className="-ml-2 max-h-60   rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={5} align="start">
                 <Select.Viewport className=" ">
                   {options.map((f, i) => (
-                    <Select.Item key={f.label} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
+                    <Select.Item key={i} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
                       <Select.ItemText className="">{f.label}</Select.ItemText>
                     </Select.Item>
                   ))}

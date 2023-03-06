@@ -1,6 +1,6 @@
 const arrayMove = (arr: any, old_index: number, new_index: number) => {
   if (new_index >= arr.length) {
-    var k = new_index - arr.length + 1
+    let k = new_index - arr.length + 1
     while (k--) {
       arr.push(undefined)
     }
@@ -19,7 +19,6 @@ export const calcAge = (dob: any) => {
 export const dobFormat = (dob: string) => {
   return dob.split('-').reverse().join('-')
 }
-
 
 export const getAgeDob = (dob: string) => {
   const newDob = dobFormat(dob)

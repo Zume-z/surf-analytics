@@ -1,6 +1,7 @@
 import { eventStatus } from '@/utils/format/eventStatus'
+import type { Event } from '@/utils/interfaces'
 
-export const CardEventStatus = (event: any) => {
+export const CardEventStatus = (event: Event) => {
   const status = eventStatus(event)
   const waitingPeriodBtn = 'rounded-md border py-0.5 px-2 text-center text-xs '
   const completed = <div className={waitingPeriodBtn + 'border-green-500 text-green-500'}>Completed</div>
