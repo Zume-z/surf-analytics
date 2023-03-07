@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../trpc'
-import { GENDER, SORTDIR } from '@/utils/enums'
+import { GENDER, SORTDIR, STATUS } from '@/utils/enums'
 
 export const TourSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -10,6 +10,7 @@ export const TourSchema = z.object({
   gender: z.enum(GENDER).optional(),
   countrySlugSurfer: z.string().optional(),
   countrySlugEvent: z.string().optional(),
+  eventStatus: z.enum(STATUS).optional(),
 
   // Sort
   sortYear: z.enum(SORTDIR).optional(),
@@ -45,10 +46,10 @@ export const tourRouter = createTRPCRouter({
   getYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
     const query = ctx.prisma.tour.findMany({
       where: {
-        year: input.year,
+        year: { gte: 2010 },
         gender: input.gender,
         tourResults: { some: { surfer: { countrySlug: input.countrySlugSurfer } } },
-        events: { some: { countrySlug: input.countrySlugEvent } },
+        events: { some: { countrySlug: input.countrySlugEvent, eventStatus: input.eventStatus } },
       },
       distinct: ['year'],
       select: { year: true },

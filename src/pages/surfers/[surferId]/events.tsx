@@ -10,8 +10,8 @@ import { surferEventStats } from '@/utils/format/subHeaderStats'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
-import TableEventResultPlace from '@/components/tableComponents/TableEventResultPlace'
-import TableEventResultPoints from '@/components/tableComponents/TableEventResultPoints'
+import TableEventResultPlace from '@/components/tableComponents/TableSurferERPlace'
+import TableEventResultPoints from '@/components/tableComponents/TableSurferERPoints'
 
 export default function SurferEvents() {
   const router = useRouter()

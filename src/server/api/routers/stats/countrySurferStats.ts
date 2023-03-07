@@ -155,7 +155,7 @@ const heatWinPerc = async (ctx: Context, input: z.infer<typeof countryStatSchema
 
 const avgHeatTotal = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } }, NOT: { heatTotal: null } }, _avg: { heatTotal: true } })
-  return { avgHeatTotal: { label: 'Avg.Heat Total', value: queryRound(query._avg.heatTotal) } }
+  return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {

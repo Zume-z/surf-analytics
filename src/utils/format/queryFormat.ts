@@ -10,8 +10,11 @@ export const querySuffix = (query: number | string | undefined | null) => (query
 // export const queryPerc = (query: number | string | undefined) => (query !== undefined ? getPerc(query) : '-')
 
 export const queryPerc = (valueA: number | string | undefined, valueB: number | string | undefined) => {
+  
   if (valueA === '0' || valueA === 0) return '-'
   if (valueA !== undefined && valueB !== undefined) {
+    valueA = valueA.toString().replaceAll(',', '')
+    valueB = valueB.toString().replaceAll(',', '')
     const perc = Number(valueA) / Number(valueB)
     return getPerc(perc)
   }

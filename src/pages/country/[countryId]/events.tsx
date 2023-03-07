@@ -1,7 +1,6 @@
 import { z } from 'zod'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { api } from '@/utils/api'
-import Table from '@/components/Table'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -12,6 +11,7 @@ import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
 import { useQueryState } from 'next-usequerystate'
 import { Country, Event } from '@/utils/interfaces'
+import Table, { TableData } from '@/components/Table'
 import { SubheaderData } from '@/components/SubHeader'
 import { removeById } from '@/utils/format/removeById'
 import ButtonSelectX from '@/components/ButtonSelectX'
@@ -23,6 +23,7 @@ import { countryEventStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
+import { eventYearSpan } from '@/utils/format/getEventYears'
 
 export default function CountryEvents() {
   const router = useRouter()
@@ -39,23 +40,22 @@ export default function CountryEvents() {
     eventStatus: 'COMPLETED',
   }
 
-  const eventQuery = api.event.getMany.useQuery(filters, { enabled: !!countryId })
-  const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
+  const countryQuery = api.country.getOneEvents.useQuery({ ...filters, eventYear: filters.year, eventStaus: 'COMPLETED'}, { enabled: !!countryId })
   const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId })
-  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
+  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
 
-  const tableData = [
+  const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} showYear={true} /> },
     { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} /> },
     { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
-    { name: '', id: 'link', width: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
+    { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
   ]
   if (windowSize().width! < breakPoint.lg) removeById(tableData, 'winner')
   if (windowSize().width! < breakPoint.md) tableData.pop()
 
   const getSubHeaderData = () => {
-    if (eventQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
+    if (countryQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
     const subHeaderData: SubheaderData[] = [
       { content: <SubHeaderCountry country={countryQuery.data as Country | undefined} routePath={{ pathname: '/country', query: {} }} />, primaryTab: true },
       { content: <SubHeaderItem className="block sm:hidden" label="country" value={'Country'} active={false} routePath={{ pathname: '/country', query: {} }} /> },
@@ -64,9 +64,13 @@ export default function CountryEvents() {
     ]
     if (gender) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="gender" value={genderFormat(gender)} active={year ? false : true} /> })
     if (year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="year" value={year.toString()} active={true} /> })
-    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="events" value="All" subvalue="Events" active={true} /> })
+    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="events" value={eventYearSpan(countryQuery.data?.events)} subvalue="Events" active={true} /> })
     return subHeaderData
   }
+
+
+  console.log(eventYearSpan(countryQuery.data?.events))
+
 
   const subNavItems = [
     { label: 'Country', active: false, router: { pathname: '/country', query: {} } },
@@ -81,7 +85,7 @@ export default function CountryEvents() {
         <ButtonSelectX placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
       </FilterBar>
-      <Table tableData={tableData} items={eventQuery.data || []} loading={eventQuery.isLoading} handleSelection={onSelectEvent} />
+      <Table tableData={tableData} items={countryQuery.data?.events || []} loading={countryQuery.isLoading} handleSelection={onSelectEvent} />
     </Layout>
   )
 }

@@ -17,6 +17,7 @@ import { Event, EventResult, TourResult } from '@/utils/interfaces'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import { EventResultSchema } from '@/server/api/routers/eventResult'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
+import EventERPoints from '@/components/tableComponents/TableEventERPoints'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 
 export default function EventResults() {
@@ -41,18 +42,11 @@ export default function EventResults() {
     { label: 'Mens', value: eventQuery.data?.tour.gender == 'MALE' ? eventId : eventQuery.data?.linkedEventSlug },
     { label: 'Womens', value: eventQuery.data?.tour.gender == 'FEMALE' ? eventId : eventQuery.data?.linkedEventSlug },
   ]
-  
 
-  const points = (item: EventResult) => {
-    if (item.withdrawn == true) return <div className="table-item">Withdrawn</div>
-    if (item.injured == true) return <div className="table-item">injured</div>
-    if (item.wildCard == true) return <div className="table-item">WC</div>
-    else return <div className="table-item">{item.points.toLocaleString('en-US')}</div>
-  }
 
   const tableData: TableData[] = [
     { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
-    { name: 'Points', id: 'points', content: (item: EventResult) => <div>{points(item)}</div> },
+    { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item}/> },
     { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Heats</div> },
   ]
   if (windowSize().width! < breakPoint.sm) tableData.pop()
@@ -74,9 +68,7 @@ export default function EventResults() {
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="my-8 justify-center sm:justify-start">
-        {eventQuery.data?.linkedEventSlug && (
-          <ButtonSelectGender placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />
-        )}
+        {eventQuery.data?.linkedEventSlug && <ButtonSelectGender placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />}
         <ButtonSelectX placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventResultQuery.data || []} handleSelection={onSelectSurfer} loading={eventResultQuery.isLoading} />

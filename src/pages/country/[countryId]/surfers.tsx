@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { api } from '@/utils/api'
-import Table from '@/components/Table'
+import Table, { TableData } from '@/components/Table'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -49,11 +49,11 @@ export default function CountrySurfers() {
   ]
   if (eventYearQuery.data?.length) subNavItems.push({ label: 'Events', active: false, router: { pathname: '/country/[countryId]/events', query: { countryId: countryId } } })
 
-  const tableData = [
+  const tableData: TableData[] = [
     { name: 'Surfer', id: 'surfer', content: (item: TourResult) => <CardSurfer surfer={item.surfer} /> },
     { name: 'Rank', id: 'rank', content: (item: TourResult) => <div className="table-item">{year ? item.surferRank : '-'}</div> },
     { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{year && item.surferPoints ? item.surferPoints.toLocaleString('en-US') : '-'}</div> },
-    { name: '', id: 'link', width: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
   ]
   if (windowSize().width! < breakPoint.sm) tableData.pop()
 

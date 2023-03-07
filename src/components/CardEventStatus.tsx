@@ -10,7 +10,8 @@ export const CardEventStatus = (event: Event) => {
   const inProgress = (
     <div className={waitingPeriodBtn + 'flex items-center space-x-1 border-gray-300 bg-black text-white'}>
       <div>In Progress</div>
-      <div className="h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
+      <div className="h-2 w-2 rounded-full bg-green-500"></div>
+      {/* <div className="h-2 w-2 animate-pulse rounded-full bg-red-500"></div> */}
     </div>
   )
   if (status == 'Canceled') return canceled

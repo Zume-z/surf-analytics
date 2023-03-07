@@ -1,8 +1,8 @@
 import { api } from '@/utils/api'
+import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import { breakPoint } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
-import { useRouter } from 'next/router'
 import Table, { TableData } from '@/components/Table'
 import { Surfer, TourResult } from '@/utils/interfaces'
 import { surferYears } from '@/utils/format/getSurferYears'
@@ -16,9 +16,9 @@ import TourResultPoints from '@/components/tableComponents/TableTourResultPoints
 export default function SurfersCareer() {
   const router = useRouter()
   const { surferId } = router.query as { surferId: string }
-  const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc' }, { enabled: !!surferId })
+  const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14}, { enabled: !!surferId })
   const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId })
-  const onYearSelect = (item: TourResult) => !item.tour.canceled && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
+  const onYearSelect = (item: TourResult) => !item.tour.canceled && item.tour.year >= 2010 && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
@@ -29,7 +29,7 @@ export default function SurfersCareer() {
     { name: 'Year', id: 'year', content: (item: TourResult) => <div className={`${item.tour.canceled && 'text-gray-500'}`}>{item.tour.year}</div> },
     { name: 'Rank', id: 'rank', content: (item: TourResult) => <TourResultRank tourResult={item} /> },
     { name: 'Points', id: 'points', className: 'sm:w-auto w-px', content: (item: TourResult) => <TourResultPoints tourResult={item} /> },
-    { name: '', id: 'link', className: `w-px`, content: (item: TourResult) => <TableLink label="View Events" canceled={item.tour.canceled} /> },
+    { name: '', id: 'link', className: `w-px`, content: (item: TourResult) => <TableLink label="View Events" canceled={item.tour.canceled} nolinkParam={item.tour.year < 2010} /> },
   ]
   if (windowSize().width! < breakPoint.sm) tableData.pop()
 

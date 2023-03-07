@@ -28,7 +28,6 @@ export const eventRouter = createTRPCRouter({
       where: {
         slug: input.slug,
         linkedEvent: input.linkedEvent,
-        // year: input.year,
         eventStatus: input.eventStatus,
         tour: { slug: input.tourSlug, gender: input.gender, year: input.year},
         countrySlug: input.countrySlug,

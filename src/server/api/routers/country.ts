@@ -101,6 +101,72 @@ export const countryRouter = createTRPCRouter({
     return country
   }),
 
+  getOneEvents: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
+    const country = ctx.prisma.country.findUniqueOrThrow({
+      where: { slug: input.countrySlug },
+      include: {
+        surfers: {
+          where: { tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } } },
+          select: { name: true, eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } } } },
+        },
+        events: {
+          where: { tour: { year: input.eventYear, gender: input.gender }, eventStatus: input.eventStaus },
+          include: { tour: true, country: true, eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } } },
+          orderBy: { startDate: 'desc' },
+        },
+      },
+    })
+    return country
+  }),
+
+
+  getOneSurfers: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
+    const country = ctx.prisma.country.findUniqueOrThrow({
+      where: { slug: input.countrySlug },
+      include: {
+        surfers: {
+          where: { tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } } },
+          select: { name: true, eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } } } },
+        },
+        events: {
+          where: { tour: { year: input.eventYear, gender: input.gender }, eventStatus: input.eventStaus },
+          include: { tour: true, country: true, eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } } },
+          orderBy: { startDate: 'desc' },
+        },
+      },
+    })
+    return country
+  }),
+
+
+  // export const eventRouter = createTRPCRouter({
+  //   getMany: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
+  //     const event = ctx.prisma.event.findMany({
+  //       where: {
+  //         slug: input.slug,
+  //         linkedEvent: input.linkedEvent,
+  //         eventStatus: input.eventStatus,
+  //         tour: { slug: input.tourSlug, gender: input.gender, year: input.year},
+  //         countrySlug: input.countrySlug,
+  //         locationSlug: input.locationSlug,
+
+  //       },
+  //       include: {
+  //         eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
+  //         tour: true,
+  //         country: true,
+  //       },
+  //       orderBy: {
+  //         startDate: input.sortStartDate,
+  //         eventRound: input.sortEventRound,
+  //       },
+  //       take: input.itemsPerPage,
+  //       skip: input.offset,
+  //     })
+  //     if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
+  //     return event
+  //   }),
+
   getCountrySurfers: publicProcedure.input(z.object({ countrySlug: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.country.findUniqueOrThrow({ where: { slug: input.countrySlug }, include: { surfers: true } })
   }),

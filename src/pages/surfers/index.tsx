@@ -13,9 +13,9 @@ import Table, { TableData } from '@/components/Table'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { breakPoint, genderOptions } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function Surfers() {
   const router = useRouter()
@@ -44,7 +44,6 @@ export default function Surfers() {
   const countryQuery = api.country.getManyBySurfer.useQuery({ gender: filters.gender, surferYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
   const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, sortYear: 'desc' })
-  console.log(yearQuery.data)
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   const tableData: TableData[] = [

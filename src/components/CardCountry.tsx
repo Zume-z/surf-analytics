@@ -1,11 +1,12 @@
 import Image from 'next/legacy/image'
 import type { Country } from '@/utils/interfaces'
 
+
 export default function CardCountry({ country }: { country: Country }) {
   return (
     <div className="flex items-center  ">
       <div className=" h-6 w-10 flex-shrink-0">
-        <Image className="" src={country.flagLink} width={40} height={24} alt=""/>
+        <Image className="" src={country.flagLink} width={40} height={24} alt=''/>
       </div>
       <div className="ml-2 ">
         <div className="ml-2 flex-row items-center">
