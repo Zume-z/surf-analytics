@@ -8,9 +8,9 @@ export const CardEventStatus = (event: Event) => {
   const upcoming = <div className={waitingPeriodBtn + 'border-gray-300 text-gray-500'}>Upcoming</div>
   const canceled = <div className={waitingPeriodBtn + 'border-gray-300 text-gray-500'}>Cancelled</div>
   const inProgress = (
-    <div className={waitingPeriodBtn + 'flex items-center space-x-1 border-gray-300 bg-black text-white'}>
+    <div className={waitingPeriodBtn + 'flex items-center space-x-1 border-black bg-black text-white'}>
       <div>In Progress</div>
-      <div className="h-2 w-2 rounded-full bg-green-500"></div>
+      {/* <div className="h-2 w-2 rounded-full bg-green-500"></div> */}
       {/* <div className="h-2 w-2 animate-pulse rounded-full bg-red-500"></div> */}
     </div>
   )
