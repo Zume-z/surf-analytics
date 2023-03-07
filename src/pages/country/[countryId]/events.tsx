@@ -40,7 +40,7 @@ export default function CountryEvents() {
     eventStatus: 'COMPLETED',
   }
 
-  const countryQuery = api.country.getOneEvents.useQuery({ ...filters, eventYear: filters.year, eventStaus: 'COMPLETED'}, { enabled: !!countryId })
+  const countryQuery = api.country.getOneEvents.useQuery({ ...filters, eventYear: filters.year, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
   const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId })
   const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
@@ -67,10 +67,6 @@ export default function CountryEvents() {
     if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="events" value={eventYearSpan(countryQuery.data?.events)} subvalue="Events" active={true} /> })
     return subHeaderData
   }
-
-
-  console.log(eventYearSpan(countryQuery.data?.events))
-
 
   const subNavItems = [
     { label: 'Country', active: false, router: { pathname: '/country', query: {} } },

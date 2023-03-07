@@ -9,7 +9,7 @@ import { HeatResult } from '@/utils/interfaces'
 export default function CardHeatSurferBlock({ heatResult, place }: { heatResult: HeatResult; place?: boolean }) {
   const surferProfile = configSurferImage(heatResult.surfer.profileImage, 96)
   const interference = !!heatResult.interferenceOne || !!heatResult.interferenceTwo || !!heatResult.interferenceThree
-  // console.log()
+
   return (
     <div className="flex justify-between border-t py-2 ">
       <div className="group flex items-center whitespace-nowrap text-sm">
