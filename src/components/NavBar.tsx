@@ -16,7 +16,9 @@ export default function Header() {
     { name: 'Country', href: '/country' },
     { name: 'Analytics', href: '/analytics' },
   ]
-  const navigationMob = [{ name: 'Home', href: '/' }, ...navigation, { name: 'Contact', href: '/contact' }]
+
+  const navigationMob = [{ name: 'Home', href: '/' }, ...navigation]
+  // { name: 'Contact', href: '/contact' }
 
   return (
     <Disclosure as="nav" className="sticky top-0 z-50 border-b bg-navy shadow-sm">
@@ -26,11 +28,8 @@ export default function Header() {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {/* Logo */}
-                {/* <div className="flex flex-shrink-0 items-center rotate-180">
-                  <Image className="h-8 w-auto cursor-pointer active:scale-[0.98] " height={42} width={42} src={logo} alt="Surf Analytics" onClick={() => router.push('/')} />
-                </div> */}
                 <div className="transition-200 group flex flex-shrink-0 items-center rounded   " onClick={() => router.push('/')}>
-                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-gray-50 active:scale-[0.98] hover-mod:group-hover:text-white" />
+                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-white active:scale-[0.98] hover-mod:group-hover:text-gray-200" />
                 </div>
 
                 {/* Desktop NavBar */}
