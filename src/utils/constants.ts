@@ -22,7 +22,8 @@ export const breakPoint = {
 }
 
 
-export const SOCIAL_MEDIA_URLS = {
+export const CONTACT_URLS = {
+  EMAIL: 'surfanalytica@gmail.com',
   INSTAGRAM: 'https://www.instagram.com/surf_analytics/',
   TWITTER: 'https://twitter.com/Surf_Analytics'
 }

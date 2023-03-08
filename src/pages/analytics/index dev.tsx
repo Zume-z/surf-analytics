@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import TableAnalytics from '@/components/TableAnalytics'
 import { api } from '@/utils/api'
 import TableAnalyticsTest from '@/components/TableAnalyticsTEST'
-import { surferYearsArr } from '@/utils/format/getSurferYears'
+import { surferYearsArr } from '@/utils/format/getYearSpan'
 import { useRouter } from 'next/router'
 import { useQueryState } from 'next-usequerystate'
 import { createHooksInternalProxy } from '@trpc/react-query/dist/createTRPCReact'
@@ -35,7 +35,6 @@ export default function Analytics() {
   // const eventResultQuery = api.eventResult.getMany.useQuery({ surferId: filters.surferId, year: filters.year }, { enabled: !!filters.surferId && !!filters.year })
   // const events = eventResultQuery.data?.map((event) => event.eventId)
   // const eventResultStatQuery = api.eventResultStat.getAnalytics.useQuery({ surferId: filters.surferId, eventArr: events! }, { enabled: !!events && !!filters.surferId && !!filters.year })
-
 
   //  const tableData: any = []
   // const getTableData = (query: any) => {

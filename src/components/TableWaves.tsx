@@ -80,10 +80,10 @@ const Wave = ({ item, col }: { item: any; col: any }) => {
           {item[col.key].interference == 'PENALTYTWO' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 2</div>}
           {item[col.key].interference == 'PENALTYTHREE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">1</div>}
           {item[col.key].interference == 'PENALTYTHREE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 3</div>}
-          {item[col.key].intPenalty == 'PENALTYHALVED' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
-          {item[col.key].intPenalty == 'PENALTYHALVED' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Halved </div>}
-          {item[col.key].intPenalty && item[col.key].intPenalty != 'PENALTYHALVED' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
-          {item[col.key].intPenalty && item[col.key].intPenalty != 'PENALTYHALVED' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Zeroed </div>}
+          {item[col.key].intPenalty == 'HALVED_ONE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
+          {item[col.key].intPenalty == 'HALVED_ONE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Halved </div>}
+          {item[col.key].intPenalty && item[col.key].intPenalty != 'HALVED_ONE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
+          {item[col.key].intPenalty && item[col.key].intPenalty != 'HALVED_ONE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Zeroed </div>}
         </div>
       </div>
     )

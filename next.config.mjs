@@ -5,18 +5,16 @@
  */
 // !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
-
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
   swcMinify: true,
   i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
+    locales: ['en'],
+    defaultLocale: 'en',
   },
   images: {
-    domains: ["d3qf8nvav5av0u.cloudfront.net"],
+    domains: ['d3qf8nvav5av0u.cloudfront.net'],
   },
-
-};
-export default config;
+}
+export default config

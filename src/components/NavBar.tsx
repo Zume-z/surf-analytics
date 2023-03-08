@@ -2,10 +2,10 @@ import Link from 'next/link'
 import Iconlogo from './icons/IconLogo'
 import { useRouter } from 'next/router'
 import { Disclosure } from '@headlessui/react'
-import { SOCIAL_MEDIA_URLS } from '@/utils/constants'
+import { CONTACT_URLS } from '@/utils/constants'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import TransitionDropDown from './transitions/TransitionDropdown'
-import { TwitterLogoIcon, InstagramLogoIcon, GlobeIcon } from '@radix-ui/react-icons'
+import { TwitterLogoIcon, InstagramLogoIcon, EnvelopeClosedIcon } from '@radix-ui/react-icons'
 
 export default function Header() {
   const router = useRouter()
@@ -18,7 +18,6 @@ export default function Header() {
   ]
 
   const navigationMob = [{ name: 'Home', href: '/' }, ...navigation]
-  // { name: 'Contact', href: '/contact' }
 
   return (
     <Disclosure as="nav" className="sticky top-0 z-50 border-b bg-navy shadow-sm">
@@ -58,15 +57,16 @@ export default function Header() {
 
               {/* Contact / Social Media */}
               <div className="absolute inset-y-0 right-0  flex items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <a target="_blank" href={SOCIAL_MEDIA_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <TwitterLogoIcon className="h-5 w-5 " />
                 </a>
-                <a target="_blank" href={SOCIAL_MEDIA_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <InstagramLogoIcon className="h-5 w-5 " />
                 </a>
-                {/* <Link href={'/contact'} type="button" className="transition-200 cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] hover-mod:hover:text-white ">
-                  <GlobeIcon className="h-5 w-5 " />
-                </Link> */}
+
+                <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                  <EnvelopeClosedIcon className="h-5 w-5 " />
+                </a>
               </div>
             </div>
           </div>
@@ -74,17 +74,29 @@ export default function Header() {
           {/* Mobile DropDown */}
           <TransitionDropDown>
             <Disclosure.Panel className="sm:hidden">
-              <div className="absolute h-screen w-screen space-y-2 border-t border-gray-500 bg-navy px-2 pt-2 pb-3">
+              <div className="absolute h-screen w-screen space-y-2 border-t border-gray-500 bg-navy px-2 pt-2 ">
                 {navigationMob.map((item) => (
                   <Link
                     key={item.name}
-                    className={`block rounded-md px-3 py-2 text-base font-medium ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white'}`}
+                    className={`flex rounded-md px-3 py-2 text-base font-medium ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-300 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white'}`}
                     href={{ pathname: item.href }}
                     aria-current={routerPath == item.href ? 'page' : undefined}
                   >
                     {item.name}
                   </Link>
                 ))}
+                <div className="absolute bottom-16 right-0 space-x-3 px-4 py-2 text-white">
+                  <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 cursor-pointer   rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                    <TwitterLogoIcon className="h-6 w-6" />
+                  </a>
+                  <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                    <InstagramLogoIcon className="h-6 w-6" />
+                  </a>
+
+                  <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                    <EnvelopeClosedIcon className="h-6 w-6" />
+                  </a>
+                </div>
               </div>
             </Disclosure.Panel>
           </TransitionDropDown>

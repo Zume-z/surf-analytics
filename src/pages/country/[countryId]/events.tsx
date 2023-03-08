@@ -17,13 +17,14 @@ import { removeById } from '@/utils/format/removeById'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { EventSchema } from '@/server/api/routers/event'
 import { genderFormat } from '@/utils/format/genderFormat'
+import { eventYearSpan } from '@/utils/format/getYearSpan'
 import { breakPoint, genderOptions } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { countryEventStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
-import { eventYearSpan } from '@/utils/format/getEventYears'
+
 
 export default function CountryEvents() {
   const router = useRouter()

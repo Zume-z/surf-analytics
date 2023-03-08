@@ -19,6 +19,7 @@ import { TourResultSchema } from '@/server/api/routers/tourResult'
 import { countrySurferStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
+import { countrySurferYearSpan, surferYearSpan } from '@/utils/format/getYearSpan'
 
 export default function CountrySurfers() {
   const router = useRouter()
@@ -29,13 +30,12 @@ export default function CountrySurfers() {
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   useEffect(() => void setYear(year || new Date().getFullYear()), [])
 
-
   const filters: z.infer<typeof TourResultSchema> = {
     countrySlug: countryId,
     year: Number(year) || undefined,
     gender: (gender as Gender | undefined) || undefined,
   }
-  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortSurferRank: 'asc' }, { enabled: !!countryId })
+  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortYear: 'asc' }, { enabled: !!countryId })
   const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
   const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId })
   const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
@@ -68,7 +68,7 @@ export default function CountrySurfers() {
       subHeaderData.push({ content: <SubHeaderItem className="block sm:hidden" label="events" value={'Events'} active={false} routePath={{ pathname: '/country/[countryId]/events', query: { countryId: countryId } }} /> })
     if (gender) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="gender" value={genderFormat(gender)} active={year ? false : true} /> })
     if (year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="year" value={year.toString()} active={true} /> })
-    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfers" value="All" subvalue="Surfers" active={true} /> })
+    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfers" value={countrySurferYearSpan(tourResultQuery.data)} subvalue="Surfers" active={true} /> })
     return subHeaderData
   }
 

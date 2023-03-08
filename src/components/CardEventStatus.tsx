@@ -19,3 +19,4 @@ export const CardEventStatus = (event: Event) => {
   if (status == 'In Progress') return inProgress
   if (status == 'Upcoming') return upcoming
 }
+ 

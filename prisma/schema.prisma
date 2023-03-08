@@ -110,23 +110,24 @@ model EventResult {
 }
 
 model Heat {
-  id             String       @id @default(uuid())
-  slug           String       @unique
-  heatNumber     Int
-  heatRound      String
-  roundNumber    Int
-  waveRange      String?
-  avgWaveHeight  Float?
-  windConditions String?
-  heatDuration   Int?
-  heatDate       String?
-  heatStatus     Status?
-  waves          Wave[]
-  heatResults    HeatResult[]
-  breakSlug      String
-  eventSlug      String
-  break          Break        @relation(fields: [breakSlug], references: [slug])
-  event          Event        @relation(fields: [eventSlug], references: [slug])
+  id               String       @id @default(uuid())
+  slug             String       @unique
+  heatNumber       Int
+  heatRound        String
+  roundNumber      Int
+  waveRange        String?
+  avgWaveHeight    Float?
+  windConditions   String?
+  heatDuration     Int?
+  heatDate         String?
+  heatStatus       Status?
+  heatDifferential Float?
+  waves            Wave[]
+  heatResults      HeatResult[]
+  breakSlug        String
+  eventSlug        String
+  break            Break        @relation(fields: [breakSlug], references: [slug])
+  event            Event        @relation(fields: [eventSlug], references: [slug])
 
   @@index([breakSlug])
   @@index([eventSlug])
