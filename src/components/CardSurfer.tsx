@@ -8,6 +8,7 @@ interface CardSurferProps {
 }
 
 export default function CardSurfer({ surfer, place }: CardSurferProps) {
+  if(!surfer) return null
   const surferProfile = configSurferImage(surfer.profileImage, 96)
   return (
     <div>

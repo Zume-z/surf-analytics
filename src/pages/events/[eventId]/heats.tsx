@@ -41,6 +41,7 @@ export default function EventHeats() {
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
 
+  console.log(heatQuery.data)
   const subNavItems = [
     { label: 'Events', active: false, router: { pathname: '/events/', query: {} } },
     { label: 'Results', active: false, router: { pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } } },

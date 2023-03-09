@@ -12,7 +12,7 @@ import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableForma
 export default function EventWaves() {
   const router = useRouter()
   const { eventId, heatRound, heatNumber } = router.query as { eventId: string; heatRound: string; heatNumber: string }
-  const heatQuery = api.heat.getOneByEventHeat.useQuery({ eventSlug: eventId, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!eventId && !!heatRound && !!heatNumber })
+  const heatQuery = api.heat.getOneByEvent.useQuery({ eventSlug: eventId, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!eventId && !!heatRound && !!heatNumber })
 
   const filters = {
     waves: heatQuery.data ? heatQuery.data.waves : [],

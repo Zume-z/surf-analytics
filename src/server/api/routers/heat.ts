@@ -19,10 +19,15 @@ export const HeatSchema = z.object({
   // Sort
   sortRoundNumber: z.enum(SORTDIR).optional(),
   sortHeatNumber: z.enum(SORTDIR).optional(),
+  
 
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
+
+  // Head to Head
+  surferASlug: z.string().optional(),
+  surferBSlug: z.string().optional(),
 })
 
 export const heatRouter = createTRPCRouter({
@@ -46,9 +51,44 @@ export const heatRouter = createTRPCRouter({
       },
       include: {
         event: { select: { name: true, year: true, heats: { select: { heatRound: true }, orderBy: { roundNumber: 'asc' } } } },
+
         heatResults: { orderBy: { heatPlace: 'asc' }, include: { surfer: { include: { country: true } } } },
       },
       orderBy: orderBy,
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!heat) throw new TRPCError({ code: 'NOT_FOUND' })
+    return heat
+  }),
+
+  getManyHeadToHead: publicProcedure.input(HeatSchema).query(({ ctx, input }) => {
+    
+
+    // Filter only heats with both surfers
+    // heatResults: {every: { surferSlug: { in:  ['kelly-slater', 'kanoa-igarashi']} } },
+
+    const heat = ctx.prisma.heat.findMany({
+      where: {
+        slug: input.heatSlug,
+        event: {
+          slug: input.eventSlug,
+          year: input.year,
+          country: { slug: input.countrySlug },
+          tour: { slug: input.tourSlug },
+          wavePoolEvent: false,
+        },
+        AND: [{ heatResults: { some: { surfer: { slug: input.surferASlug, gender: input.gender } } } }, { heatResults: { some: { surfer: { slug: input.surferBSlug, gender: input.gender } } } }],
+        break: { slug: input.breakSlug },
+        heatRound: input.heatRound,
+        heatNumber: input.heatNumber,
+        heatStatus: input.heatStatus,
+      },
+      include: {
+        event: { select: { name: true, year: true, heats: { select: { heatRound: true }, orderBy: { roundNumber: 'asc' } } } },
+        heatResults: { orderBy: { heatPlace: 'asc' }, include: { surfer: { include: { country: true } }, beatenBy: true } },
+      },
+      orderBy: {event: {year: 'desc'}},
       take: input?.itemsPerPage,
       skip: input?.offset,
     })
@@ -62,7 +102,7 @@ export const heatRouter = createTRPCRouter({
     return heat
   }),
 
-  getOneByEventHeat: publicProcedure.input(z.object({ eventSlug: z.string(), heatRound: z.string(), heatNumber: z.number() })).query(({ ctx, input }) => {
+  getOneByEvent: publicProcedure.input(z.object({ eventSlug: z.string(), heatRound: z.string(), heatNumber: z.number() })).query(({ ctx, input }) => {
     return ctx.prisma.heat.findFirstOrThrow({
       where: { eventSlug: input.eventSlug, heatRound: input.heatRound, heatNumber: input.heatNumber },
       include: {

@@ -22,7 +22,7 @@ export const eventStatRouter = createTRPCRouter({
 
 const getAll = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = {
-    ...(await totalHeats(ctx, input)),
+    ...(   totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await highestHeatTotal(ctx, input)),
@@ -95,9 +95,16 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSch
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
+const totalHeatDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
+  const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _sum: { heatDifferential: true } })
+  const queryRound = query._sum.heatDifferential !== undefined ? twoDec(query._sum.heatDifferential) : '-'
+  return { totalHeatDifferential: { label: 'Total Heat Differential', value: queryRound } }
+}
+
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), heatPlace: 1 }, _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryRound(query._avg.heatDifferential) } }
+  const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _avg: { heatDifferential: true } })
+  const queryRound = query._avg.heatDifferential !== undefined ? twoDec(query._avg.heatDifferential) : '-'
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryRound } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {

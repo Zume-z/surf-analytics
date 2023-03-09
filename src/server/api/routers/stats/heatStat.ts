@@ -73,8 +73,8 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof heatStatSchema>)
 }
 
 const heatDifferential = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {
-  const query = await ctx.prisma.heatResult.findFirstOrThrow({ where: { heatSlug: input.heatSlug, heatPlace: 1 }, select: { heatDifferential: true } })
-  return { heatDifferential: { label: 'Heat Total Differential', value: queryRound(query.heatDifferential) } }
+  const query = await ctx.prisma.heat.findUnique({ where: { slug: input.heatSlug } })
+  return { heatDifferential: { label: 'Heat Total Differential', value: queryRound(query && query.heatDifferential) } }
 }
 
 const totalWaves = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {

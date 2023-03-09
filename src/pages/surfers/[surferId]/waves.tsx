@@ -12,7 +12,7 @@ import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableForma
 export default function SurferWaves() {
   const router = useRouter()
   const { surferId, event, heatRound, heatNumber, year } = router.query as { surferId: string; event: string; heatRound: string; heatNumber: string; year: string }
-  const heatQuery = api.heat.getOneByEventHeat.useQuery({ eventSlug: event, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!event && !!heatRound && !!heatNumber })
+  const heatQuery = api.heat.getOneByEvent.useQuery({ eventSlug: event, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!event && !!heatRound && !!heatNumber })
 
   const filters: { waves: any; heatSlug?: string; heatResults: any } = {
     waves: heatQuery.data ? heatQuery.data.waves : [],
@@ -20,11 +20,15 @@ export default function SurferWaves() {
     heatResults: heatQuery.data ? heatQuery.data.heatResults : [],
   }
 
+  
   const eventQuery = api.event.getName.useQuery({ slug: event }, { enabled: !!event })
   const surferQuery = api.surfer.getOne.useQuery({ slug: surferId }, { enabled: !!surferId })
   const heatResultStats = api.heatResultStat.getWaves.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId })
   const tableColumns = getWaveTableCol(filters.heatResults)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
+
+  console.log(tableColumns)
+  console.log(tableData)
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true }, //prettier-ignore

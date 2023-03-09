@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc'
 import { GENDER, SORTDIR } from '@/utils/enums'
+import { Surfer } from '@/utils/interfaces'
 
 export const SurferSchema = z.object({
   surferId: z.string().optional(),

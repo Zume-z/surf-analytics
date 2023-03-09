@@ -13,23 +13,26 @@ datasource db {
 // =================================================================================================
 
 model Surfer {
-  id                String        @id @default(uuid())
-  slug              String        @unique
-  name              String
-  dob               String?
-  heightCm          Int?
-  weightKg          Int?
-  stance            Stance
-  hometown          String?
-  profileImage      String
-  gender            Gender
-  tourResults       TourResult[]
-  eventResults      EventResult[] @relation("Surfer")
-  heatResults       HeatResult[]  @relation("Surfer")
-  waves             Wave[]
-  countrySlug       String
-  country           Country       @relation(fields: [countrySlug], references: [slug])
-  surfersKnockedOut EventResult[] @relation("KnockedOutBy")
+  id           String        @id @default(uuid())
+  slug         String        @unique
+  name         String
+  dob          String?
+  heightCm     Int?
+  weightKg     Int?
+  stance       Stance
+  hometown     String?
+  profileImage String
+  gender       Gender
+  tourResults  TourResult[]
+  eventResults EventResult[] @relation("Surfer")
+  heatResults  HeatResult[]  @relation("Surfer")
+  waves        Wave[]
+  countrySlug  String
+  country      Country       @relation(fields: [countrySlug], references: [slug])
+
+  // Update
+  surfersKnockedOut EventResult[]  @relation("KnockedOutBy")
+  surfersBeaten     HeatBeatenBy[]
 
   @@index([countrySlug])
 }
@@ -136,9 +139,9 @@ model Heat {
 model HeatResult {
   heatPlace         Int
   heatTotal         Float?
-  heatDifferential  Float?
   scoreOne          Float?
   scoreTwo          Float?
+  heatDifferential  Float?
   interferenceOne   Int?
   interferenceTwo   Int?
   interferenceThree Int?
@@ -151,14 +154,26 @@ model HeatResult {
   boardShaper       Shaper? @relation(fields: [boardShaperSlug], references: [slug])
 
   // Update
-  // beatenBySlug      String?
-  // beatenBy          Surfer? @relation(name: "SurferBeatenBy", fields: [beatenBySlug], references: [slug])
-  // @@index([beatenBySlug])
+  beatenBy HeatBeatenBy[]
 
   @@id([heatSlug, surferSlug])
   @@index([surferSlug])
   @@index([heatSlug])
   @@index([boardShaperSlug])
+}
+
+// Update
+model HeatBeatenBy {
+  id                   String     @id @default(uuid())
+  heatSlug             String
+  surferSlug           String
+  beatenByDifferential Float?
+  heatResult           HeatResult @relation(fields: [heatSlug, surferSlug], references: [heatSlug, surferSlug])
+  surferBeatenBySlug   String
+  surferBeatenBy       Surfer     @relation(fields: [surferBeatenBySlug], references: [slug])
+
+  @@index([surferBeatenBySlug])
+  @@index([heatSlug, surferSlug])
 }
 
 model Wave {

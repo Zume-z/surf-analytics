@@ -14,7 +14,11 @@ export default function Header() {
     { name: 'Surfers', href: '/surfers' },
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
+    { name: 'Head To Head', href: '/headToHead' },
     { name: 'Analytics', href: '/analytics' },
+    // { name: 'Breaks', href: '/country' },
+    // { name: 'Location', href: '/country' },
+    // { name: 'World Titles', href: '/country' },
   ]
 
   const navigationMob = [{ name: 'Home', href: '/' }, ...navigation]
@@ -86,15 +90,14 @@ export default function Header() {
                   </Link>
                 ))}
                 <div className="absolute bottom-16 right-0 space-x-3 px-4 py-2 text-white">
-                  <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 cursor-pointer   rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
-                    <TwitterLogoIcon className="h-6 w-6" />
+                  <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                    <EnvelopeClosedIcon className="h-6 w-6" />
                   </a>
                   <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <InstagramLogoIcon className="h-6 w-6" />
                   </a>
-
-                  <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
-                    <EnvelopeClosedIcon className="h-6 w-6" />
+                  <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 cursor-pointer   rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                    <TwitterLogoIcon className="h-6 w-6" />
                   </a>
                 </div>
               </div>
