@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import React from 'react'
 import { api } from '@/utils/api'
 import Table from '@/components/Table'
@@ -8,13 +9,12 @@ import SubNavbar from '@/components/SubNavbar'
 import TableHeat from '@/components/TableHeat'
 import { Event, Heat } from '@/utils/interfaces'
 import { useQueryState } from 'next-usequerystate'
+import { HeatSchema } from '@/server/api/routers/heat'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { eventResultStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFormat'
-import { z } from 'zod'
-import { HeatSchema } from '@/server/api/routers/heat'
 
 export default function EventHeats() {
   const router = useRouter()
@@ -41,7 +41,7 @@ export default function EventHeats() {
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
 
-  console.log(heatQuery.data)
+
   const subNavItems = [
     { label: 'Events', active: false, router: { pathname: '/events/', query: {} } },
     { label: 'Results', active: false, router: { pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } } },

@@ -19,7 +19,7 @@ export const SurferSchema = z.object({
 })
 
 export const surferRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(({ ctx, input }) => {
     return ctx.prisma.surfer.findMany()
   }),
 
@@ -43,6 +43,15 @@ export const surferRouter = createTRPCRouter({
     })
     if (!surfer) throw new TRPCError({ code: 'NOT_FOUND' })
     return surfer
+  }),
+
+  getManyYear: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+    const surfer = ctx.prisma.surfer.findMany({
+      where: { tourResults: { some: { tour: { year: { gte: 2010 } } } } },
+    })
+    if (!surfer) throw new TRPCError({ code: 'NOT_FOUND' })
+    return surfer
+
   }),
 
   getOne: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {

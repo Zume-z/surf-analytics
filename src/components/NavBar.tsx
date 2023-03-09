@@ -3,7 +3,7 @@ import Iconlogo from './icons/IconLogo'
 import { useRouter } from 'next/router'
 import { Disclosure } from '@headlessui/react'
 import { CONTACT_URLS } from '@/utils/constants'
-import { MenuIcon, XIcon } from '@heroicons/react/outline'
+import { MenuIcon, XIcon, MenuAlt2Icon, MenuAlt3Icon, MenuAlt4Icon } from '@heroicons/react/outline'
 import TransitionDropDown from './transitions/TransitionDropdown'
 import { TwitterLogoIcon, InstagramLogoIcon, EnvelopeClosedIcon } from '@radix-ui/react-icons'
 
@@ -14,7 +14,7 @@ export default function Header() {
     { name: 'Surfers', href: '/surfers' },
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
-    { name: 'Head To Head', href: '/headToHead' },
+    { name: 'Head To Head', href: '/head-to-head' },
     { name: 'Analytics', href: '/analytics' },
     // { name: 'Breaks', href: '/country' },
     // { name: 'Location', href: '/country' },
@@ -54,7 +54,7 @@ export default function Header() {
                 {/* Mobile Menu Button*/}
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   <Disclosure.Button className="transition-200 inline-flex items-center justify-center rounded-md p-2 text-gray-md focus:outline-none hover-mod:hover:bg-gray-700 hover-mod:hover:text-white ">
-                    {open ? <XIcon className="block h-6 w-6" aria-hidden="true" /> : <MenuIcon className="block h-6 w-6" aria-hidden="true" />}
+                    {open ? <XIcon className="block h-7 w-7" aria-hidden="true" /> : <MenuAlt4Icon className="block h-7 w-7" aria-hidden="true" />}
                   </Disclosure.Button>
                 </div>
               </div>
