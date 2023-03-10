@@ -25,7 +25,6 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
 
-
 export default function CountryEvents() {
   const router = useRouter()
   const countryId = router.query.countryId as string
@@ -79,7 +78,7 @@ export default function CountryEvents() {
     <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countryEventStats(countryEventStatQuery.data), statsLoading: countryEventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
       </FilterBar>
       <Table tableData={tableData} items={countryQuery.data?.events || []} loading={countryQuery.isLoading} handleSelection={onSelectEvent} />

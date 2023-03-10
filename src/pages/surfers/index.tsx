@@ -57,11 +57,9 @@ export default function Surfers() {
     <Layout title={'Surfers'}>
       <h1 className="py-8 text-center text-3xl font-bold">Surfers</h1>
       <FilterBar className=" justify-center">
-        <ButtonSelect placeHolder={filters.gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
-        <ButtonSelectX placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
-        {/* <ButtonSelectSearch placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" /> */}
-        {/* <ButtonSelectX placeHolder="Championship Tour" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" /> */}
+        <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
+        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search Countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
 
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />

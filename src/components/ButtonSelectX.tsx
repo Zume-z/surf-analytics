@@ -4,6 +4,7 @@ import { toString } from '@/utils/format/toString'
 import { ChevronDownIcon, Cross2Icon, DashIcon } from '@radix-ui/react-icons'
 
 export type ButtonSelectPropsX = {
+  className?: string
   placeHolder?: string
   options: { label: string; value: string | number }[] | undefined
   value?: string | number
@@ -12,15 +13,15 @@ export type ButtonSelectPropsX = {
   loadingText?: string
 }
 
-const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectPropsX) => {
+const ButtonSelectX = ({ className, placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectPropsX) => {
   const selectedItem = options ? options.find((option) => value == option.value) : undefined
   const [btnOpen, setBtnOpen] = useState(false)
   return (
-    <div className="">
+    <div>
       {!loading && options && (
         <div>
           {!value ? (
-            <div className="px-2 py-1 sm:px-4 sm:py-2 group cursor-pointer " onClick={() => setBtnOpen(true)}>
+            <div className={`group my-1 cursor-pointer px-2 sm:px-4 ${className}`} onClick={() => setBtnOpen(true)}>
               <div className={btnOpen ? 'select-btn__open' : 'select-btn__closed'}>
                 <Select.Root value={toString(value)} onValueChange={setValue} open={btnOpen} onOpenChange={setBtnOpen}>
                   {/* BUTTON */}
@@ -29,7 +30,7 @@ const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loading
                     <Select.Icon className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5" /> : <ChevronDownIcon />}</Select.Icon>
                   </Select.Trigger>
                   {/* DROPDOWN */}
-                  <Select.Content className="z-40 -ml-2 max-h-60 rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={5} align="start">
+                  <Select.Content className="z-40 -ml-2 max-h-60 rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={8} align="start">
                     <Select.Viewport>
                       {options.map((option, i) => (
                         <Select.Item key={i} value={option.value.toString()} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
@@ -45,7 +46,7 @@ const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loading
               </div>
             </div>
           ) : (
-            <div className="px-2 py-1 sm:px-4 sm:py-2">
+            <div className={`px-2 my-1 sm:px-4 ${className}`}>
               <div className="select-btn__closed ">
                 <button className="z-40 flex items-center whitespace-nowrap outline-none  " onClick={() => setValue(null)}>
                   {selectedItem?.label} <Cross2Icon className="ml-1" />
@@ -56,7 +57,7 @@ const ButtonSelectX = ({ placeHolder, value, setValue, options, loading, loading
         </div>
       )}
       {loading && (
-        <div className="px-2 py-1 sm:px-4 sm:py-2">
+        <div className={`px-2 my-1 sm:px-4 ${className}`}>
           <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-0.5 px-2 text-white ">
             <div>{loadingText}</div>
             <div className="ml-1">

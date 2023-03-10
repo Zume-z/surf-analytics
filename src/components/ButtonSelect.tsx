@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toString } from '@/utils/format/toString'
 
 export type ButtonSelectProps = {
+  className?: string
   placeHolder?: string
   options: { label: string; value: string | number }[] | undefined
   value?: string | number
@@ -12,12 +13,12 @@ export type ButtonSelectProps = {
   loadingText?: string
 }
 
-export default function ButtonSelect({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) {
+export default function ButtonSelect({ className, placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) {
   const [btnOpen, setBtnOpen] = useState(false)
   return (
     <div>
       {!loading && options && (
-        <div className="px-2 py-1 sm:px-4 sm:py-2 group cursor-pointer" onClick={() => setBtnOpen(true)}>
+        <div className={`px-2 my-1 sm:px-4 group cursor-pointer ${className}`} onClick={() => setBtnOpen(true)}>
           <div className={btnOpen ? 'select-btn__open  ' : 'select-btn__closed'}>
             <Select.Root value={toString(value)} onValueChange={setValue} open={btnOpen} onOpenChange={setBtnOpen}>
               {/* BUTTON */}
@@ -26,7 +27,7 @@ export default function ButtonSelect({ placeHolder, value, setValue, options, lo
                 <Select.Icon className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5" /> : <ChevronDownIcon />}</Select.Icon>
               </Select.Trigger>
               {/* DROPDOWN */}
-              <Select.Content className="-ml-2 max-h-60   rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={5} align="start">
+              <Select.Content className="-ml-2 max-h-60   rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={8} align="start">
                 <Select.Viewport className=" ">
                   {options.map((f, i) => (
                     <Select.Item key={i} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
@@ -43,7 +44,7 @@ export default function ButtonSelect({ placeHolder, value, setValue, options, lo
         </div>
       )}
       {loading && (
-        <div className="px-2 py-1 sm:px-4 sm:py-2">
+        <div className={`px-2 my-1 sm:px-4 ${className}`}>
           <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-0.5 px-2 text-white ">
             <div>{loadingText}</div>
             <div className="ml-1">

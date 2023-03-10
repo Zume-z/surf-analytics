@@ -9,9 +9,9 @@ import { breakPoint } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
 import { useQueryState } from 'next-usequerystate'
+import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import ButtonSelectX from '@/components/ButtonSelectX'
-import ButtonSelectGender from '@/components/ButtonSelectGender'
 import { eventResultStats } from '@/utils/format/subHeaderStats'
 import { Event, EventResult, TourResult } from '@/utils/interfaces'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
@@ -43,10 +43,9 @@ export default function EventResults() {
     { label: 'Womens', value: eventQuery.data?.tour.gender == 'FEMALE' ? eventId : eventQuery.data?.linkedEventSlug },
   ]
 
-
   const tableData: TableData[] = [
     { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
-    { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item}/> },
+    { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item} /> },
     { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Heats</div> },
   ]
   if (windowSize().width! < breakPoint.sm) tableData.pop()
@@ -68,7 +67,7 @@ export default function EventResults() {
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="my-8 justify-center sm:justify-start">
-        {eventQuery.data?.linkedEventSlug && <ButtonSelectGender placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />}
+        {eventQuery.data?.linkedEventSlug && <ButtonSelect className="border-r" placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />}
         <ButtonSelectX placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventResultQuery.data || []} handleSelection={onSelectSurfer} loading={eventResultQuery.isLoading} />

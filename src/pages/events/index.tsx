@@ -11,12 +11,12 @@ import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
-import ButtonSelectX from '@/components/ButtonSelectX'
 import { removeById } from '@/utils/format/removeById'
 import { EventSchema } from '@/server/api/routers/event'
 import { breakPoint, genderOptions } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 
@@ -25,7 +25,7 @@ export default function Events() {
   const [countrySlug, setCountrySlug] = useQueryState('country')
   const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
-  const onSelectEvent = (item: Event) => (item.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: item.slug } }))
+  const onSelectEvent = (item: Event) => item.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: item.slug } })
   const updateYear = React.useCallback(async (value: string) => {
     await setYear(parseInt(value))
     await setCountrySlug(null)
@@ -61,9 +61,9 @@ export default function Events() {
     <Layout title={'Events'}>
       <h1 className="py-8 text-center text-3xl font-bold">Events</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect placeHolder={gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
-        <ButtonSelectX placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelect className='border-r' placeHolder={gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className='border-r' placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
+        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search Countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventQuery.data || []} handleSelection={onSelectEvent} loading={eventQuery.isLoading} />
     </Layout>

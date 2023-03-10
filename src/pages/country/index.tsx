@@ -46,7 +46,7 @@ export default function CountryIndex() {
     <Layout title={'Country'}>
       <h1 className="py-8 text-center text-3xl font-bold">Country</h1>
       <FilterBar className="justify-center">
-        <ButtonSelectX placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
+        <ButtonSelectX className='border-r' placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
       </FilterBar>
       <Table tableData={tableData} items={countryQuery.data || []} loading={countryQuery.isLoading} handleSelection={onSelectCountry} />

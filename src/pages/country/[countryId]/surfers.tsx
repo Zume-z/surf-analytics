@@ -76,8 +76,8 @@ export default function CountrySurfers() {
     <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countrySurferStats(countrySurferStatQuery.data), statsLoading: countrySurferStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX placeHolder="GENDER" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="GENDER" />
-        <ButtonSelectX placeHolder="YEAR" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="GENDER" />
+        <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
       </FilterBar>
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />
     </Layout>

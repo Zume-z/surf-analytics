@@ -4,7 +4,7 @@ import type { ButtonSelectProps } from './ButtonSelect'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { toString } from '@/utils/format/toString'
 
-const ButtonSelectGender = ({ placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) => {
+const ButtonSelectGender = ({ className, placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) => {
   const [btnOpen, setBtnOpen] = useState(false)
   return (
     <div className="px-2 sm:px-4">
@@ -36,10 +36,12 @@ const ButtonSelectGender = ({ placeHolder, value, setValue, options, loading, lo
         </div>
       )}
       {loading && (
-        <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-0.5 px-2 text-white ">
-          <div>{loadingText}</div>
-          <div className="ml-1">
-            <ChevronDownIcon />
+        <div className={`my-1 px-2 sm:px-4 ${className}`}>
+          <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-0.5 px-2 text-white ">
+            <div>{loadingText}</div>
+            <div className="ml-1">
+              <ChevronDownIcon />
+            </div>
           </div>
         </div>
       )}

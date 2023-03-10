@@ -3,7 +3,7 @@ import Iconlogo from './icons/IconLogo'
 import { useRouter } from 'next/router'
 import { Disclosure } from '@headlessui/react'
 import { CONTACT_URLS } from '@/utils/constants'
-import { MenuIcon, XIcon, MenuAlt2Icon, MenuAlt3Icon, MenuAlt4Icon } from '@heroicons/react/outline'
+import { XIcon, MenuAlt4Icon } from '@heroicons/react/outline'
 import TransitionDropDown from './transitions/TransitionDropdown'
 import { TwitterLogoIcon, InstagramLogoIcon, EnvelopeClosedIcon } from '@radix-ui/react-icons'
 
@@ -16,9 +16,6 @@ export default function Header() {
     { name: 'Country', href: '/country' },
     { name: 'Head To Head', href: '/head-to-head' },
     { name: 'Analytics', href: '/analytics' },
-    // { name: 'Breaks', href: '/country' },
-    // { name: 'Location', href: '/country' },
-    // { name: 'World Titles', href: '/country' },
   ]
 
   const navigationMob = [{ name: 'Home', href: '/' }, ...navigation]
@@ -89,7 +86,7 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
-                <div className="absolute bottom-16 right-0 space-x-3 px-4 py-2 text-white">
+                <div className="absolute flex bottom-16 right-0 space-x-3 px-4 py-2 text-white">
                   <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <EnvelopeClosedIcon className="h-6 w-6" />
                   </a>
