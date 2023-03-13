@@ -61,6 +61,18 @@ export const surferRouter = createTRPCRouter({
     return surfer
   }),
 
+  getLocations: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+    const locations = ctx.prisma.location.findMany({
+      where: { events: { some: { eventResults: { some: { surferSlug: input.surferId, NOT: { place: { equals: 0 } } } } } } },
+      include: {
+        country: true,
+        events: { where: { eventResults: { some: { surferSlug: input.surferId, NOT: { place: { equals: 0 } } } } }, include: { tour: true, eventResults: { where: { surferSlug: input.surferId }, orderBy: { place: 'desc' } } } },
+      },
+    })
+    if (!locations) throw new TRPCError({ code: 'NOT_FOUND' })
+    return locations
+  }),
+
   getOne: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.surfer.findUniqueOrThrow({ where: { slug: input.slug }, include: { country: true } })
   }),

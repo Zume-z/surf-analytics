@@ -11,7 +11,6 @@ import { leadingZero } from '@/utils/format/leadingZero'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import ButtonSelectSearchSurfer from '@/components/ButtonSelectSearchSurfer'
 import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/format/headToHeadTableFormat'
-import Spinner from '@/components/loaders/Spinner'
 
 export default function MatchupsDev() {
   const router = useRouter()

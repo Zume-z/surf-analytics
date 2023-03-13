@@ -55,14 +55,16 @@ export default function EventResults() {
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
     { content: <SubHeaderItem label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {} }} loading={eventQuery.isLoading} /> },
-    { content: <SubHeaderItem label="results" value="All" subvalue="Results" active={true} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem  label="results" value="All" subvalue="Results" active={true} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className='sm:hidden' label="heats" value="All" subvalue="Heats" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: filters.eventSlug } }} /> }, //prettier-ignore
+    { content: <SubHeaderItem className="sm:hidden" label="Champions" value="All" subvalue="Champions" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug , location: eventQuery.data?.locationSlug } }} /> }, //prettier-ignore
   ]
 
   const subNavItems = [
     { label: 'Events', active: false, router: { pathname: '/events', query: {} } },
     { label: 'Results', active: true },
     { label: 'Heats', active: false, router: { pathname: '/events/[eventId]/heats', query: { eventId: eventId } } },
+    { label: 'Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: eventId, location: eventQuery.data?.locationSlug } } },
   ]
 
   return (

@@ -29,13 +29,38 @@ export const eventRouter = createTRPCRouter({
         slug: input.slug,
         linkedEvent: input.linkedEvent,
         eventStatus: input.eventStatus,
-        tour: { slug: input.tourSlug, gender: input.gender, year: input.year},
+        tour: { slug: input.tourSlug, gender: input.gender, year: input.year },
         countrySlug: input.countrySlug,
         locationSlug: input.locationSlug,
-        
       },
       include: {
         eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
+        tour: true,
+        country: true,
+      },
+      orderBy: {
+        startDate: input.sortStartDate,
+        eventRound: input.sortEventRound,
+      },
+      take: input.itemsPerPage,
+      skip: input.offset,
+    })
+    if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
+    return event
+  }),
+
+  getManyLocation: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
+    const event = ctx.prisma.event.findMany({
+      where: {
+        slug: input.slug,
+        linkedEvent: input.linkedEvent,
+        eventStatus: input.eventStatus,
+        tour: { slug: input.tourSlug, gender: input.gender, year: input.year },
+        countrySlug: input.countrySlug,
+        locationSlug: input.locationSlug,
+      },
+      include: {
+        eventResults: { where: { place: { lte: 2 } }, include: { surfer: { include: { country: true } } } },
         tour: true,
         country: true,
       },
@@ -64,6 +89,4 @@ export const eventRouter = createTRPCRouter({
     if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
     return event
   }),
-
-  
 })

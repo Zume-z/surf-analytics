@@ -15,6 +15,9 @@ export default function Header() {
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
     { name: 'Matchups', href: '/matchups' },
+    
+    // { name: 'WorldTitles', href: '/matchups' },
+    
     { name: 'Analytics', href: '/analytics' },
   ]
 
