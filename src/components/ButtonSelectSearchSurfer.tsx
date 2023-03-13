@@ -77,6 +77,7 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                     </div>
                   </Popover.Trigger>
                   <Popover.Content
+                    avoidCollisions={false}
                     className={`scrollbar-none  z-40 max-h-96 overflow-y-auto rounded-md border border-gray-100 bg-white shadow-sm ${viewPortAlign == 'start' ? '-ml-2' : viewPortAlign == 'end' && '-mr-2'}`}
                     sideOffset={8}
                     align={viewPortAlign}
