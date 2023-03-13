@@ -24,10 +24,10 @@ export const HeatSchema = z.object({
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
 
-  // Head to Head
+  // Matchup
   surferASlug: z.string().optional(),
   surferBSlug: z.string().optional(),
-  headToheadFilter: z.boolean().optional(),
+  matchupFilter: z.boolean().optional(),
 })
 
 export const heatRouter = createTRPCRouter({
@@ -62,8 +62,8 @@ export const heatRouter = createTRPCRouter({
     return heat
   }),
 
-  getManyHeadToHead: publicProcedure.input(HeatSchema).query(({ ctx, input }) => {
-    const headToheadOnly = input.headToheadFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
+  getManyMatchup: publicProcedure.input(HeatSchema).query(({ ctx, input }) => {
+    const headToheadOnly = input.matchupFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
     const heat = ctx.prisma.heat.findMany({
       where: {
         slug: input.heatSlug,

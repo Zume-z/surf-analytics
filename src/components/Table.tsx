@@ -26,7 +26,7 @@ export default function Table({ title, tableData, items, handleSelection, loadin
       {title && <div className="mb-4 block text-center font-semibold text-gray-700 sm:hidden ">{title}</div>}
       <div className="rounded-md bg-white">
         <div className="flex h-min flex-col">
-          <div className=" -mx-4 overflow-x-auto sm:shadow-md border-b sm:border-none sm:mx-0">
+          <div className=" -mx-4 overflow-x-auto scrollbar-none sm:shadow-md border-b sm:border-none sm:mx-0">
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden ">
                 {!loading && (

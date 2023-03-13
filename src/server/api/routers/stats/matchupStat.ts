@@ -5,21 +5,21 @@ import { Context, Status } from '@/utils/interfaces'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
 import { queryFormat, queryRound } from '@/utils/format/queryFormat'
 
-const headToHeadStatSchema = z.object({
+const matchupStatSchema = z.object({
   surferASlug: z.string(),
   surferBSlug: z.string(),
-  headToheadFilter: z.boolean().optional(),
+  matchupFilter: z.boolean().optional(),
 })
 
-export const heatToHeadStatRouter = createTRPCRouter({
-  getAll: publicProcedure.input(headToHeadStatSchema).query(({ ctx, input }) => {
+export const matchupStatRouter = createTRPCRouter({
+  getAll: publicProcedure.input(matchupStatSchema).query(({ ctx, input }) => {
     return getAll(ctx, input)
   }),
 })
 
-const getAll = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const getAll = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = [
-    await headToHeadWin(ctx, input),
+    await matchupWin(ctx, input),
     await avgHeatTotal(ctx, input),
     await maxHeatTotal(ctx, input),
     await heatTotalDifferential(ctx, input),
@@ -33,19 +33,19 @@ const getAll = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>)
   return query
 }
 
-const filterHeatResults = (input: z.infer<typeof headToHeadStatSchema>) => {
-  const headToheadOnly = input.headToheadFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
+const filterHeatResults = (input: z.infer<typeof matchupStatSchema>) => {
+  const matchupOnly = input.matchupFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
 
   return {
     event: { wavePoolEvent: false },
     heatStatus: 'COMPLETED' as Status,
     AND: [{ heatResults: { some: { surfer: { slug: input.surferASlug } } } }, { heatResults: { some: { surfer: { slug: input.surferBSlug } } } }],
-    heatResults: headToheadOnly,
+    heatResults: matchupOnly,
   }
 }
 
 // QUERYS
-const headToHeadBaseStats = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const matchupBaseStats = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: { include: { beatenBy: true, surfer: true } } },
@@ -61,7 +61,7 @@ const headToHeadBaseStats = async (ctx: Context, input: z.infer<typeof headToHea
   return { surferA: surferAWins, surferB: surferBWins }
 }
 
-const headToHeadWin = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const matchupWin = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: { include: { beatenBy: true } } },
@@ -78,7 +78,7 @@ const headToHeadWin = async (ctx: Context, input: z.infer<typeof headToHeadStatS
   return { label: 'Heat Wins', surferA: queryFormat(surferAWins), surferB: queryFormat(surferBWins) }
 }
 
-const avgHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const avgHeatTotal = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: true },
@@ -94,7 +94,7 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   return { label: 'Avg. Heat Total', surferA: queryRound(surferAAvgHeatTotal), surferB: queryRound(surferBAvgHeatTotal) }
 }
 
-const maxHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const maxHeatTotal = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: true },
@@ -108,7 +108,7 @@ const maxHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   return { label: 'Max Heat Total', surferA: queryRound(surferAMaxHeatTotal), surferB: queryRound(surferBMaxHeatTotal) }
 }
 
-const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: { include: { beatenBy: true } } },
@@ -123,13 +123,21 @@ const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof headToH
   const surferBHds = surferBFiltered.map((heat) => heat?.map((result) => result.beatenByDifferential))
   const surferBTotalHd = surferBHds.map((heat) => heat?.reduce((a: any, b) => a + b, 0)).reduce((a: any, b) => a + b, 0)
 
-  const surferAHd = surferATotalHd ? twoDec(surferBTotalHd - surferATotalHd) : '-'
-  const surferBHd = surferBTotalHd ? twoDec(surferATotalHd - surferBTotalHd) : '-'
+  let surferAHd = surferATotalHd && twoDec(surferBTotalHd - surferATotalHd)
+  let surferBHd = surferBTotalHd && twoDec(surferATotalHd - surferBTotalHd)
+
+  // DELETE LATER
+  if (!surferAHd && surferBHd) {
+    surferAHd = Math.abs(surferBHd)
+  }
+  if (!surferBHd && surferAHd) {
+    surferBHd = -Math.abs(surferAHd)
+  }
 
   return { label: 'Heat Total Differential', surferA: queryRound(surferAHd), surferB: queryRound(surferBHd) }
 }
 
-const totalWaves = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const totalWaves = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { waves: true },
@@ -142,7 +150,7 @@ const totalWaves = async (ctx: Context, input: z.infer<typeof headToHeadStatSche
   return { label: 'Total Waves', surferA: surferAWaveCount, surferB: surferBWaveCount }
 }
 
-const avgWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const avgWaveScore = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { waves: true },
@@ -160,7 +168,7 @@ const avgWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   return { label: 'Avg. Wave Score', surferA: queryFormat(surferAAvgWaveScore), surferB: queryFormat(surferBAvgWaveScore) }
 }
 
-const maxWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const maxWaveScore = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { waves: true },
@@ -178,7 +186,7 @@ const maxWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   return { label: 'Max Wave Score', surferA: queryRound(surferAMaxWaveScore), surferB: queryRound(surferBMaxWaveScore) }
 }
 
-const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { waves: { where: { countedWave: true } } },
@@ -197,7 +205,7 @@ const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof headToHea
   return { label: 'Avg. Counted Wave Score', surferA: queryRound(surferAAvgWaveScore), surferB: queryRound(surferBAvgWaveScore) }
 }
 
-const interferences = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
+const interferences = async (ctx: Context, input: z.infer<typeof matchupStatSchema>) => {
   const query = await ctx.prisma.heat.findMany({
     where: filterHeatResults(input),
     include: { heatResults: { where: { OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] } } },

@@ -22,7 +22,6 @@ interface TableWavesProps {
 
 const Surfer = ({ heatResult }: { heatResult: any }) => {
   const interference = heatResult.interferenceOne || heatResult.interferenceTwo || heatResult.interferenceThree
-
   return (
     <div className="items-center whitespace-nowrap text-sm sm:-ml-3 sm:flex">
       <div className="flex items-center justify-center">
@@ -114,7 +113,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
   return (
     <div className="flow-hidden mb-8 w-full rounded-md bg-white  sm:my-8">
       <div className="flex h-min flex-col">
-        <div className="-mx-4 overflow-x-auto scrollbar-none shadow-md md:mx-0">
+        <div className="-mx-4 overflow-x-auto scrollbar-none scrollbar-none shadow-md md:mx-0">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden scrollbar-none">
               {!loading && (

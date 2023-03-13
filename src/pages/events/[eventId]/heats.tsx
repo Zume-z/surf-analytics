@@ -79,7 +79,7 @@ export default function EventHeats() {
   return (
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: getSubheaderData(), stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
-      <FilterBar className="mt-8 justify-start overflow-auto">
+      <FilterBar className="mt-8 justify-start overflow-auto scrollbar-none">
         <ButtonSelectSearch className="border-r" searchPlaceHolder="Search surfers" placeHolder="Surfer" value={filters.surferSlug} setValue={updateSurfer} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
         <ButtonSelectSearch placeHolder="Round" searchPlaceHolder="Search rounds" value={filters.heatRound} setValue={setHeatRound} options={heatRoundOptions} loading={heatRoundOptions ? false : true} loadingText="Round" />
       </FilterBar>

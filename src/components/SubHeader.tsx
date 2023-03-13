@@ -101,7 +101,7 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
         </div>
 
         <div className={`flex whitespace-nowrap border-t bg-white   text-xs `}>
-          <div className={`${subtabs.length < 2 ? '-mr-[36px] items-center justify-center ' : ''} scrollbar-hide flex w-full max-w-screen-md space-x-2 overflow-scroll whitespace-nowrap pl-2  text-xs `}>
+          <div className={`${subtabs.length < 2 ? '-mr-[36px] items-center justify-center ' : ''} scrollbar-none flex w-full max-w-screen-md space-x-2 overflow-scroll whitespace-nowrap pl-2  text-xs `}>
             {subtabs.map((tab: any, index: number) => (
               <div key={index} className="flex h-full cursor-pointer items-center justify-center  first:border-l-transparent  active:scale-[0.98]">
                 <div>{tab.content}</div>

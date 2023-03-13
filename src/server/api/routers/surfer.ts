@@ -17,7 +17,7 @@ export const SurferSchema = z.object({
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
 
-  // HeadToHead
+  // Matchup
   surferSlugFilter: z.string().optional(),
 })
 
@@ -48,13 +48,13 @@ export const surferRouter = createTRPCRouter({
     return surfer
   }),
 
-  getManyHeadToHead: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+  getManyMatchup: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
     const surfer = ctx.prisma.surfer.findMany({
       where: {
         heatResults: { some: { heat: { heatStatus: 'COMPLETED', event: { wavePoolEvent: false }, heatResults: { some: { surferSlug: input.surferSlugFilter } } } } },
         tourResults: { some: { tour: { year: { gte: 2010 } } } },
       },
-      include: { country: true },
+      select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } },
       orderBy: { name: 'asc' },
     })
     if (!surfer) throw new TRPCError({ code: 'NOT_FOUND' })

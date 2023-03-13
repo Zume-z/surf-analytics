@@ -35,7 +35,7 @@ export default function ButtonSelectSearch({ className, placeHolder, searchPlace
                     <div>{placeHolder}</div>
                     <div className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5" /> : <ChevronDownIcon />}</div>
                   </Popover.Trigger>
-                  <Popover.Content className="z-40 -ml-2 max-h-60 overflow-auto rounded-md border border-gray-100 bg-white shadow " sideOffset={8} align="start">
+                  <Popover.Content className="z-40 -ml-2 max-h-60 overflow-auto  scrollbar-none rounded-md border border-gray-100 bg-white shadow " sideOffset={8} align="start">
                     <Command>
                       <Command.Input autoFocus className=" border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
                       <Command.List>

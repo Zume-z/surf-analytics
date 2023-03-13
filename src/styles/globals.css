@@ -13,7 +13,7 @@
     @apply transition duration-200 ease-out;
   }
   .transition-500 {
-    @apply transition duration-500 ease-in-out; 
+    @apply transition duration-500 ease-in-out;
   }
   .pulse-loader {
     @apply flex-1 animate-pulse rounded-full bg-gray-200;
@@ -23,7 +23,7 @@
   .select-btn__open {
     @apply transition-200 rounded border border-gray-200 bg-white py-0.5 pl-2 pr-1 text-gray-500;
   }
-  
+
   .select-btn__closed {
     @apply transition-200 rounded border border-gray-50 py-0.5 pl-2 pr-1 text-gray-500 hover-mod:group-hover:bg-gray-400  hover-mod:group-hover:text-white;
   }
@@ -40,5 +40,15 @@
   }
   .subnav-inactive {
     @apply transition-200 rounded px-2  text-gray-200 hover-mod:hover:bg-gray-600 hover-mod:hover:text-white;
+  }
+
+  /* SCROLLBAR */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }

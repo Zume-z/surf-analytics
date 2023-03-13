@@ -6,16 +6,16 @@ import Layout from '@/components/Layout'
 import TableHeat from '@/components/TableHeat'
 import { HTH_LABELS } from '@/utils/constants'
 import { Heat, Surfer } from '@/utils/interfaces'
-import { useQueryState } from 'next-usequerystate'
 import ButtonSwitch from '@/components/ButtonSwitch'
 import { leadingZero } from '@/utils/format/leadingZero'
+import { queryTypes, useQueryState } from 'next-usequerystate'
 import ButtonSelectSearchSurfer from '@/components/ButtonSelectSearchSurfer'
 import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/format/headToHeadTableFormat'
 
-export default function HeadToHeadDev() {
+export default function MatchupsDev() {
   const router = useRouter()
-  const [surferSlugA, setSurferSlugA] = useQueryState('surfera')
-  const [surferSlugB, setSurferSlugB] = useQueryState('surferb')
+  const [surferSlugA, setSurferSlugA] = useQueryState('surfera', queryTypes.string)
+  const [surferSlugB, setSurferSlugB] = useQueryState('surferb', queryTypes.string)
   const [heatCheck, setHeatCheck] = React.useState(false)
   const handleSetSurferSlugA = (value: string | null) => (setSurferSlugA(value), setHeatCheck(false))
   const handleSetSurferSlugB = (value: string | null) => (setSurferSlugB(value), setHeatCheck(false))
@@ -25,9 +25,9 @@ export default function HeadToHeadDev() {
     surferSlugB: surferSlugB || undefined,
   }
 
-  const heatQuery = api.heat.getManyHeadToHead.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, headToheadFilter: heatCheck, heatStatus: 'COMPLETED' }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
-  const heatStatQuery = api.headToHeadStat.getAll.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, headToheadFilter: heatCheck }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
-  const surferOptionsQuery = api.surfer.getManyHeadToHead.useQuery({ surferSlugFilter: filters.surferSlugA ? filters.surferSlugA : filters.surferSlugB })
+  const heatQuery = api.heat.getManyMatchup.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck, heatStatus: 'COMPLETED' }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
+  const heatStatQuery = api.matchupStat.getAll.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
+  const surferOptionsQuery = api.surfer.getManyMatchup.useQuery({ surferSlugFilter: filters.surferSlugA ? filters.surferSlugA : filters.surferSlugB })
   const surferOptions = surferOptionsQuery.data?.map((surfer) => ({ label: surfer.name, value: surfer.slug, surfer: surfer as Surfer }))
   const tableDataRows = getHeadToHeadTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeadToHeadTableBlocks(heatQuery.data as Heat[] | undefined)
@@ -36,30 +36,52 @@ export default function HeadToHeadDev() {
   const checkDisabled = !filters.surferSlugA || !filters.surferSlugB ? true : heatResultsLength?.includes(2) == false ? true : false
 
   return (
-    <Layout title={'Head To Head'}>
+    <Layout title={'Matchups'}>
       <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Matchups</h1>
       {heatQuery.data && <ButtonSwitch className={`my-2 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
       {heatQuery.isLoading && <ButtonSwitch className="py-2 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
 
-      {/* HEAD TO HEAD TABLE */}
+      {/* Matchups TABLE */}
       <div className="-mx-4 flex items-center justify-center sm:-mx-0 ">
         <div className="w-full rounded shadow">
           <div className="flex w-full justify-evenly border-b  bg-gray-100 py-2">
             <div className="flex w-1/3 items-center justify-center">
-              <ButtonSelectSearchSurfer className='-mr-4 sm:-mr-0' searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugA} setValue={handleSetSurferSlugA} options={surferOptions} loading={surferOptions ? false : true} viewPortAlign="start" />
+              <ButtonSelectSearchSurfer
+                className="-mr-4 sm:-mr-0"
+                searchPlaceHolder="Search surfers"
+                placeHolder="Select Surfer"
+                value={filters.surferSlugA}
+                setValue={handleSetSurferSlugA}
+                options={surferOptions}
+                loading={surferOptions ? false : true}
+                viewPortAlign="start"
+                selectedOptionSlug={surferSlugB}
+              />
             </div>
             <div className="flex w-1/3 items-center justify-center text-lg text-gray-500">Vs</div>
             <div className="flex w-1/3 items-center justify-center">
-              <ButtonSelectSearchSurfer className='-ml-4 sm:-ml-0' searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugB} setValue={handleSetSurferSlugB} options={surferOptions} loading={surferOptions ? false : true} viewPortAlign="end" />
+              <ButtonSelectSearchSurfer
+                className="-ml-4 sm:-ml-0"
+                searchPlaceHolder="Search surfers"
+                placeHolder="Select Surfer"
+                value={filters.surferSlugB}
+                setValue={handleSetSurferSlugB}
+                options={surferOptions}
+                loading={surferOptions ? false : true}
+                viewPortAlign="end"
+                selectedOptionSlug={surferSlugA}
+              />
             </div>
           </div>
+
+          {/* NOT LOADING */}
           {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
             <div className="w-full flex-col ">
               {heatStatQuery.data?.map((stat, i) => (
                 <div key={i} className="group flex w-full border-b py-2 hover:bg-gray-100 ">
-                  <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
+                  <div className={`flex w-1/3 items-center justify-center text-center text-sm  sm:text-base ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
                   <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 group-hover:text-navy ">{stat.label}</div>
-                  <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
+                  <div className={`flex w-1/3 items-center justify-center text-center text-sm  sm:text-base ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
                 </div>
               ))}
             </div>
@@ -70,9 +92,9 @@ export default function HeadToHeadDev() {
             <div className="w-full flex-col opacity-50 ">
               {HTH_LABELS.map((stat, i) => (
                 <div key={i} className="group flex w-full border-b py-2  ">
-                  <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
-                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500  ">{stat}</div>
-                  <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
+                  <div className={`} flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 sm:text-base`}>-</div>
+                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500">{stat}</div>
+                  <div className={`} flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 sm:text-base`}>-</div>
                 </div>
               ))}
             </div>
@@ -82,10 +104,10 @@ export default function HeadToHeadDev() {
 
       {/* HEAT TABLE */}
       {!heatQuery.isLoading && (
-        <div className="pt-10">
-          <h1 className=" text-xl font-semibold text-navy"> Heats Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
+        <div className="pt-8 sm:pt-10">
+          <h1 className=" text-center text-xl font-semibold text-navy sm:text-start">Heats Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
           <Table className="mt-4 hidden lg:block" tableData={tableDataRows} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />
-          <TableHeat className="block lg:hidden" tableData={tableDataBlocks} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />
+          <TableHeat className="mt-4 block lg:hidden" tableData={tableDataBlocks} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />
         </div>
       )}
     </Layout>

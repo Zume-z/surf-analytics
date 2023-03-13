@@ -14,7 +14,7 @@ export default function Header() {
     { name: 'Surfers', href: '/surfers' },
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
-    { name: 'Head To Head', href: '/head-to-head' },
+    { name: 'Matchups', href: '/matchups' },
     { name: 'Analytics', href: '/analytics' },
   ]
 
@@ -28,7 +28,7 @@ export default function Header() {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {/* Logo */}
-                <div className="transition-200 group flex flex-shrink-0 items-center rounded   " onClick={() => router.push('/')}>
+                <div className="transition-200 group flex flex-shrink-0 items-center rounded" onClick={() => router.push('/')}>
                   <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-white active:scale-[0.98] " />
                 </div>
 

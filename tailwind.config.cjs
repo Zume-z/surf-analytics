@@ -14,6 +14,5 @@ module.exports = {
         'gray-light': '#f3f4f6',
       },
     },
-    plugins: [require('tailwindcss-no-scrollbar')],
   },
 }

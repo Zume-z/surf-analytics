@@ -9,12 +9,12 @@ import { eventResultRouter } from './routers/eventResult'
 import { heatStatRouter } from './routers/stats/heatStat'
 import { eventStatRouter } from './routers/stats/eventStat'
 import { surferStatRouter } from './routers/stats/surferStat'
+import { matchupStatRouter } from './routers/stats/matchupStat'
 import { heatResultStatRouter } from './routers/stats/heatResultStat'
 import { tourResultStatRouter } from './routers/stats/tourResultStat'
 import { eventResultStatRouter } from './routers/stats/eventResultStat'
 import { countryEventStatRouter } from './routers/stats/countryEventStats'
 import { countrySurferStatRouter } from './routers/stats/countrySurferStats'
-import { heatToHeadStatRouter } from './routers/stats/headToHeadStats'
 
 export const appRouter = createTRPCRouter({
   // Main
@@ -33,7 +33,7 @@ export const appRouter = createTRPCRouter({
   eventResultStat: eventResultStatRouter,
   heatStat: heatStatRouter,
   heatResultStat: heatResultStatRouter,
-  headToHeadStat: heatToHeadStatRouter,
+  matchupStat: matchupStatRouter,
   countrySurferStat: countrySurferStatRouter,
   countryEventStat: countryEventStatRouter
   
