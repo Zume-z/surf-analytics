@@ -78,9 +78,9 @@ export default function MatchupsDev() {
           {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
             <div className="w-full flex-col ">
               {heatStatQuery.data?.map((stat, i) => (
-                <div key={i} className="group flex w-full border-b py-2 hover:bg-gray-100 ">
+                <div key={i} className="group flex w-full border-b py-2 hover-mod:hover:bg-gray-100 ">
                   <div className={`flex w-1/3 items-center justify-center text-center text-sm  sm:text-base ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
-                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 group-hover:text-navy ">{stat.label}</div>
+                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 hover-mod:group-hover:text-navy ">{stat.label}</div>
                   <div className={`flex w-1/3 items-center justify-center text-center text-sm  sm:text-base ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
                 </div>
               ))}
