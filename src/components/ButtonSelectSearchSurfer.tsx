@@ -76,13 +76,12 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                       )}
                     </div>
                   </Popover.Trigger>
-                  <Popover.Content className={`z-40  max-h-96 overflow-y-auto scrollbar-none rounded-md border border-gray-100 bg-white shadow-sm ${viewPortAlign == 'start' ? '-ml-2' : viewPortAlign == 'end' && '-mr-2'}`} sideOffset={8} align={viewPortAlign}>
-                    <Command
-                      filter={(value, search) => {
-                        if (value.includes(search)) return 1
-                        return 0
-                      }}
-                    >
+                  <Popover.Content
+                    className={`scrollbar-none  z-40 max-h-96 overflow-y-auto rounded-md border border-gray-100 bg-white shadow-sm ${viewPortAlign == 'start' ? '-ml-2' : viewPortAlign == 'end' && '-mr-2'}`}
+                    sideOffset={8}
+                    align={viewPortAlign}
+                  >
+                    <Command>
                       <Command.Input className="w-full border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
                       <Command.List>
                         {optionsFilter.map((option, i) => (
