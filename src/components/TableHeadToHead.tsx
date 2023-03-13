@@ -21,30 +21,6 @@ interface TableWavesProps {
 }
 
 
-const surferLoader = () => {
-  return (
-    <div className="items-center whitespace-nowrap text-sm sm:-ml-3 sm:flex">
-      <div className="flex items-center justify-center  pb-1">
-        <div className="h-12 w-12 flex-shrink-0 rounded-full ">
-          <div className="transition-200 pulse-loader h-12 w-12 rounded-full border border-gray-200 bg-gray-100 hover-mod:hover-mod:group-hover:bg-white" />
-        </div>
-      </div>
-      <div className="ml-2 space-y-1 ">
-        <div className=" flex justify-center text-center  ">
-          <div>
-            <div className="pulse-loader h-4 w-24" />
-          </div>
-        </div>
-        <div className=" flex justify-center text-center  ">
-          <div>
-            <div className="pulse-loader h-4 w-24" />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 
 
 export default function TableHeadToHead({ tableData, items, handleSelection, loading }: TableWavesProps) {

@@ -28,3 +28,4 @@ export const CONTACT_URLS = {
   TWITTER: 'https://twitter.com/Surf_Analytics'
 }
 
+export const HTH_LABELS = ['Heat Wins', 'Avg. Heat Total', 'Max Heat Total', 'Heat Total Differential', 'Total Waves', 'Avg. Wave Score', 'Max Wave Score', 'Avg. Counted Wave Score', 'Interferences']

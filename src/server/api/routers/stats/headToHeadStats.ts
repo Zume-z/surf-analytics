@@ -1,15 +1,14 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { twoDec } from '@/utils/format/roundTwoDec'
-import { queryFormat, queryRound, querySuffix } from '@/utils/format/queryFormat'
-import { capitalizeFirst } from '@/utils/format/capitalizeFirst'
-import { Context, HeatResult, Status } from '@/utils/interfaces'
+import { Context, Status } from '@/utils/interfaces'
+import { createTRPCRouter, publicProcedure } from '../../trpc'
+import { queryFormat, queryRound } from '@/utils/format/queryFormat'
 
 const headToHeadStatSchema = z.object({
   surferASlug: z.string(),
   surferBSlug: z.string(),
+  headToheadFilter: z.boolean().optional(),
 })
 
 export const heatToHeadStatRouter = createTRPCRouter({
@@ -34,14 +33,16 @@ const getAll = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>)
   return query
 }
 
-// FILTERS
+const filterHeatResults = (input: z.infer<typeof headToHeadStatSchema>) => {
+  const headToheadOnly = input.headToheadFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
 
-// const heatResultFilter = (input: z.infer<typeof eventStatSchema>) => ({ heat: { eventSlug: input.eventSlug, heatStatus: 'COMPLETED' as Status } })
-const filterHeatResults = (input: z.infer<typeof headToHeadStatSchema>) => ({
-  event: { wavePoolEvent: false },
-  heatStatus: 'COMPLETED' as Status,
-  AND: [{ heatResults: { some: { surfer: { slug: input.surferASlug } } } }, { heatResults: { some: { surfer: { slug: input.surferBSlug } } } }],
-})
+  return {
+    event: { wavePoolEvent: false },
+    heatStatus: 'COMPLETED' as Status,
+    AND: [{ heatResults: { some: { surfer: { slug: input.surferASlug } } } }, { heatResults: { some: { surfer: { slug: input.surferBSlug } } } }],
+    heatResults: headToheadOnly,
+  }
+}
 
 // QUERYS
 const headToHeadBaseStats = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -74,7 +75,7 @@ const headToHeadWin = async (ctx: Context, input: z.infer<typeof headToHeadStatS
   const surferBBeatenBySlugs = surferBBeatenBy.map((heat) => heat?.map((result) => result.surferBeatenBySlug))
   const surferAWins = surferBBeatenBySlugs.filter((heat) => heat?.includes(input.surferASlug)).length
 
-  return { label: 'Heat Wins', surferA: surferAWins, surferB: surferBWins }
+  return { label: 'Heat Wins', surferA: queryFormat(surferAWins), surferB: queryFormat(surferBWins) }
 }
 
 const avgHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -90,7 +91,7 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   const surferBHeatTotals = surferBHeatResults.map((heatResult) => heatResult?.heatTotal).reduce((a: any, b) => a + b, 0)
   const surferBAvgHeatTotal = surferBHeatTotals ? twoDec(surferBHeatTotals / surferBHeatResults.length) : '-'
 
-  return { label: 'Avg. Heat Total', surferA: surferAAvgHeatTotal, surferB: surferBAvgHeatTotal }
+  return { label: 'Avg. Heat Total', surferA: queryRound(surferAAvgHeatTotal), surferB: queryRound(surferBAvgHeatTotal) }
 }
 
 const maxHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -104,7 +105,7 @@ const maxHeatTotal = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   const surferBHeatResults = query.map((heat) => heat.heatResults.find((result) => result.surferSlug === input.surferBSlug))
   const surferBHeatTotals = surferBHeatResults.map((heatResult) => heatResult?.heatTotal)
   const surferBMaxHeatTotal = surferBHeatTotals ? Math.max(...(surferBHeatTotals as number[])) : '-'
-  return { label: 'Max Heat Total', surferA: surferAMaxHeatTotal, surferB: surferBMaxHeatTotal }
+  return { label: 'Max Heat Total', surferA: queryRound(surferAMaxHeatTotal), surferB: queryRound(surferBMaxHeatTotal) }
 }
 
 const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -125,7 +126,7 @@ const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof headToH
   const surferAHd = surferATotalHd ? twoDec(surferBTotalHd - surferATotalHd) : '-'
   const surferBHd = surferBTotalHd ? twoDec(surferATotalHd - surferBTotalHd) : '-'
 
-  return { label: 'Heat Total Differential', surferA: surferAHd, surferB: surferBHd }
+  return { label: 'Heat Total Differential', surferA: queryRound(surferAHd), surferB: queryRound(surferBHd) }
 }
 
 const totalWaves = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -156,7 +157,7 @@ const avgWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   const allSurferBWaves = surferBWaveScores.reduce((a: any, b) => a.concat(b), [])
   const surferBAvgWaveScore = allSurferBWaves ? twoDec(allSurferBWaves.reduce((a: number, b: number) => a + b, 0) / allSurferBWaves.length) : '-'
 
-  return { label: 'Avg. Wave Score', surferA: surferAAvgWaveScore, surferB: surferBAvgWaveScore }
+  return { label: 'Avg. Wave Score', surferA: queryFormat(surferAAvgWaveScore), surferB: queryFormat(surferBAvgWaveScore) }
 }
 
 const maxWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -174,7 +175,7 @@ const maxWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSc
   const allSurferBWaves = surferBWaveScores.reduce((a: any, b) => a.concat(b), [])
   const surferBMaxWaveScore = allSurferBWaves ? twoDec(Math.max(...allSurferBWaves)) : '-'
 
-  return { label: 'Max Wave Score', surferA: surferAMaxWaveScore, surferB: surferBMaxWaveScore }
+  return { label: 'Max Wave Score', surferA: queryRound(surferAMaxWaveScore), surferB: queryRound(surferBMaxWaveScore) }
 }
 
 const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -193,7 +194,7 @@ const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof headToHea
   const allSurferBWaves = surferBWaveScores.reduce((a: any, b) => a.concat(b), [])
   const surferBAvgWaveScore = allSurferBWaves ? twoDec(allSurferBWaves.reduce((a: number, b: number) => a + b, 0) / allSurferBWaves.length) : '-'
 
-  return { label: 'Avg. Counted Wave Score', surferA: surferAAvgWaveScore, surferB: surferBAvgWaveScore }
+  return { label: 'Avg. Counted Wave Score', surferA: queryRound(surferAAvgWaveScore), surferB: queryRound(surferBAvgWaveScore) }
 }
 
 const interferences = async (ctx: Context, input: z.infer<typeof headToHeadStatSchema>) => {
@@ -214,7 +215,7 @@ const interferences = async (ctx: Context, input: z.infer<typeof headToHeadStatS
   )
   const surferBTotalInterferences = surferBInterferences.map((heat) => heat.reduce((a: any, b) => a + b, 0)).reduce((a: any, b) => a + b, 0)
 
-  return { label: 'Interferences', surferA: surferATotalInterferences, surferB: surferBTotalInterferences }
+  return { label: 'Interferences', surferA: queryFormat(surferATotalInterferences), surferB: queryFormat(surferBTotalInterferences) }
 }
 // Direct Compare Stats
 // ---------------------

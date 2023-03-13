@@ -10,7 +10,6 @@ import CardSurfer from '@/components/CardSurfer'
 import { windowSize } from '@/utils/windowSize'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
-import ButtonSelectX from '@/components/ButtonSelectX'
 import { breakPoint, genderOptions } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import ButtonSelectSearch from '@/components/ButtonSelectSearch'
@@ -33,7 +32,6 @@ export default function Surfers() {
   }, [])
 
   const filters: z.infer<typeof TourResultSchema> = {
-    // itemsPerPage: 10, // Delete
     sortSurferRank: 'asc',
     year: year || undefined,
     gender: gender as Gender | undefined,
@@ -59,7 +57,7 @@ export default function Surfers() {
       <FilterBar className=" justify-center">
         <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
-        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search Countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
 
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />

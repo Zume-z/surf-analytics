@@ -1,14 +1,14 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc'
+import { createTRPCRouter, publicProcedure } from '../trpc'
 import { GENDER, SORTDIR } from '@/utils/enums'
-import { Surfer } from '@/utils/interfaces'
 
 export const SurferSchema = z.object({
   surferId: z.string().optional(),
   gender: z.enum(GENDER).optional(),
   countrySlug: z.string().optional(),
   year: z.number().optional(),
+  heatStatus: z.string().optional(),
 
   // Sort
   sortName: z.enum(SORTDIR).optional(),
@@ -16,6 +16,9 @@ export const SurferSchema = z.object({
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
+
+  // HeadToHead
+  surferSlugFilter: z.string().optional(),
 })
 
 export const surferRouter = createTRPCRouter({
@@ -45,13 +48,17 @@ export const surferRouter = createTRPCRouter({
     return surfer
   }),
 
-  getManyYear: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+  getManyHeadToHead: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
     const surfer = ctx.prisma.surfer.findMany({
-      where: { tourResults: { some: { tour: { year: { gte: 2010 } } } } },
+      where: {
+        heatResults: { some: { heat: { heatStatus: 'COMPLETED', event: { wavePoolEvent: false }, heatResults: { some: { surferSlug: input.surferSlugFilter } } } } },
+        tourResults: { some: { tour: { year: { gte: 2010 } } } },
+      },
+      include: { country: true },
+      orderBy: { name: 'asc' },
     })
     if (!surfer) throw new TRPCError({ code: 'NOT_FOUND' })
     return surfer
-
   }),
 
   getOne: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {

@@ -10,11 +10,12 @@ import TableHeat from '@/components/TableHeat'
 import { Event, Heat } from '@/utils/interfaces'
 import { useQueryState } from 'next-usequerystate'
 import { HeatSchema } from '@/server/api/routers/heat'
-import ButtonSelectX from '@/components/ButtonSelectX'
+
 import { eventResultStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFormat'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function EventHeats() {
   const router = useRouter()
@@ -40,7 +41,6 @@ export default function EventHeats() {
   const tableDataRows = getHeatTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
-
 
   const subNavItems = [
     { label: 'Events', active: false, router: { pathname: '/events/', query: {} } },
@@ -80,8 +80,8 @@ export default function EventHeats() {
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: getSubheaderData(), stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-start overflow-auto">
-        <ButtonSelectX placeHolder="Surfer" value={filters.surferSlug} setValue={updateSurfer} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
-        <ButtonSelectX placeHolder="Round" value={filters.heatRound} setValue={setHeatRound} options={heatRoundOptions} loading={heatRoundOptions ? false : true} loadingText="Round" />
+        <ButtonSelectSearch className="border-r" searchPlaceHolder="Search surfers" placeHolder="Surfer" value={filters.surferSlug} setValue={updateSurfer} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
+        <ButtonSelectSearch placeHolder="Round" searchPlaceHolder="Search rounds" value={filters.heatRound} setValue={setHeatRound} options={heatRoundOptions} loading={heatRoundOptions ? false : true} loadingText="Round" />
       </FilterBar>
       {!eventQuery.data?.wavePoolEvent && <Table className="hidden lg:block" tableData={tableDataRows} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />}
       {!eventQuery.data?.wavePoolEvent && <TableHeat className="block lg:hidden" tableData={tableDataBlocks} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />}

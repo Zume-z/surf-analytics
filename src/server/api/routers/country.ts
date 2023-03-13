@@ -6,6 +6,7 @@ import { GENDER, SORTDIR, STATUS } from '@/utils/enums'
 export const CountrySchema = z.object({
   countrySlug: z.string().optional(),
   surferYear: z.number().min(1900).max(2100).optional(),
+  
   eventYear: z.number().min(1900).max(2100).optional(),
   gender: z.enum(GENDER).optional(),
   eventStaus: z.enum(STATUS).optional(),
@@ -14,6 +15,7 @@ export const CountrySchema = z.object({
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
+
 })
 
 export const countryRouter = createTRPCRouter({

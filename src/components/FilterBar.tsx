@@ -2,7 +2,7 @@ export default function FilterBar({ children, className }: { children: React.Rea
   return (
     <div className={`flex items-center ${className ? className : ''}`}>
       {/* py-2 */}
-      <div className="flex items-center justify-center divide-gray-300 border   rounded-md bg-gray-50 text-small shadow sm:text-base">{children}</div>
+      <div className="text-small flex items-center justify-center divide-gray-300   rounded-md border bg-gray-50 shadow sm:text-base">{children}</div>
     </div>
   )
 }

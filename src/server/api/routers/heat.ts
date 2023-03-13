@@ -19,7 +19,6 @@ export const HeatSchema = z.object({
   // Sort
   sortRoundNumber: z.enum(SORTDIR).optional(),
   sortHeatNumber: z.enum(SORTDIR).optional(),
-  
 
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
@@ -28,6 +27,7 @@ export const HeatSchema = z.object({
   // Head to Head
   surferASlug: z.string().optional(),
   surferBSlug: z.string().optional(),
+  headToheadFilter: z.boolean().optional(),
 })
 
 export const heatRouter = createTRPCRouter({
@@ -63,14 +63,11 @@ export const heatRouter = createTRPCRouter({
   }),
 
   getManyHeadToHead: publicProcedure.input(HeatSchema).query(({ ctx, input }) => {
-    
-
-    // Filter only heats with both surfers
-    // heatResults: {every: { surferSlug: { in:  ['kelly-slater', 'kanoa-igarashi']} } },
-
+    const headToheadOnly = input.headToheadFilter && input.surferASlug && input.surferBSlug ? { every: { surferSlug: { in: [input.surferASlug, input.surferBSlug] } } } : undefined
     const heat = ctx.prisma.heat.findMany({
       where: {
         slug: input.heatSlug,
+        
         event: {
           slug: input.eventSlug,
           year: input.year,
@@ -83,12 +80,13 @@ export const heatRouter = createTRPCRouter({
         heatRound: input.heatRound,
         heatNumber: input.heatNumber,
         heatStatus: input.heatStatus,
+        heatResults: headToheadOnly,
       },
       include: {
         event: { select: { name: true, year: true, heats: { select: { heatRound: true }, orderBy: { roundNumber: 'asc' } } } },
         heatResults: { orderBy: { heatPlace: 'asc' }, include: { surfer: { include: { country: true } } } },
       },
-      orderBy: {event: {year: 'desc'}},
+      orderBy: { event: { year: 'desc' } },
       take: input?.itemsPerPage,
       skip: input?.offset,
     })

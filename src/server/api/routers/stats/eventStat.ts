@@ -87,7 +87,7 @@ const totalHeats = async (ctx: Context, input: z.infer<typeof eventStatSchema>) 
 
 const avgHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatTotal: true } })
-  return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
+  return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } } 
 }
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {

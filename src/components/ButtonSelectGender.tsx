@@ -4,6 +4,7 @@ import type { ButtonSelectProps } from './ButtonSelect'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { toString } from '@/utils/format/toString'
 
+
 const ButtonSelectGender = ({ className, placeHolder, value, setValue, options, loading, loadingText }: ButtonSelectProps) => {
   const [btnOpen, setBtnOpen] = useState(false)
   return (
@@ -16,7 +17,7 @@ const ButtonSelectGender = ({ className, placeHolder, value, setValue, options, 
               {!!value ? <Select.Value /> : placeHolder}
               <Select.Icon className="ml-1">
                 <ChevronDownIcon />
-              </Select.Icon>
+              </Select.Icon> 
             </Select.Trigger>
 
             {/* DROPDOWN */}

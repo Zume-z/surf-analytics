@@ -29,7 +29,7 @@ export default function Header() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {/* Logo */}
                 <div className="transition-200 group flex flex-shrink-0 items-center rounded   " onClick={() => router.push('/')}>
-                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-white active:scale-[0.98] hover-mod:group-hover:text-gray-200" />
+                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-white active:scale-[0.98] " />
                 </div>
 
                 {/* Desktop NavBar */}
@@ -39,7 +39,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`transition-200 rounded-md px-3 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:bg-gray-700 hover-mod:hover:text-white'}`}
+                        className={`transition-200 rounded-md px-3 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
                         aria-current={routerPath == item.href ? 'page' : undefined}
                       >
                         {item.name}
@@ -86,7 +86,7 @@ export default function Header() {
                     {item.name}
                   </Link>
                 ))}
-                <div className="absolute flex bottom-16 right-0 space-x-3 px-4 py-2 text-white">
+                <div className="absolute bottom-16 right-0 flex space-x-3 px-4 py-2 text-white">
                   <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <EnvelopeClosedIcon className="h-6 w-6" />
                   </a>

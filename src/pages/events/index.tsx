@@ -16,9 +16,9 @@ import { EventSchema } from '@/server/api/routers/event'
 import { breakPoint, genderOptions } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function Events() {
   const router = useRouter()
@@ -42,7 +42,7 @@ export default function Events() {
     gender: gender as Gender | undefined,
   }
 
-  const eventQuery = api.event.getMany.useQuery(filters)
+  const eventQuery = api.event.getMany.useQuery({ ...filters })
   const countryQuery = api.country.getManyByEvent.useQuery({ gender: filters.gender, eventYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
   const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, sortYear: 'desc' })
@@ -61,9 +61,9 @@ export default function Events() {
     <Layout title={'Events'}>
       <h1 className="py-8 text-center text-3xl font-bold">Events</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect className='border-r' placeHolder={gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect className='border-r' placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
-        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search Countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
+        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventQuery.data || []} handleSelection={onSelectEvent} loading={eventQuery.isLoading} />
     </Layout>

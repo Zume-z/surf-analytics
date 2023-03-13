@@ -11,7 +11,7 @@ import CardSurfer from '@/components/CardSurfer'
 import { useQueryState } from 'next-usequerystate'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
-import ButtonSelectX from '@/components/ButtonSelectX'
+
 import { eventResultStats } from '@/utils/format/subHeaderStats'
 import { Event, EventResult, TourResult } from '@/utils/interfaces'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
@@ -19,6 +19,8 @@ import { EventResultSchema } from '@/server/api/routers/eventResult'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import EventERPoints from '@/components/tableComponents/TableEventERPoints'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
+
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function EventResults() {
   const router = useRouter()
@@ -68,7 +70,7 @@ export default function EventResults() {
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="my-8 justify-center sm:justify-start">
         {eventQuery.data?.linkedEventSlug && <ButtonSelect className="border-r" placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />}
-        <ButtonSelectX placeHolder="Country" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventResultQuery.data || []} handleSelection={onSelectSurfer} loading={eventResultQuery.isLoading} />
     </Layout>
