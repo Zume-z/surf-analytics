@@ -11,9 +11,12 @@ import { leadingZero } from '@/utils/format/leadingZero'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import ButtonSelectSearchSurfer from '@/components/ButtonSelectSearchSurfer'
 import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/format/headToHeadTableFormat'
+import Spinner from '@/components/loaders/Spinner'
 
 export default function MatchupsDev() {
   const router = useRouter()
+  const routerSurferASlug = router.query.surfera as string | undefined
+  const routerSurferBSlug = router.query.surferb as string | undefined
   const [surferSlugA, setSurferSlugA] = useQueryState('surfera', queryTypes.string)
   const [surferSlugB, setSurferSlugB] = useQueryState('surferb', queryTypes.string)
   const [heatCheck, setHeatCheck] = React.useState(false)
@@ -37,12 +40,13 @@ export default function MatchupsDev() {
 
   return (
     <Layout title={'Matchups'}>
-      <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Matchups</h1>
-      {heatQuery.data && <ButtonSwitch className={`my-2 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
-      {heatQuery.isLoading && <ButtonSwitch className="py-2 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
+      {/* {surferOptionsQuery.isLoading && <div>"SURFEROPTIONSQUERY: LOADING"</div>} */}
+      <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
+      {heatQuery.data && <ButtonSwitch className={`my-4 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
+      {heatQuery.isLoading && <ButtonSwitch className="my-4 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
 
       {/* Matchups TABLE */}
-      <div className="-mx-4 flex items-center justify-center sm:-mx-0 ">
+      <div className="relative -mx-4 flex items-center justify-center sm:-mx-0 ">
         <div className="w-full rounded shadow">
           <div className="flex w-full justify-evenly border-b  bg-gray-100 py-2">
             <div className="flex w-1/3 items-center justify-center">
@@ -78,7 +82,7 @@ export default function MatchupsDev() {
           {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
             <div className="w-full flex-col ">
               {heatStatQuery.data?.map((stat, i) => (
-                <div key={i} className="group flex w-full border-b sm:py-4 py-3 hover-mod:hover:bg-gray-100 ">
+                <div key={i} className="group flex w-full border-b py-3 sm:py-4 hover-mod:hover:bg-gray-100 ">
                   <div className={`flex w-1/3 items-center justify-center text-center text-sm  ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
                   <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 hover-mod:group-hover:text-navy ">{stat.label}</div>
                   <div className={`flex w-1/3 items-center justify-center text-center text-sm  ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
@@ -89,14 +93,26 @@ export default function MatchupsDev() {
 
           {/* LOADING */}
           {(!surferSlugA || !surferSlugB || heatStatQuery.isLoading) && (
-            <div className="w-full flex-col opacity-50 ">
-              {HTH_LABELS.map((stat, i) => (
-                <div key={i} className="group flex w-full border-b py-4  ">
-                  <div className={`} flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 `}>-</div>
-                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500">{stat}</div>
-                  <div className={`} flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 `}>-</div>
-                </div>
-              ))}
+            <div>
+              <div className={`w-full flex-col opacity-50 `}>
+                {HTH_LABELS.map((stat, i) => (
+                  <div key={i} className="group flex w-full border-b py-4  ">
+                    {(!routerSurferASlug || !routerSurferBSlug) && <div className={`flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 `}>-</div>}
+                    {routerSurferASlug && routerSurferBSlug && (
+                      <div className={`flex w-1/3 items-center justify-center text-center`}>
+                        <div className="animate-pulse items-center rounded-full border border-gray-200 bg-gray-md py-2 px-8 text-white" />
+                      </div>
+                    )}
+                    <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500">{stat}</div>
+                    {(!routerSurferASlug || !routerSurferBSlug) && <div className={`flex w-1/3 items-center  justify-center text-center text-sm text-gray-500 `}>-</div>}
+                    {routerSurferASlug && routerSurferBSlug && (
+                      <div className={`flex w-1/3 items-center justify-center text-center`}>
+                        <div className="animate-pulse items-center rounded-full border border-gray-200 bg-gray-md py-2 px-8 text-white" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -105,7 +121,7 @@ export default function MatchupsDev() {
       {/* HEAT TABLE */}
       {!heatQuery.isLoading && (
         <div className="pt-8 sm:pt-10">
-          <h1 className=" text-center text-xl font-semibold text-navy sm:text-start">Heats Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
+          <h1 className=" text-center text-xl font-semibold text-navy sm:text-start">Heats Matchups</h1>
           <Table className="mt-4 hidden lg:block" tableData={tableDataRows} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />
           <TableHeat className="mt-4 block lg:hidden" tableData={tableDataBlocks} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />
         </div>
