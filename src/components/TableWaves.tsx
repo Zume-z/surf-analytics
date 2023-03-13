@@ -30,7 +30,7 @@ const Surfer = ({ heatResult }: { heatResult: any }) => {
           <Image src={heatResult.surfer.profileImage} className={`rounded-full`} width={48} height={48} />
         </div>
       </div>
-      <div className="ml-2">
+      <div className="sm:ml-2">
         <div className="hidden text-center text-gray-500 sm:block">{heatResult.surfer.name}</div>
         <div className="block text-center text-gray-500 sm:hidden">{shortSurferName(heatResult.surfer.name)}</div>
         <div className="flex w-full items-center justify-center sm:justify-start">
@@ -119,11 +119,11 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
             <div className="overflow-hidden scrollbar-none">
               {!loading && (
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className=" bg-gray-light text-gray-dark ">
+                  <thead className="bg-gray-light text-gray-dark">
                     <tr>
                       {tableData.map((heatResult: any, i: number) => (
                         <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
-                          {heatResult.key == 'wave' && <div className="flex h-full  uppercase sm:block">{heatResult.value}</div>}
+                          {heatResult.key == 'wave' && <div className="flex h-full uppercase sm:block">{heatResult.value}</div>}
                           {heatResult.key != 'wave' && <Surfer heatResult={heatResult.value} />}
                         </th>
                       ))}
@@ -134,7 +134,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                       <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
                         {tableData.map((col: any, i: number) => (
                           <td key={i} className={tableRow}>
-                            {col.key == 'wave' && <div> {item[col.key]} </div>}
+                            {col.key == 'wave' && <div className='ml-3'> {item[col.key]} </div>}
                             {item[col.key] != null && col.key != 'wave' && <Wave item={item} col={col} />}
                           </td>
                         ))}

@@ -39,7 +39,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`transition-200 rounded-md px-3 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
+                        className={`transition-200 rounded-md px-2 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
                         aria-current={routerPath == item.href ? 'page' : undefined}
                       >
                         {item.name}
@@ -57,14 +57,13 @@ export default function Header() {
               </div>
 
               {/* Contact / Social Media */}
-              <div className="absolute inset-y-0 right-0  flex items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 hidden items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 md:flex">
                 <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <TwitterLogoIcon className="h-5 w-5 " />
                 </a>
                 <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <InstagramLogoIcon className="h-5 w-5 " />
                 </a>
-
                 <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <EnvelopeClosedIcon className="h-5 w-5 " />
                 </a>

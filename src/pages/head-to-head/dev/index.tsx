@@ -37,45 +37,47 @@ export default function HeadToHeadDev() {
 
   return (
     <Layout title={'Head To Head'}>
-      <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Championship Tour Matchups</h1>
+      <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Matchups</h1>
       {heatQuery.data && <ButtonSwitch className={`my-2 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
       {heatQuery.isLoading && <ButtonSwitch className="py-2 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
 
       {/* HEAD TO HEAD TABLE */}
-      <div className="w-full rounded shadow">
-        <div className="flex w-full justify-evenly border-b bg-gray-100 py-2">
-          <div className="flex w-1/3 items-center justify-center">
-            <ButtonSelectSearchSurfer searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugA} setValue={handleSetSurferSlugA} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
+      <div className="-mx-4 flex items-center justify-center sm:-mx-0 ">
+        <div className="w-full rounded shadow">
+          <div className="flex w-full justify-evenly border-b  bg-gray-100 py-2">
+            <div className="flex w-1/3 items-center justify-center">
+              <ButtonSelectSearchSurfer className='-mr-4 sm:-mr-0' searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugA} setValue={handleSetSurferSlugA} options={surferOptions} loading={surferOptions ? false : true} viewPortAlign="start" />
+            </div>
+            <div className="flex w-1/3 items-center justify-center text-lg text-gray-500">Vs</div>
+            <div className="flex w-1/3 items-center justify-center">
+              <ButtonSelectSearchSurfer className='-ml-4 sm:-ml-0' searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugB} setValue={handleSetSurferSlugB} options={surferOptions} loading={surferOptions ? false : true} viewPortAlign="end" />
+            </div>
           </div>
-          <div className="flex w-1/3 items-center justify-center text-lg text-gray-500">Vs</div>
-          <div className="flex w-1/3 items-center justify-center">
-            <ButtonSelectSearchSurfer searchPlaceHolder="Search surfers" placeHolder="Select Surfer" value={filters.surferSlugB} setValue={handleSetSurferSlugB} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
-          </div>
-        </div>
-        {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
-          <div className="w-full flex-col ">
-            {heatStatQuery.data?.map((stat, i) => (
-              <div key={i} className="group flex w-full border-b py-2 hover:bg-gray-100 ">
-                <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
-                <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 group-hover:text-navy ">{stat.label}</div>
-                <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
-              </div>
-            ))}
-          </div>
-        )}
+          {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
+            <div className="w-full flex-col ">
+              {heatStatQuery.data?.map((stat, i) => (
+                <div key={i} className="group flex w-full border-b py-2 hover:bg-gray-100 ">
+                  <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferA) > Number(stat.surferB) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferA}</div>
+                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500 group-hover:text-navy ">{stat.label}</div>
+                  <div className={`flex w-1/3 items-center justify-center  text-center ${Number(stat.surferB) > Number(stat.surferA) ? 'text-blue-base' : 'text-gray-500 group-hover:text-navy'}`}>{stat.surferB}</div>
+                </div>
+              ))}
+            </div>
+          )}
 
-        {/* LOADING */}
-        {(!surferSlugA || !surferSlugB || heatStatQuery.isLoading) && (
-          <div className="w-full flex-col opacity-50 ">
-            {HTH_LABELS.map((stat, i) => (
-              <div key={i} className="group flex w-full border-b py-2  ">
-                <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
-                <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500  ">{stat}</div>
-                <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
-              </div>
-            ))}
-          </div>
-        )}
+          {/* LOADING */}
+          {(!surferSlugA || !surferSlugB || heatStatQuery.isLoading) && (
+            <div className="w-full flex-col opacity-50 ">
+              {HTH_LABELS.map((stat, i) => (
+                <div key={i} className="group flex w-full border-b py-2  ">
+                  <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
+                  <div className="flex w-1/3 items-center justify-center text-center text-sm text-gray-500  ">{stat}</div>
+                  <div className={`} flex w-1/3 items-center  justify-center text-center text-gray-500`}>-</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* HEAT TABLE */}
