@@ -149,12 +149,14 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
       </div>
 
       {/* DESKTOP > SM */}
-      <div className="hidden w-full sm:block" onMouseLeave={() => !statsLoading && setShowStats(false)}>
+      {/* onMouseLeave={() => !statsLoading && setShowStats(false)} */}
+      {/* onMouseEnter={() => !statsLoading && setShowStats(true)} */}
+      <div className="hidden w-full sm:block" >
         <div className="flex items-center justify-center">
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && setShowStats(true)}>
+                <div key={index} className="flex h-full cursor-pointer" >
                   {tab.content}
                 </div>
               ))}
