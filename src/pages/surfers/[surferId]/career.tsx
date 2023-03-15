@@ -14,7 +14,7 @@ import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TourResultPoints from '@/components/tableComponents/TableTourResultPoints'
 import SubNavbar from '@/components/SubNavbar'
 
-export default function SurfersCareer() {
+export default function SurferCareer() {
   const router = useRouter()
   const { surferId } = router.query as { surferId: string }
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
@@ -34,9 +34,6 @@ export default function SurfersCareer() {
   ]
   if (windowSize().width! < breakPoint.sm) tableData.pop()
 
-
-
-  
   const subNavItems = [
     { label: 'Career', active: true },
     { label: 'Events', active: false, router: { pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: tourResultQuery.data?.map((item: any) => item.tour.year)[0] } } },

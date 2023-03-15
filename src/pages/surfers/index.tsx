@@ -53,7 +53,7 @@ export default function Surfers() {
 
   return (
     <Layout title={'Surfers'}>
-      <h1 className="py-8 text-center text-3xl font-bold">Surfers</h1>
+      <h1 className="py-8 text-center text-3xl font-semibold">Surfers</h1>
       <FilterBar className=" justify-center">
         <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />

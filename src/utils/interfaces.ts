@@ -187,6 +187,7 @@ export interface Location {
   id: string
   slug: string
   name: string
+  eventName?: string 
   events: Event[]
   country: Country
   countrySlug: string

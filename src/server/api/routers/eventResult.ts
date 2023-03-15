@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { createTRPCRouter, publicProcedure } from '../trpc'
 import { GENDER, SORTDIR } from '@/utils/enums'
+import { createTRPCRouter, publicProcedure } from '../trpc'
 
 export const EventResultSchema = z.object({
   surferSlug: z.string().optional(),
@@ -49,7 +49,7 @@ export const eventResultRouter = createTRPCRouter({
         NOT: excludeNoPlace,
       },
       include: {
-        event: true,
+        event: { include: { tour: true } },
         surfer: { include: { country: true } },
       },
       orderBy: {

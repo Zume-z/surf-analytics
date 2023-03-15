@@ -16,7 +16,7 @@ export default function SubHeaderItem({ label, value, subvalue, active, routePat
   const router = useRouter()
   if (!label || !value || loading)
     return (
-      <div className="px-2 sm:space-y-1 py-2 sm:px-4">
+      <div className="px-1 sm:space-y-1 py-2 sm:px-4">
         <div className="pulse-loader hidden h-4 w-24 sm:block"></div>
         <div className="pulse-loader h-5 w-16 sm:h-4 sm:w-24"></div>
       </div>

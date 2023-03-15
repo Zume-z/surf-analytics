@@ -20,15 +20,11 @@ export default function SurferWaves() {
     heatResults: heatQuery.data ? heatQuery.data.heatResults : [],
   }
 
-  
   const eventQuery = api.event.getName.useQuery({ slug: event }, { enabled: !!event })
   const surferQuery = api.surfer.getOne.useQuery({ slug: surferId }, { enabled: !!surferId })
   const heatResultStats = api.heatResultStat.getWaves.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId })
   const tableColumns = getWaveTableCol(filters.heatResults)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
-
-  console.log(tableColumns)
-  console.log(tableData)
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true }, //prettier-ignore

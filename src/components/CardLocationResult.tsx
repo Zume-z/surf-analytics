@@ -3,7 +3,7 @@ import { windowSize } from '@/utils/windowSize'
 import { shortEventAddress } from '@/utils/format/shortEventAddress'
 import { shortEventName } from '@/utils/format/shortEventName'
 
-export default function CardEventLocation({ event }: { event: Event; showYear?: boolean }) {
+export default function CardLocationResult({ event }: { event: Event; showYear?: boolean }) {
   return (
     <div>
       <div className="text-base font-semibold text-navy">{event.year}</div>

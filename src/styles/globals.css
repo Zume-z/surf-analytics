@@ -7,7 +7,7 @@
     @apply absolute top-0 z-50 h-full w-8 cursor-pointer items-center bg-white text-gray-dark transition duration-200 ease-out hover-mod:hover:text-black;
   }
   .table-item {
-    @apply text-gray-dark hover-mod:hover:text-navy;
+    @apply text-gray-dark hover-mod:group-hover:text-navy;
   }
   .transition-200 {
     @apply transition duration-200 ease-out;

@@ -63,7 +63,7 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
               <div className={btnOpen ? 'select-btn__open ' : 'select-btn__closed rounded-md border-gray-200 bg-white'}>
                 <Popover.Root open={btnOpen} onOpenChange={setBtnOpen}>
                   <Popover.Trigger className="z-40 flex items-center py-1 outline-none ">
-                    <div className="mr-1 flex items-center whitespace-nowrap text-sm sm:text-base ">{placeHolder}</div>
+                    <div className="mr-1.5 flex items-center whitespace-nowrap text-sm sm:text-base ">{placeHolder}</div>
                     <div>
                       {btnOpen ? (
                         <div className="rounded-full border border-gray-300 bg-blue-base p-0.5 text-white shadow">
@@ -127,7 +127,7 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
       {(loading || !options) && (
         <div className={`my-1  sm:px-4 ${className}`}>
           <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-1 px-2 text-white ">
-            <div className="mr-1 flex items-center whitespace-nowrap text-sm sm:text-base ">{placeHolder}</div>
+            <div className="mr-1.5 flex items-center whitespace-nowrap text-sm sm:text-base ">{placeHolder}</div>
             <div>
               <div className="rounded-full border border-gray-300 bg-gray-300 p-0.5 text-white shadow">
                 <PlusIcon className="h-3 sm:h-4" />

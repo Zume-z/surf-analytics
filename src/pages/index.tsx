@@ -22,9 +22,9 @@ export default function Home() {
 
   return (
     <Layout slider={{ events: events.data || [], loading: events.isLoading }}>
-      <div className="md:flex md:space-x-8">
+      <div className="lg:flex lg:space-x-8">
         <Table tableData={tableData('Mens')} items={mensTourResults.data || []} loading={mensTourResults.isLoading} handleSelection={handleSelection} />
-        <Table  tableData={tableData('Womens')} items={womensTourResults.data || []} loading={womensTourResults.isLoading} handleSelection={handleSelection} />
+        <Table tableData={tableData('Womens')} items={womensTourResults.data || []} loading={womensTourResults.isLoading} handleSelection={handleSelection} />
       </div>
     </Layout>
   )

@@ -235,6 +235,7 @@ model Location {
   id          String  @id @default(uuid())
   slug        String  @unique
   name        String
+  eventName   String? 
   events      Event[]
   countrySlug String
   country     Country @relation(fields: [countrySlug], references: [slug])

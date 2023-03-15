@@ -31,7 +31,7 @@ const Surfer = ({ heatResult }: { heatResult: any }) => {
       </div>
       <div className="sm:ml-2">
         <div className="hidden text-center text-gray-500 sm:block">{heatResult.surfer.name}</div>
-        <div className="block text-center text-gray-500 sm:hidden">{shortSurferName(heatResult.surfer.name)}</div>
+        <div className="block text-xs text-center text-gray-500 sm:hidden">{shortSurferName(heatResult.surfer.name)}</div>
         <div className="flex w-full items-center justify-center sm:justify-start">
           <div className={`pr-1 text-xs font-normal ${interference ? 'text-red-500' : 'text-gray-500'}`}>{twoDec(heatResult.heatTotal)}</div>
           {heatResult.interferenceOne && !heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleOutline className=" h-3 w-3 text-red-500 " />}

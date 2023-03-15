@@ -44,7 +44,7 @@ export default function CountryIndex() {
 
   return (
     <Layout title={'Country'}>
-      <h1 className="py-8 text-center text-3xl font-bold">Country</h1>
+      <h1 className="py-8 text-center text-3xl font-semibold">Country</h1>
       <FilterBar className="justify-center">
         <ButtonSelectX className='border-r' placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />

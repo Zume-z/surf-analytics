@@ -64,7 +64,7 @@ export default function EventHeats() {
   const heatRoundOptions = getHeatRoundOptions() || undefined
 
   const getSubheaderData = () => {
-    if (heatQuery.isLoading) return [{ content: <SubHeaderEvent event={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }, { content: <SubHeaderItem label="heats" value={undefined} /> }]
+    if (heatQuery.isLoading) return [{ content: <SubHeaderEvent event={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }, { content: <SubHeaderItem label="heats" value={undefined} /> }, { content: <SubHeaderItem className='sm:hidden' label="champions" value={undefined} /> }] //prettier-ignore
     const subHeaderData = [
       { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
       { content: <SubHeaderItem label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {} }} loading={eventQuery.isLoading} /> },
@@ -81,7 +81,7 @@ export default function EventHeats() {
   return (
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: getSubheaderData(), stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
-      <FilterBar className="mt-8 justify-start overflow-auto scrollbar-none">
+      <FilterBar className="scrollbar-none mt-8 justify-start overflow-auto">
         <ButtonSelectSearch className="border-r" searchPlaceHolder="Search surfers" placeHolder="Surfer" value={filters.surferSlug} setValue={updateSurfer} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />
         <ButtonSelectSearch placeHolder="Round" searchPlaceHolder="Search rounds" value={filters.heatRound} setValue={setHeatRound} options={heatRoundOptions} loading={heatRoundOptions ? false : true} loadingText="Round" />
       </FilterBar>

@@ -40,7 +40,7 @@ export default function MatchupsDev() {
   return (
     <Layout title={'Matchups'}>
       {/* {surferOptionsQuery.isLoading && <div>"SURFEROPTIONSQUERY: LOADING"</div>} */}
-      <h1 className="pt-8 pb-4 text-center text-3xl font-bold">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
+      <h1 className="pt-8 pb-4 text-center text-3xl font-semibold">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
       {heatQuery.data && <ButtonSwitch className={`my-4 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
       {heatQuery.isLoading && <ButtonSwitch className="my-4 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
 
@@ -61,7 +61,7 @@ export default function MatchupsDev() {
                 selectedOptionSlug={surferSlugB}
               />
             </div>
-            <div className="flex w-1/3 items-center justify-center text-lg text-gray-500">Vs</div>
+            <div className="flex w-1/3 items-center justify-center sm:text-lg text-base  text-gray-500">Vs</div>
             <div className="flex w-1/3 items-center justify-center">
               <ButtonSelectSearchSurfer
                 className="-ml-4 sm:-ml-0"

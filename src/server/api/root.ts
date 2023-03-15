@@ -4,6 +4,7 @@ import { heatRouter } from './routers/heat'
 import { eventRouter } from './routers/event'
 import { surferRouter } from './routers/surfer'
 import { countryRouter } from './routers/country'
+import { locationRouter } from './routers/locations'
 import { tourResultRouter } from './routers/tourResult'
 import { eventResultRouter } from './routers/eventResult'
 import { heatStatRouter } from './routers/stats/heatStat'
@@ -25,6 +26,7 @@ export const appRouter = createTRPCRouter({
   eventResult: eventResultRouter,
   heat: heatRouter,
   country: countryRouter,
+  location: locationRouter,
 
   // Stats
   surferStat: surferStatRouter,

@@ -13,12 +13,12 @@ import { shortEventAddress } from '@/utils/format/shortEventAddress'
 import { breakPoint } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 
-export interface SliderHeaderProps {
+export interface SliderEvents {
   events: any
   loading?: boolean
 }
 
-export default function ({ events, loading }: SliderHeaderProps) {
+export default function ({ events, loading }: SliderEvents) {
   const router = useRouter()
   const [isShown, setIsShown] = useState(false)
   // const [sliderEnd, setSliderEnd] = useState(false)
@@ -73,11 +73,11 @@ export default function ({ events, loading }: SliderHeaderProps) {
             <div>
               <div>
                 {events.map((event: any) => (
-                  <SwiperSlide key={event.id} className="cursor-pointer py-2" onClick={() => event.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })}>
+                  <SwiperSlide key={event.id} className="cursor-pointer py-2 px-4 sm:px-0" onClick={() => event.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })}>
                     <div className=" h-full border-r-2 border-gray-md px-10">
-                      <div className="text-lg font-semibold ">{event.name}</div>
+                      <div className="text-base font-semibold ">{event.name}</div>
                       <div className="flex items-center space-x-1.5 ">
-                        <div className="text-md text-gray-dark">{shortEventAddress(event.address)}</div>
+                        <div className="text-sm text-gray-dark">{shortEventAddress(event.address)}</div>
                         <div className="h-full w-5 flex-shrink-0">
                           <Image src={event.country.flagLink} width={18} height={12} />
                         </div>
@@ -111,7 +111,7 @@ export default function ({ events, loading }: SliderHeaderProps) {
                 {loadingCards.map((index: number) => (
                   <SwiperSlide key={index} className="cursor-pointer py-2">
                     <div className="group h-full border-r-2  border-gray-md px-10">
-                      <div className="pulse-loader h-8 w-full"></div>
+                      <div className="pulse-loader h-5 w-full"></div>
                       <div className="pulse-loader mt-2 h-4 w-full" />
                       <div className="mt-2 grid grid-cols-3 gap-4">
                         <div className="pulse-loader col-span-2  h-3"></div>

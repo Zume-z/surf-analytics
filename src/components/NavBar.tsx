@@ -15,9 +15,7 @@ export default function Header() {
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
     { name: 'Matchups', href: '/matchups' },
-    
-    // { name: 'WorldTitles', href: '/matchups' },
-    
+    // { name: 'World Titles', href: '/country' },
     { name: 'Analytics', href: '/analytics' },
   ]
 
@@ -32,7 +30,7 @@ export default function Header() {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 {/* Logo */}
                 <div className="transition-200 group flex flex-shrink-0 items-center rounded" onClick={() => router.push('/')}>
-                  <Iconlogo className="transition-200 h-7 w-auto cursor-pointer text-white active:scale-[0.98] " />
+                  <Iconlogo className="transition-200 h-6 w-auto cursor-pointer text-white active:scale-[0.98] " />
                 </div>
 
                 {/* Desktop NavBar */}
@@ -42,7 +40,7 @@ export default function Header() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`transition-200 rounded-md px-2 py-2 text-base font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
+                        className={`transition-200 rounded-md px-3 py-2 text-sm whitespace-nowrap font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
                         aria-current={routerPath == item.href ? 'page' : undefined}
                       >
                         {item.name}
@@ -52,7 +50,7 @@ export default function Header() {
                 </div>
 
                 {/* Mobile Menu Button*/}
-                <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <div className="absolute inset-y-0 right-0 flex items-center sm:hidden">
                   <Disclosure.Button className="transition-200 inline-flex items-center justify-center rounded-md p-2 text-gray-md focus:outline-none hover-mod:hover:bg-gray-700 hover-mod:hover:text-white ">
                     {open ? <XIcon className="block h-7 w-7" aria-hidden="true" /> : <MenuAlt4Icon className="block h-7 w-7" aria-hidden="true" />}
                   </Disclosure.Button>

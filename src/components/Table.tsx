@@ -40,7 +40,7 @@ export default function Table({ title, tableData, items, handleSelection, loadin
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white  ">
+                    <tbody className="divide-y  divide-gray-200 bg-white  ">
                       {items.map((item: any, i: number) => (
                         <tr className="transition-200 group cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
                           {tableData.map((row: TableData, index: number) => (

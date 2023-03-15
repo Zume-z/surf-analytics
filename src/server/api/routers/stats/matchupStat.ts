@@ -128,10 +128,10 @@ const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof matchup
 
   // DELETE LATER
   if (!surferAHd && surferBHd) {
-    surferAHd = Math.abs(surferBHd)
+    surferAHd = surferBHd < 0 ? Math.abs(surferBHd) : -Math.abs(surferBHd)
   }
   if (!surferBHd && surferAHd) {
-    surferBHd = -Math.abs(surferAHd)
+    surferBHd = surferAHd < 0 ? Math.abs(surferAHd) : -Math.abs(surferAHd)
   }
 
   return { label: 'Heat Total Differential', surferA: queryRound(surferAHd), surferB: queryRound(surferBHd) }
