@@ -13,12 +13,12 @@ import { shortEventAddress } from '@/utils/format/shortEventAddress'
 import { breakPoint } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 
-export interface SliderEvents {
+export interface SliderEventProps {
   events: any
   loading?: boolean
 }
 
-export default function ({ events, loading }: SliderEvents) {
+export default function ({ events, loading }: SliderEventProps) {
   const router = useRouter()
   const [isShown, setIsShown] = useState(false)
   // const [sliderEnd, setSliderEnd] = useState(false)

@@ -2,8 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import Header from './NavBar'
 import SubHeader, { SubHeaderProps } from './SubHeader'
-import SliderHeader, { SliderHeaderProps } from './SliderEvents'
-import { Stats } from '@/utils/format/subHeaderStats'
+import SliderEvents, { SliderEventProps } from './SliderEvents'
 
 interface LayoutProps {
   title?: string
@@ -11,7 +10,7 @@ interface LayoutProps {
   subHeader?: SubHeaderProps
   subheaderLoading?: boolean
   subHeaderStats?: any
-  slider?: SliderHeaderProps
+  slider?: SliderEventProps
 }
 
 export default function Layout({ title, children, slider, subHeader }: LayoutProps) {
@@ -23,7 +22,7 @@ export default function Layout({ title, children, slider, subHeader }: LayoutPro
       </Head>
       <Header />
       {subHeader && <SubHeader subHeaderData={subHeader.subHeaderData} stats={subHeader.stats} statsLoading={subHeader.statsLoading} />}
-      {slider && <SliderHeader events={slider.events} loading={slider.loading} />}
+      {slider && <SliderEvents events={slider.events} loading={slider.loading} />}
       <div>
         <main className="mx-auto max-w-7xl px-4 md:px-16  ">{children}</main>
       </div>

@@ -21,6 +21,7 @@ export interface SubheaderData {
 export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps) {
   const router = useRouter()
   const [showStats, setShowStats] = useState(false)
+  const [hoverStats, setHoverStats] = useState(false)
 
   const [sliderEnd, setSliderEnd] = useState(false)
   const [sliderStart, setSliderStart] = useState(true)
@@ -149,14 +150,12 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
       </div>
 
       {/* DESKTOP > SM */}
-      {/* onMouseLeave={() => !statsLoading && setShowStats(false)} */}
-      {/* onMouseEnter={() => !statsLoading && setShowStats(true)} */}
-      <div className="hidden w-full sm:block" >
+      <div className="hidden w-full sm:block">
         <div className="flex items-center justify-center">
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" >
+                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab  && setShowStats(true)} onMouseLeave={() => !statsLoading && tab.primaryTab && setShowStats(false)}>
                   {tab.content}
                 </div>
               ))}
