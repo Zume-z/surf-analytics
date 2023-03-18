@@ -13,6 +13,7 @@ export interface TableData {
   content: (item: any) => JSX.Element
   loader?: JSX.Element
   className?: string
+  cutOff?: (item: any) => boolean
 }
 
 export default function Table({ title, tableData, items, handleSelection, loading, className }: TableProps) {
@@ -26,7 +27,7 @@ export default function Table({ title, tableData, items, handleSelection, loadin
       {title && <div className="mb-4 block text-center font-semibold text-gray-700 sm:hidden ">{title}</div>}
       <div className="rounded-md bg-white">
         <div className="flex h-min flex-col">
-          <div className=" -mx-4 overflow-x-auto scrollbar-none sm:shadow-md border-b sm:border-none sm:mx-0">
+          <div className=" scrollbar-none -mx-4 overflow-x-auto border-b sm:mx-0 sm:border-none sm:shadow-md">
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden ">
                 {!loading && (
@@ -42,7 +43,7 @@ export default function Table({ title, tableData, items, handleSelection, loadin
                     </thead>
                     <tbody className="divide-y  divide-gray-200 bg-white  ">
                       {items.map((item: any, i: number) => (
-                        <tr className="transition-200 group cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                        <tr className="transition-200 group relative cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
                           {tableData.map((row: TableData, index: number) => (
                             <td key={index} className={`${tableRow} ${row.className}`}>
                               {row.content(item)}

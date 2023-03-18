@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Pagination, Navigation } from 'swiper'
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
-import { ChevronDownIcon, XIcon } from '@heroicons/react/outline'
-import { ChevronLeftIcon, CornersIcon } from '@radix-ui/react-icons'
+import { ChevronDownIcon, ChevronLeftIcon, XIcon } from '@heroicons/react/outline'
+import { CornersIcon } from '@radix-ui/react-icons'
 
 export interface SubHeaderProps {
   subHeaderData: SubheaderData[]
   stats?: any
   statsLoading?: boolean
+  buttonBack?: JSX.Element
 }
 
 export interface SubheaderData {
@@ -18,7 +19,7 @@ export interface SubheaderData {
   content: JSX.Element
 }
 
-export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps) {
+export default function ({ subHeaderData, stats, statsLoading, buttonBack }: SubHeaderProps) {
   const router = useRouter()
   const [showStats, setShowStats] = useState(false)
   const [hoverStats, setHoverStats] = useState(false)
@@ -55,6 +56,7 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
 
   const statSlider = (statsBody: any) => {
     if (statsBody == undefined) return
+
     return (
       <div className="flex w-full py-4 text-sm sm:py-6">
         <Swiper
@@ -102,8 +104,9 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
           <div>{primaryTab ? primaryTab.content : null}</div>
         </div>
 
-        <div className={`flex whitespace-nowrap border-t bg-white text-xs `}>
-          <div className={`${subtabs.length < 2 ? '-mr-[36px] items-center justify-center ' : ''} scrollbar-none flex w-full max-w-screen-md space-x-2 overflow-scroll whitespace-nowrap pl-2  text-xs `}>
+        <div className={`relative flex whitespace-nowrap border-t bg-white text-xs`}>
+          {buttonBack && <div>{buttonBack}</div>}
+          <div className={`scrollbar-none -ml-[5px]  flex w-full max-w-screen-md items-center justify-center space-x-2 overflow-scroll whitespace-nowrap pl-2  text-xs `}>
             {subtabs.map((tab: any, index: number) => (
               <div key={index} className="flex h-full cursor-pointer items-center justify-center  first:border-l-transparent  active:scale-[0.98]">
                 <div>{tab.content}</div>
@@ -112,22 +115,22 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
           </div>
 
           {!statsLoading && (
-            <div className="transition-200  flex  w-10 cursor-pointer  justify-center bg-white text-gray-500 hover-mod:hover:text-navy">
+            <div className="transition-200  absolute right-0 h-full cursor-pointer justify-center  bg-white px-3 text-gray-500 hover-mod:hover:text-navy">
               {showStats ? (
                 <div className="flex h-full items-center " onClick={() => setShowStats(!showStats)}>
-                  <XIcon height={22} />{' '}
+                  <XIcon height={20} />
                 </div>
               ) : (
                 <div className="flex h-full items-center " onClick={() => setShowStats(!showStats)}>
-                  <ChevronDownIcon height={22} />
+                  <ChevronDownIcon height={20} />
                 </div>
               )}
             </div>
           )}
           {statsLoading && (
-            <div className="transition-200  flex  w-10 cursor-pointer  justify-center bg-white text-gray-300">
+            <div className="transition-200  absolute right-0 h-full cursor-pointer justify-center  bg-white px-3 text-gray-300">
               <div className="flex h-full items-center ">
-                <ChevronDownIcon height={22} />
+                <ChevronDownIcon height={20} />
               </div>
             </div>
           )}
@@ -135,12 +138,22 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
 
         {/* MOBILE: STATS */}
         {showStats && (
-          <div className="absolute w-full border-b bg-white shadow-sm">
-            <div className="flex justify-center ">
-              <div className="flex w-full items-center border-t">{statSlider(stats)}</div>
+          <div className="absolute h-screen w-full border-t border-b   bg-white shadow-sm sm:h-full">
+            <div className="mx-8 flex-col justify-center  text-sm ">
+              {stats.map((Column: any, i: number) => (
+                <div key={i} className="w-full border-b py-4 last: ">
+                  {Column?.map((stat: any, i: number) => (
+                    <div key={i} className="flex w-full  justify-between  py-1">
+                      <div className="whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
+                      {stat.subValue && <div className="text-gray-500">{stat.subValue}</div>}
+                      <div> {stat.value}</div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
             <div className=" flex items-center justify-center  p-1  ">
-              <div onClick={() => handleSelection(routerExample)} className="transition-200 -mt-3 mb-1 flex cursor-pointer space-x-1 rounded px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white">
+              <div onClick={() => handleSelection(routerExample)} className="transition-200 -mt-3.5 flex cursor-pointer space-x-1 rounded bg-white px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white">
                 <CornersIcon />
                 <div>VIEW MORE</div>
               </div>
@@ -155,7 +168,7 @@ export default function ({ subHeaderData, stats, statsLoading }: SubHeaderProps)
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab  && setShowStats(true)} onMouseLeave={() => !statsLoading && tab.primaryTab && setShowStats(false)}>
+                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)} onMouseLeave={() => !statsLoading && tab.primaryTab && setShowStats(false)}>
                   {tab.content}
                 </div>
               ))}

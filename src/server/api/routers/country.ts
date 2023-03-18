@@ -6,7 +6,7 @@ import { GENDER, SORTDIR, STATUS } from '@/utils/enums'
 export const CountrySchema = z.object({
   countrySlug: z.string().optional(),
   surferYear: z.number().min(1900).max(2100).optional(),
-  
+
   eventYear: z.number().min(1900).max(2100).optional(),
   gender: z.enum(GENDER).optional(),
   eventStaus: z.enum(STATUS).optional(),
@@ -15,7 +15,6 @@ export const CountrySchema = z.object({
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
-
 })
 
 export const countryRouter = createTRPCRouter({
@@ -40,6 +39,32 @@ export const countryRouter = createTRPCRouter({
       orderBy: {
         name: 'asc',
       },
+      distinct: ['id'],
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!country) throw new TRPCError({ code: 'NOT_FOUND' })
+    return country
+  }),
+
+  getOptionsBySurfer: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
+    const country = ctx.prisma.country.findMany({
+      where: {
+        surfers: {
+          some: {
+            tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } },
+            eventResults: { some: { eventSlug: input.surferEventSlug } },
+          },
+        },
+      },
+      select: {
+        name: true,
+        slug: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      distinct: ['id'],
       take: input?.itemsPerPage,
       skip: input?.offset,
     })
@@ -50,7 +75,7 @@ export const countryRouter = createTRPCRouter({
   getManyByEvent: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
     const country = ctx.prisma.country.findMany({
       where: {
-        events: { some: { year: input.eventYear, tour: { gender: input.gender } } },
+        events: { some: { tour: { gender: input.gender, year: input.eventYear } } },
       },
       orderBy: {
         name: 'asc',
@@ -121,7 +146,6 @@ export const countryRouter = createTRPCRouter({
     return country
   }),
 
-
   getOneSurfers: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
     const country = ctx.prisma.country.findUniqueOrThrow({
       where: { slug: input.countrySlug },
@@ -139,7 +163,6 @@ export const countryRouter = createTRPCRouter({
     })
     return country
   }),
-
 
   // export const eventRouter = createTRPCRouter({
   //   getMany: publicProcedure.input(EventSchema).query(({ ctx, input }) => {

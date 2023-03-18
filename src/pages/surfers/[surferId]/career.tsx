@@ -1,7 +1,8 @@
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
-import { breakPoint } from '@/utils/constants'
+import { BREAKPOINT } from '@/utils/constants'
+import SubNavbar from '@/components/SubNavbar'
 import { windowSize } from '@/utils/windowSize'
 import Table, { TableData } from '@/components/Table'
 import { Surfer, TourResult } from '@/utils/interfaces'
@@ -12,7 +13,6 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TourResultRank from '@/components/tableComponents/TableTourResultRank'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TourResultPoints from '@/components/tableComponents/TableTourResultPoints'
-import SubNavbar from '@/components/SubNavbar'
 
 export default function SurferCareer() {
   const router = useRouter()
@@ -22,8 +22,16 @@ export default function SurferCareer() {
   const onYearSelect = (item: TourResult) => !item.tour.canceled && item.tour.year >= 2010 && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
 
   const subHeaderData = [
-    { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
-    { content: <SubHeaderItem label="career" value={surferYearSpan(tourResultQuery.data)} active={true} noBorder={true} /> },
+    { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
+    { content: <SubHeaderItem label="career" value={surferYearSpan(tourResultQuery.data)} subvalue={'Career'} active={true} /> },
+    { content: <SubHeaderItem className='sm:hidden block' label="Events" value={'-'} subvalue={'Events'} active={false} loading={tourResultQuery.isLoading} routePath={{ pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: tourResultQuery.data?.map((item: any) => item.tour.year)[0] } }}  /> }, //prettier-ignore
+    { content: <SubHeaderItem className='sm:hidden block'label="Locations" value={'-'} subvalue={'Locations'} active={false} loading={tourResultQuery.isLoading} routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } }} /> }, //prettier-ignore
+  ]
+
+  const subNavItems = [
+    { label: 'Career', active: true },
+    { label: 'Events', active: false, router: { pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: tourResultQuery.data?.map((item: any) => item.tour.year)[0] } } },
+    { label: 'Locations', active: false, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } } },
   ]
 
   const tableData: TableData[] = [
@@ -32,17 +40,11 @@ export default function SurferCareer() {
     { name: 'Points', id: 'points', className: 'sm:w-auto w-px', content: (item: TourResult) => <TourResultPoints tourResult={item} /> },
     { name: '', id: 'link', className: `w-px`, content: (item: TourResult) => <TableLink label="View Events" canceled={item.tour.canceled} nolinkParam={item.tour.year < 2010} /> },
   ]
-  if (windowSize().width! < breakPoint.sm) tableData.pop()
-
-  const subNavItems = [
-    { label: 'Career', active: true },
-    { label: 'Events', active: false, router: { pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: tourResultQuery.data?.map((item: any) => item.tour.year)[0] } } },
-    { label: 'Locations', active: false, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } } },
-  ]
+  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
     <Layout title={tourResultQuery.data?.[0]?.surfer.name} subHeader={{ subHeaderData: subHeaderData, stats: surferCareerStats(surferStatQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined), statsLoading: surferStatQuery.isLoading }}>
-      {/* <SubNavbar items={subNavItems} className="hidden sm:block" /> */}
+      <SubNavbar items={subNavItems} className="hidden sm:block" />
       <Table tableData={tableData} items={tourResultQuery.data || []} handleSelection={onYearSelect} loading={tourResultQuery.isLoading} />
     </Layout>
   )

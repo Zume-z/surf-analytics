@@ -13,7 +13,7 @@ import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { removeById } from '@/utils/format/removeById'
 import { EventSchema } from '@/server/api/routers/event'
-import { breakPoint, genderOptions } from '@/utils/constants'
+import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
@@ -54,14 +54,14 @@ export default function Events() {
     { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
     { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
   ]
-  if (windowSize().width! < breakPoint.lg) removeById(tableData, 'winner')
-  if (windowSize().width! < breakPoint.md) tableData.pop()
+  if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
+  if (windowSize().width! < BREAKPOINT.md) tableData.pop()
 
   return (
     <Layout title={'Events'}>
       <h1 className="py-8 text-center text-3xl font-semibold">Events</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={genderOptions} loading={yearQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={yearQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
         <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>

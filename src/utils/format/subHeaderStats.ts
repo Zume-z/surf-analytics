@@ -1,6 +1,5 @@
 import { Surfer } from '../interfaces'
-import { calcAge, dobFormat, getAgeDob,  } from './calcAge';
-
+import { calcAge, dobFormat, getAgeDob } from './calcAge'
 
 export interface Stats {
   surferRank?: { label: string; value: string | number }
@@ -47,7 +46,7 @@ export const surferCareerStats = (stats?: Stats, surfer?: Surfer) => {
 
   const { dob, heightCm, weightKg, stance, hometown } = surfer
   // CHANGE FORMAT OF DOB
-  
+
   const surferStance = { label: 'Stance', value: stance ? stance.charAt(0) + stance.slice(1).toLocaleLowerCase() : '-' }
   const surferHeight = heightCm ? { label: 'Height', value: heightCm + 'cm', subValue: Math.floor(heightCm / 30.48) + "'" + Math.floor((heightCm % 30.48) / 2.54) + '"' } : { label: 'Height', value: '-' } //prettier-ignore
   const surferWeight = weightKg ? { label: 'Weight', value: weightKg + 'kg', subValue: Math.floor(weightKg * 2.20462) + 'lbs' } : { label: 'Weight', value: '-' }
@@ -121,3 +120,27 @@ export const countryEventStats = (stats?: Stats) => {
   const col3 = [totalWaves, avgWaveScore, avgCountedWaveScore, excellentWaves]
   return [col1, col2, col3]
 }
+
+export const surferLocationStats = (stats?: Stats) => {
+  if (stats == undefined) return
+  const { totalEvents, eventWins, bestResult, avgResult, excellentHeats, totalHeats, heatWins, avgHeatTotal, totalWaves, avgWaveScore, avgCountedWaveScore, excellentWaves } = stats
+  const col1 = [totalEvents, eventWins, bestResult, avgResult]
+  const col2 = [totalHeats, heatWins, excellentHeats, avgHeatTotal]
+  const col3 = [totalWaves, excellentWaves, avgWaveScore, avgCountedWaveScore]
+  return [col1, col2, col3]
+}
+
+// ...(await totalEvents(ctx, input)),
+// ...(await eventWins(ctx, input)),
+// ...(await bestResult(ctx, input)),
+// ...(await avgResult(ctx, input)),
+
+// ...(await totalHeats(ctx, input)),
+// ...(await heatWins(ctx, input)),
+// ...(await excellentHeats(ctx, input)),
+// ...(await avgHeatTotal(ctx, input)),
+
+// ...(await totalWaves(ctx, input)),
+// ...(await excellentWaves(ctx, input)),
+// ...(await avgWaveScore(ctx, input)),
+// ...(await avgCountedWaveScore(ctx, input)),

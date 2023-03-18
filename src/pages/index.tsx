@@ -1,21 +1,21 @@
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
+import Table from '@/components/Table'
 import Layout from '@/components/Layout'
 import CardSurfer from '@/components/CardSurfer'
-import Table, { TableData } from '@/components/Table'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 
 export default function Home() {
   const router = useRouter()
   const currentYear = new Date().getFullYear()
-  const events = api.event.getMany.useQuery({ year: currentYear, linkedEvent: 0, sortStartDate: 'asc' })
-  const mensTourResults = api.tourResult.getMany.useQuery({ year: currentYear, gender: 'MALE', sortSurferRank: 'asc', itemsPerPage: 10 })
-  const womensTourResults = api.tourResult.getMany.useQuery({ year: currentYear, gender: 'FEMALE', sortSurferRank: 'asc', itemsPerPage: 10 })
+  const events = api.event.getManyIndex.useQuery({ year: currentYear, linkedEvent: 0, sortStartDate: 'asc' })
+  const mensTourResults = api.tourResult.getManyIndex.useQuery({ year: currentYear, gender: 'MALE', sortSurferRank: 'asc', itemsPerPage: 10 })
+  const womensTourResults = api.tourResult.getManyIndex.useQuery({ year: currentYear, gender: 'FEMALE', sortSurferRank: 'asc', itemsPerPage: 10 })
   const handleSelection = (item: any) => router.replace({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
 
   const tableData = (gender: string) => {
     return [
-      { name: `${gender} championship tour`, id: 'name', content: (item: any) => <CardSurfer surfer={item.surfer} place={item.surferRank} />, loader: <CardSurferLoader /> },
+      { name: `${gender} championship tour`, id: 'name', content: (item: any) => <CardSurfer surfer={item.surfer} place={item.surferRank} showFirst={true} />, loader: <CardSurferLoader /> },
       { name: 'Points', id: 'points', content: (item: any) => <div className="table-item">{item.surferPoints.toLocaleString('en-US')}</div> },
     ]
   }
@@ -29,3 +29,6 @@ export default function Home() {
     </Layout>
   )
 }
+
+// Time 268
+// First time = 1159

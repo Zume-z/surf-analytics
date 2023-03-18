@@ -8,6 +8,9 @@ import { eventWaveStats } from '@/utils/format/subHeaderStats'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
+import { ChevronLeftIcon } from '@heroicons/react/outline'
+import ButtonBack from '@/components/ButtonBack'
+import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
 
 export default function EventWaves() {
   const router = useRouter()
@@ -27,13 +30,22 @@ export default function EventWaves() {
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
-    { content: <SubHeaderItem label="year" value={eventQuery.data?.year} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
-    { content: <SubHeaderItem label="round" value={heatRound} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
-    { content: <SubHeaderItem label="heat" value={leadingZero(heatNumber)} subvalue={`Heat ${leadingZero(heatNumber)}`} active={true} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.year} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block" label="round" value={heatRound} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="" label="heat" value={leadingZero(heatNumber)} subvalue={` ${heatRound} · Heat ${leadingZero(heatNumber)}`} subInactive={true} active={true} noBorder={true} loading={eventQuery.isLoading} /> },
   ]
 
   return (
-    <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventWaveStats(heatStatQuery.data), statsLoading: heatStatQuery.isLoading }}>
+    <Layout
+      title={eventQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: eventWaveStats(heatStatQuery.data),
+        statsLoading: heatStatQuery.isLoading,
+        buttonBack: <SubHeaderButtonBack label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: router.query.eventId } }} />,
+      }}
+    >
+      <ButtonBack className="hidden sm:block" label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} />
       <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} />
     </Layout>
   )

@@ -10,7 +10,7 @@ import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
 import { waitingPeriod } from '@/utils/format/getWaitingPeriod'
 import { shortEventAddress } from '@/utils/format/shortEventAddress'
-import { breakPoint } from '@/utils/constants'
+import { BREAKPOINT } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 
 export interface SliderEventProps {
@@ -24,12 +24,12 @@ export default function ({ events, loading }: SliderEventProps) {
   // const [sliderEnd, setSliderEnd] = useState(false)
   // const [sliderStart, setSliderStart] = useState(true)
 
-  const SwiperButton = ({ className, dir }: { className?: string, dir: 'NEXT' | 'PREV' }) => {
+  const SwiperButton = ({ className, dir }: { className?: string; dir: 'NEXT' | 'PREV' }) => {
     const swiper = useSwiper()
     return (
-      <div className={`slider-btn  items-center justify-center ${className} ${dir == 'NEXT' ? 'right-0' : 'left-0'} ${windowSize().width! < breakPoint.sm || isShown ? 'bg-opacity-90' : ''} `}>
+      <div className={`slider-btn  items-center justify-center ${className} ${dir == 'NEXT' ? 'right-0' : 'left-0'} ${windowSize().width! < BREAKPOINT.sm || isShown ? 'bg-opacity-90' : ''} `}>
         <AnimatePresence>
-          {(windowSize().width! < breakPoint.sm || isShown) && (
+          {(windowSize().width! < BREAKPOINT.sm || isShown) && (
             <motion.div className="h-full" key={'chevron'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <ChevronLeftIcon
                 className={`h-full w-8 ${dir == 'NEXT' && 'rotate-180'}`}
@@ -44,7 +44,6 @@ export default function ({ events, loading }: SliderEventProps) {
     )
   }
 
-  
   const loadingCards = [1, 2, 3, 4]
 
   return (
@@ -52,7 +51,6 @@ export default function ({ events, loading }: SliderEventProps) {
       <div className="w-full max-w-7xl justify-center">
         {!loading && (
           <Swiper
-
             freeMode={true}
             // initialSlide={2}
             modules={[Pagination, Navigation, FreeMode]}
@@ -72,8 +70,8 @@ export default function ({ events, loading }: SliderEventProps) {
 
             <div>
               <div>
-                {events.map((event: any) => (
-                  <SwiperSlide key={event.id} className="cursor-pointer py-2 px-4 sm:px-0" onClick={() => event.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })}>
+                {events.map((event: any, index: number) => (
+                  <SwiperSlide key={index} className="cursor-pointer py-2 px-4 sm:px-0" onClick={() => event.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })}>
                     <div className=" h-full border-r-2 border-gray-md px-10">
                       <div className="text-base font-semibold ">{event.name}</div>
                       <div className="flex items-center space-x-1.5 ">

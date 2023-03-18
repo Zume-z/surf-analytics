@@ -1,5 +1,5 @@
 import Image from 'next/legacy/image'
-import { breakPoint } from '@/utils/constants'
+import { BREAKPOINT } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 import TriangleFill from './icons/IconTriangleFill'
 import { twoDec } from '@/utils/format/roundTwoDec'
@@ -31,7 +31,7 @@ const Surfer = ({ heatResult }: { heatResult: any }) => {
       </div>
       <div className="sm:ml-2">
         <div className="hidden text-center text-gray-500 sm:block">{heatResult.surfer.name}</div>
-        <div className="block text-xs text-center text-gray-500 sm:hidden">{shortSurferName(heatResult.surfer.name)}</div>
+        <div className="block text-center text-xs text-gray-500 sm:hidden">{shortSurferName(heatResult.surfer.name)}</div>
         <div className="flex w-full items-center justify-center sm:justify-start">
           <div className={`pr-1 text-xs font-normal ${interference ? 'text-red-500' : 'text-gray-500'}`}>{twoDec(heatResult.heatTotal)}</div>
           {heatResult.interferenceOne && !heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleOutline className=" h-3 w-3 text-red-500 " />}
@@ -74,15 +74,15 @@ const Wave = ({ item, col }: { item: any; col: any }) => {
         <div className="flex w-full justify-center sm:justify-start">
           <div className="text-red-500 ">{item[col.key].waveScore}</div>
           {item[col.key].interference == 'PENALTYONE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">1</div>}
-          {item[col.key].interference == 'PENALTYONE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 1</div>}
+          {item[col.key].interference == 'PENALTYONE' && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 1</div>}
           {item[col.key].interference == 'PENALTYTWO' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">1</div>}
-          {item[col.key].interference == 'PENALTYTWO' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 2</div>}
+          {item[col.key].interference == 'PENALTYTWO' && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 2</div>}
           {item[col.key].interference == 'PENALTYTHREE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">1</div>}
-          {item[col.key].interference == 'PENALTYTHREE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 3</div>}
+          {item[col.key].interference == 'PENALTYTHREE' && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Interference Penalty 3</div>}
           {item[col.key].intPenalty == 'HALVED_ONE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
-          {item[col.key].intPenalty == 'HALVED_ONE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Halved </div>}
+          {item[col.key].intPenalty == 'HALVED_ONE' && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Halved </div>}
           {item[col.key].intPenalty && item[col.key].intPenalty != 'HALVED_ONE' && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] text-red-500 opacity-100 md:hover-mod:group-hover:opacity-0">2</div>}
-          {item[col.key].intPenalty && item[col.key].intPenalty != 'HALVED_ONE' && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Zeroed </div>}
+          {item[col.key].intPenalty && item[col.key].intPenalty != 'HALVED_ONE' && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full text-red-500 opacity-0 hover-mod:group-hover:opacity-100 ">· Score Zeroed </div>}
         </div>
       </div>
     )
@@ -92,7 +92,7 @@ const Wave = ({ item, col }: { item: any; col: any }) => {
         <div className="flex w-full justify-center sm:justify-start">
           <div className="">{twoDec(item[col.key].waveScore)}</div>
           {item[col.key].waveDirection && <div className="-mr-1.5 ml-0.5 -mt-1 text-[8px] opacity-100 md:hover-mod:group-hover:opacity-0">{item[col.key].waveDirection.charAt(0)}</div>}
-          {item[col.key].waveDirection && windowSize().width! > breakPoint.md && <div className="transition-200 ml-1 h-full opacity-0 hover-mod:group-hover:opacity-100 ">· {capitalizeFirst(item[col.key].waveDirection)}</div>}
+          {item[col.key].waveDirection && windowSize().width! > BREAKPOINT.md && <div className="transition-200 ml-1 h-full opacity-0 hover-mod:group-hover:opacity-100 ">· {capitalizeFirst(item[col.key].waveDirection)}</div>}
         </div>
       </div>
     )
@@ -111,11 +111,11 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
   const tableRow = tableSpacing + ' text-sm py-4'
 
   return (
-    <div className="flow-hidden mb-8 w-full rounded-md bg-white  sm:my-8">
+    <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
       <div className="flex h-min flex-col">
-        <div className="-mx-4 overflow-x-auto scrollbar-none scrollbar-none shadow-md md:mx-0">
+        <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden scrollbar-none">
+            <div className="scrollbar-none overflow-hidden">
               {!loading && (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-light text-gray-dark">
@@ -133,7 +133,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                       <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
                         {tableData.map((col: any, i: number) => (
                           <td key={i} className={tableRow}>
-                            {col.key == 'wave' && <div className='ml-3'> {item[col.key]} </div>}
+                            {col.key == 'wave' && <div className="ml-3"> {item[col.key]} </div>}
                             {item[col.key] != null && col.key != 'wave' && <Wave item={item} col={col} />}
                           </td>
                         ))}

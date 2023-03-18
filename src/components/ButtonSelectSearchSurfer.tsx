@@ -87,7 +87,7 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                       <Command.List>
                         {optionsFilter.map((option, i) => (
                           <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive group'}>
-                            <div>
+                            {/* <div>
                               <div className="py-1 sm:pr-4 ">
                                 <div className="flex items-center whitespace-nowrap text-sm">
                                   <div className={`transition-200 h-10 w-10 flex-shrink-0 rounded-full bg-gray-100 hover-mod:group-hover:bg-white`}>
@@ -98,6 +98,22 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                                     <div className="flex items-center space-x-1">
                                       <Image src={option.surfer.country.flagLink} width={16} height={11} />
                                       <div className=" text-gray-400 hover-mod:group-hover:text-gray-dark ">{option.surfer.country.name}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div> */}
+                            <div>
+                              <div className="min-w-[200px] ">
+                                <div className="flex items-center whitespace-nowrap text-sm">
+                                  <div className={`transition-200 h-8 w-8 flex-shrink-0 rounded-full bg-gray-100 hover-mod:group-hover:bg-white`}>
+                                    <Image src={option.surfer.profileImage} className="rounded-full" width={50} height={49} />
+                                  </div>
+                                  <div className="ml-2">
+                                    <div className="">{option.surfer.name}</div>
+                                    <div className="flex items-center space-x-1">
+                                      <Image src={option.surfer.country.flagLink} width={16} height={11} />
+                                      <div className=" text-gray-400 hover-mod:group-hover:text-gray-dark text-xs ">{option.surfer.country.name}</div>
                                     </div>
                                   </div>
                                 </div>
@@ -113,11 +129,11 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
             </div>
           )}
           {value && (
-            <div className={`group my-1 rounded-md border border-gray-100 bg-white py-1 shadow  sm:px-4 ${className}`}>
+            <div className={`group my-1 rounded-md border  border-gray-100 bg-white py-1 shadow  sm:px-4 ${className}`}>
               <button className=" relative z-40 flex items-center whitespace-nowrap  outline-none" onClick={() => (setValue(null), setBtnOpen(false))}>
                 {selectedItem && <Surfer surfer={selectedItem.surfer} />}
-                <div className="transition-200 absolute -top-3 -right-2 rounded-full border bg-white p-0.5 text-gray-400 shadow sm:-right-6 hover-mod:group-hover:bg-blue-base hover-mod:group-hover:text-white">
-                  <Cross2Icon className="h-4 w-4" />
+                <div className="transition-200  absolute -top-3 -right-2 block rounded-full  border bg-white p-0.5 text-gray-400 shadow sm:-right-6 sm:hidden hover-mod:group-hover:block ">
+                  <Cross2Icon className="h-4 w-4 " />
                 </div>
               </button>
             </div>

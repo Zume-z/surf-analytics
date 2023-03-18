@@ -54,6 +54,6 @@ export const locationRouter = createTRPCRouter({
   }),
 
   getName: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
-    return ctx.prisma.location.findUniqueOrThrow({ where: { slug: input.slug }, select: { name: true } })
+    return ctx.prisma.location.findUniqueOrThrow({ where: { slug: input.slug }, select: { name: true, eventName: true } })
   }),
 })

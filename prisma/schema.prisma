@@ -46,7 +46,11 @@ model Tour {
   events      Event[]
   tourType    TourType
   canceled    Boolean?
+
+  @@index([gender, year])
 }
+
+
 
 model TourResult {
   surferRank   Int
@@ -60,6 +64,9 @@ model TourResult {
   @@id([tourSlug, surferSlug])
   @@index([surferSlug])
   @@index([tourSlug])
+
+
+  @@index([surferRank(sort: Asc)])
 }
 
 model Event {
@@ -235,7 +242,7 @@ model Location {
   id          String  @id @default(uuid())
   slug        String  @unique
   name        String
-  eventName   String? 
+  eventName   String?
   events      Event[]
   countrySlug String
   country     Country @relation(fields: [countrySlug], references: [slug])

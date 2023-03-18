@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { api } from '@/utils/api'
-import Table, { TableData } from '@/components/Table'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -9,17 +8,18 @@ import SubNavbar from '@/components/SubNavbar'
 import FilterBar from '@/components/FilterBar'
 import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
+import Table, { TableData } from '@/components/Table'
 import { SubheaderData } from '@/components/SubHeader'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { Country, TourResult } from '@/utils/interfaces'
 import { genderFormat } from '@/utils/format/genderFormat'
-import { breakPoint, genderOptions } from '@/utils/constants'
+import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
+import { countrySurferYearSpan } from '@/utils/format/getYearSpan'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import { countrySurferStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
-import { countrySurferYearSpan, surferYearSpan } from '@/utils/format/getYearSpan'
 
 export default function CountrySurfers() {
   const router = useRouter()
@@ -55,7 +55,7 @@ export default function CountrySurfers() {
     { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{year && item.surferPoints ? item.surferPoints.toLocaleString('en-US') : '-'}</div> },
     { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
   ]
-  if (windowSize().width! < breakPoint.sm) tableData.pop()
+  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   const getSubHeaderData = () => {
     if (tourResultQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
@@ -76,7 +76,7 @@ export default function CountrySurfers() {
     <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countrySurferStats(countrySurferStatQuery.data), statsLoading: countrySurferStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="GENDER" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="GENDER" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
       </FilterBar>
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />

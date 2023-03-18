@@ -39,10 +39,9 @@ export const eventResultRouter = createTRPCRouter({
         surfer: surferInputs,
         event: {
           slug: input.eventSlug,
-          year: input.year,
           location: { slug: input.locationSlug },
           country: { slug: input.countrySlug },
-          tour: { slug: input.tourSlug },
+          tour: { slug: input.tourSlug, year: input.year },
         },
         injured: includeInjured,
         withdrawn: includeWithdrawn,

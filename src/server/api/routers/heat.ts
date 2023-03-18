@@ -39,9 +39,9 @@ export const heatRouter = createTRPCRouter({
         slug: input.heatSlug,
         event: {
           slug: input.eventSlug,
-          year: input.year,
+
           country: { slug: input.countrySlug },
-          tour: { slug: input.tourSlug },
+          tour: { slug: input.tourSlug, year: input.year },
         },
         heatResults: { some: { surfer: { slug: input.surferSlug, gender: input.gender } } },
         break: { slug: input.breakSlug },
@@ -66,7 +66,7 @@ export const heatRouter = createTRPCRouter({
     const heat = ctx.prisma.heat.findMany({
       where: {
         slug: input.heatSlug,
-        
+
         event: {
           slug: input.eventSlug,
           year: input.year,

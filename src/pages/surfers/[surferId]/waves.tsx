@@ -4,10 +4,12 @@ import Layout from '@/components/Layout'
 import { Surfer, Wave } from '@/utils/interfaces'
 import TableWaves from '@/components/TableWaves'
 import { leadingZero } from '@/utils/format/leadingZero'
+import ButtonBack from '@/components/ButtonBack'
 import { surferWaveStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
+import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
 
 export default function SurferWaves() {
   const router = useRouter()
@@ -27,15 +29,24 @@ export default function SurferWaves() {
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
 
   const subHeaderData = [
-    { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true }, //prettier-ignore
-    { content: <SubHeaderItem label="year" value={year} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: router.query.surferId } }} loading={surferQuery.isLoading} /> },
-    { content: <SubHeaderItem label="event" value={eventQuery.data?.name} routePath={{ pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: year }  }}  loading={surferQuery.isLoading}/> }, //prettier-ignore
-    { content: <SubHeaderItem label="round" value={heatRound} routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }}  loading={surferQuery.isLoading}/> }, //prettier-ignore
-    { content: <SubHeaderItem label="heat" value={leadingZero(heatNumber)} subvalue={`Heat ${leadingZero(heatNumber)}`} active={true} loading={surferQuery.isLoading} /> },
+    { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} subData={`${year} ${!eventQuery.isLoading ? eventQuery.data?.name : ''}`} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true }, //prettier-ignore
+    { content: <SubHeaderItem className="hidden sm:block" label="year" value={year} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: router.query.surferId } }} loading={surferQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block"label="event" value={eventQuery.data?.name} routePath={{ pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: year }  }}  loading={surferQuery.isLoading}/> }, //prettier-ignore
+    { content: <SubHeaderItem className="hidden sm:block" label="round" value={heatRound} routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }}  loading={surferQuery.isLoading}/> }, //prettier-ignore
+    { content: <SubHeaderItem label="heat" value={leadingZero(heatNumber)} subvalue={` ${heatRound} · Heat ${leadingZero(heatNumber)}`} active={true} subInactive={true} noBorder={true} loading={surferQuery.isLoading} /> },
   ]
 
   return (
-    <Layout title={surferQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: surferWaveStats(heatResultStats.data), statsLoading: heatResultStats.isLoading }}>
+    <Layout
+      title={surferQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: surferWaveStats(heatResultStats.data),
+        statsLoading: heatResultStats.isLoading,
+        buttonBack: <SubHeaderButtonBack label="Heats" routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }} />,
+      }}
+    >
+      <ButtonBack className="hidden sm:block" label={eventQuery.data?.name} routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }} />
       <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} />
     </Layout>
   )

@@ -18,7 +18,7 @@ import ButtonSelectX from '@/components/ButtonSelectX'
 import { EventSchema } from '@/server/api/routers/event'
 import { genderFormat } from '@/utils/format/genderFormat'
 import { eventYearSpan } from '@/utils/format/getYearSpan'
-import { breakPoint, genderOptions } from '@/utils/constants'
+import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { countryEventStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
@@ -51,8 +51,8 @@ export default function CountryEvents() {
     { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
     { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
   ]
-  if (windowSize().width! < breakPoint.lg) removeById(tableData, 'winner')
-  if (windowSize().width! < breakPoint.md) tableData.pop()
+  if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
+  if (windowSize().width! < BREAKPOINT.md) tableData.pop()
 
   const getSubHeaderData = () => {
     if (countryQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
@@ -78,7 +78,7 @@ export default function CountryEvents() {
     <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countryEventStats(countryEventStatQuery.data), statsLoading: countryEventStatQuery.isLoading }}>
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={genderOptions} loading={yearOptions ? false : true} loadingText="Gender" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
       </FilterBar>
       <Table tableData={tableData} items={countryQuery.data?.events || []} loading={countryQuery.isLoading} handleSelection={onSelectEvent} />

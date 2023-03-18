@@ -13,10 +13,10 @@ export default function CardEvent({ event, showYear }: { event: Event; showYear?
         <div className="text-gray-dark ">{windowSize().width! > 640 ? event.address : shortEventAddress(event.address)}</div>
         {showYear ? (
           <div className=" text-gray-dark">
-            {genderFormat(event.tour.gender)} · {event.year}
+            {genderFormat(event.tour.gender)} · {event.tour.year}
           </div>
         ) : (
-          <div className=" flex space-x-2 text-gray-dark">Event {leadingZero(event.eventRound)}</div>
+          <div className="flex space-x-2 text-gray-dark">Event {leadingZero(event.eventRound)}</div>
         )}
       </div>
     </div>

@@ -11,7 +11,7 @@ export const TourResultSchema = z.object({
   countrySlug: z.string().optional(),
 
   // Sort
-  sortSurferRank: z.enum(SORTDIR).optional(), 
+  sortSurferRank: z.enum(SORTDIR).optional(),
   sortYear: z.enum(SORTDIR).optional(),
 
   // Distinct
@@ -46,6 +46,36 @@ export const tourResultRouter = createTRPCRouter({
       include: {
         surfer: { include: { country: true } },
         tour: true,
+      },
+      orderBy: {
+        surferRank: input?.sortSurferRank,
+        tour: yearSort,
+      },
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!tourResult) throw new TRPCError({ code: 'NOT_FOUND' })
+    return tourResult
+  }),
+
+  getManyIndex: publicProcedure.input(TourResultSchema).query(({ ctx, input }) => {
+    const yearSort = input.sortYear ? { year: input.sortYear } : undefined
+    const tourResult = ctx.prisma.tourResult.findMany({
+      where: {
+        surfer: {
+          slug: input.surferSlug,
+          countrySlug: input.countrySlug,
+        },
+        tour: {
+          slug: input?.tourSlug,
+          year: input?.year,
+          gender: input?.gender,
+        },
+      },
+      select: {
+        surferPoints: true,
+        surferRank: true,
+        surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } },
       },
       orderBy: {
         surferRank: input?.sortSurferRank,

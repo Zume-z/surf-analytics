@@ -202,6 +202,16 @@ const prizeMoney = async (ctx: Context, input: z.infer<typeof surferStatSchema>)
   return { prizeMoney: { label: 'Career Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }
 
+// COMBINED FUNCTIONS
+// ...(await surferRank_surferPoints(ctx, input)),
+// ...(await worldTitles(ctx, input)),
+// ...(await totalEvents(ctx, input)),
+// ...(await eventWins(ctx, input)),
+// ...(await bestResult(ctx, input)),
+// ...(await avgResult(ctx, input)),
+// ...(await prizeMoney(ctx, input)),
+
+
 // surfer
 // ---------------
 //   Average Season Finishing rank
