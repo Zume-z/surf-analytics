@@ -21,7 +21,7 @@ export default function SubHeaderSurfer({ surfer, routePath, subData, flagAlignB
       </div>
     )
 
-  const surferProfile = configSurferImage(surfer.profileImage, 200)
+  const surferProfile = configSurferImage(surfer.profileImage, 100)
   return (
     <div onClick={() => routePath && router.replace(routePath)} className="transition-200 group flex w-full cursor-pointer items-center space-x-2 whitespace-nowrap active:scale-[0.99] sm:pr-4 ">
       <div className="transition-200 mr-2 h-14 w-14 flex-shrink-0 rounded-full bg-slate-900  hover-mod:group-hover:bg-gray-100 ">

@@ -8,7 +8,7 @@ import { eventWaveStats } from '@/utils/format/subHeaderStats'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
-import { ChevronLeftIcon } from '@heroicons/react/outline'
+
 import ButtonBack from '@/components/ButtonBack'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
 
@@ -23,14 +23,14 @@ export default function EventWaves() {
     heatResults: heatQuery.data ? heatQuery.data.heatResults : [],
   }
 
+  const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
   const heatStatQuery = api.heatStat.getWaves.useQuery({ heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug })
-  const eventQuery: any = api.event.getOne.useQuery({ slug: eventId }, { enabled: !!eventId })
   const tableColumns = getWaveTableCol(filters.heatResults)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
-    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.year} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className="hidden sm:block" label="round" value={heatRound} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className="" label="heat" value={leadingZero(heatNumber)} subvalue={` ${heatRound} · Heat ${leadingZero(heatNumber)}`} subInactive={true} active={true} noBorder={true} loading={eventQuery.isLoading} /> },
   ]

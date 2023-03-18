@@ -10,21 +10,17 @@ import TableHeat from '@/components/TableHeat'
 import { Event, Heat } from '@/utils/interfaces'
 import { useQueryState } from 'next-usequerystate'
 import { HeatSchema } from '@/server/api/routers/heat'
-
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { eventResultStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFormat'
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function EventHeats() {
   const router = useRouter()
   const [surferSlug, setSurferSlug] = useQueryState('surfer')
   const [heatRound, setHeatRound] = useQueryState('heatRound')
-  const updateSurfer = React.useCallback(async (value: string | null) => {
-    await setSurferSlug(value)
-    await setHeatRound(null)
-  }, [])
+  const updateSurfer = React.useCallback(async (value: string | null) => (await setSurferSlug(value), await setHeatRound(null)), [])
 
   const filters: z.infer<typeof HeatSchema> = {
     sortRoundNumber: 'asc',
@@ -35,18 +31,12 @@ export default function EventHeats() {
   }
 
   const heatQuery = api.heat.getMany.useQuery(filters)
-  const eventQuery: any = api.event.getOne.useQuery({ slug: filters.eventSlug as string }, { enabled: !!filters.eventSlug })
+  const eventQuery: any = api.event.getSurferOptionsByEvent.useQuery({ slug: filters.eventSlug as string }, { enabled: !!filters.eventSlug })
   const surferQuery = api.surfer.getName.useQuery({ slug: filters.surferSlug }, { enabled: !!filters.surferSlug })
   const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: filters.eventSlug as string }, { enabled: !!filters.eventSlug })
   const tableDataRows = getHeatTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
-
-  const subNavItems = [
-    { label: 'Results', active: false, router: { pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } } },
-    { label: 'Heats', active: true },
-    { label: 'Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug, location: eventQuery.data?.locationSlug } } },
-  ]
 
   const surferOptions =
     eventQuery.data?.eventResults &&
@@ -54,6 +44,7 @@ export default function EventHeats() {
       return { label: eventResult.surfer.name, value: eventResult.surfer.slug }
     })
 
+  // Export to utils
   const getHeatRoundOptions = () => {
     if (heatQuery.isLoading) return undefined
     const heatRounds = heatQuery.data?.map((heat: any) => heat.heatRound)
@@ -76,6 +67,12 @@ export default function EventHeats() {
     if (!surferSlug && !heatRound) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="heats" value="All" subvalue="Heats" active={true} /> })
     return subHeaderData
   }
+
+  const subNavItems = [
+    { label: 'Results', active: false, router: { pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } } },
+    { label: 'Heats', active: true },
+    { label: 'Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug, location: eventQuery.data?.locationSlug } } },
+  ]
 
   return (
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: getSubheaderData(), stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>

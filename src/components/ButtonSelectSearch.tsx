@@ -37,7 +37,7 @@ export default function ButtonSelectSearch({ className, placeHolder, searchPlace
                   </Popover.Trigger>
                   <Popover.Content avoidCollisions={false} className="scrollbar-none z-40 -ml-2 max-h-60  overflow-auto rounded-md border border-gray-100 bg-white shadow " sideOffset={8} align="start">
                     <Command>
-                      <Command.Input autoFocus className=" border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
+                      <Command.Input className=" border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
                       <Command.List>
                         {options!.map((option, i) => (
                           <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive z-50'}>

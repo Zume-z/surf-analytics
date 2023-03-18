@@ -47,9 +47,51 @@ export const eventResultRouter = createTRPCRouter({
         withdrawn: includeWithdrawn,
         NOT: excludeNoPlace,
       },
-      include: {
-        event: { include: { tour: true } },
-        surfer: { include: { country: true } },
+      select: {
+        place: true,
+        points: true,
+        surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } },
+      },
+      orderBy: {
+        place: input?.sortPlace,
+        event: startDateSort,
+      },
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!eventResult) throw new TRPCError({ code: 'NOT_FOUND' })
+    return eventResult
+  }),
+
+  getManyBySurfer: publicProcedure.input(EventResultSchema).query(({ ctx, input }) => {
+    const includeInjured = input.excludeInjured ? false : undefined
+    const includeWithdrawn = input.excludeWithdrawn ? false : undefined
+    const excludeNoPlace = input.excludeNoPlace ? { place: 0 } : undefined
+    const startDateSort = input.sortStartDate ? { startDate: input.sortStartDate } : undefined
+    const surferInputs = input.surferSlug || input.gender || input.surferCountrySlug ? { slug: input.surferSlug, gender: input.gender, countrySlug: input.surferCountrySlug } : undefined // prettier-ignore
+    const eventResult = ctx.prisma.eventResult.findMany({
+      where: {
+        surfer: surferInputs,
+        event: {
+          slug: input.eventSlug,
+          location: { slug: input.locationSlug },
+          country: { slug: input.countrySlug },
+          tour: { slug: input.tourSlug, year: input.year },
+        },
+        injured: includeInjured,
+        withdrawn: includeWithdrawn,
+        NOT: excludeNoPlace,
+      },
+
+      select: {
+        throwaway: true,
+        wildCard: true,
+        injured: true,
+        withdrawn: true,
+        place: true,
+        points: true,
+        eventSlug: true,
+        event: { select: { slug: true, name: true, address: true, eventRound: true, tour: { select: { year: true } } } },
       },
       orderBy: {
         place: input?.sortPlace,

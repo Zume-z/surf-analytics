@@ -38,10 +38,10 @@ export default function CountrySurfers() {
   const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortYear: 'asc' }, { enabled: !!countryId })
   const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
   const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId })
-  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
-  const eventYearQuery = api.tour.getYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
+  const eventYearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
+  const yearQuery = api.tour.getSurferYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
-  if (tourResultQuery.data?.length === 0) setYear(year && yearQuery.data ? yearQuery.data[0]?.year! : null)
+  if (tourResultQuery.data?.length === 0) setYear(null)
 
   const subNavItems = [
     { label: 'Country', active: false, router: { pathname: '/country', query: {} } },

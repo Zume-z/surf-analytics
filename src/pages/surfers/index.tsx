@@ -38,10 +38,11 @@ export default function Surfers() {
     countrySlug: countrySlug || undefined,
   }
 
-  const tourResultQuery = api.tourResult.getManyIndex.useQuery(filters)
+  const tourResultQuery = api.tourResult.getMany.useQuery(filters)
   const countryQuery = api.country.getOptionsBySurfer.useQuery({ gender: filters.gender, surferYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
+  
   const tableData: TableData[] = [
     { name: `Championship Tour`, id: 'name', content: (item: TourResult) => <CardSurfer surfer={item.surfer} place={item.surferRank} showFirst={true} />, loader: <CardSurferLoader /> },
     { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{item.surferPoints.toLocaleString('en-US')}</div> },

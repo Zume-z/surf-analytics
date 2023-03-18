@@ -17,8 +17,8 @@ import SubNavbar from '@/components/SubNavbar'
 export default function SurferEvents() {
   const router = useRouter()
   const { surferId, year } = router.query as { surferId: string; year: string }
-  const surferQuery = api.surfer.getOne.useQuery({ slug: surferId }, { enabled: !!surferId })
-  const eventResultQuery = api.eventResult.getMany.useQuery({ surferSlug: surferId, year: Number(year), sortStartDate: 'asc' }, { enabled: !!surferId && !!year })
+  const surferQuery = api.surfer.getOneHeader.useQuery({ slug: surferId }, { enabled: !!surferId })
+  const eventResultQuery = api.eventResult.getManyBySurfer.useQuery({ surferSlug: surferId, year: Number(year), sortStartDate: 'asc' }, { enabled: !!surferId && !!year })
   const tourResultStatQuery = api.tourResultStat.getEvents.useQuery({ surferSlug: surferId, year: Number(year) }, { enabled: !!surferId && !!year })
   const onEventSelect = (item: EventResult) => !item.injured && !item.withdrawn && item.place != 0 && router.replace({ pathname: '/surfers/[surferId]/heats', query: { ...router.query, event: item.eventSlug } })
 
@@ -29,6 +29,12 @@ export default function SurferEvents() {
     { content: <SubHeaderItem className='sm:hidden block'label="Locations" value={'-'} loading={surferQuery.isLoading} subvalue={'Locations'} active={false} routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId,  year: year } }} /> }, //prettier-ignore
   ]
 
+  const subNavItems = [
+    { label: 'Career', active: false, router: { pathname: '/surfers/[surferId]/career', query: { surferId: surferId } } },
+    { label: 'Events', active: true },
+    { label: 'Locations', active: false, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId, year: year } } },
+  ]
+
   const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: EventResult) => <CardEvent event={item.event} />, loader: <CardEventLoader /> },
     { name: 'Place', id: 'place', content: (item: EventResult) => <TableEventResultPlace eventResult={item} /> },
@@ -37,12 +43,6 @@ export default function SurferEvents() {
     // { name: 'Beaten By', id: 'beaten-by', content: (item: EventResult) => <div className='table-item'>{item.knockedOutBy }</div> },
   ]
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
-
-  const subNavItems = [
-    { label: 'Career', active: false, router: { pathname: '/surfers/[surferId]/career', query: { surferId: surferId } } },
-    { label: 'Events', active: true },
-    { label: 'Locations', active: false, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId, year: year } } },
-  ]
 
   return (
     <Layout title={surferQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: surferEventStats(tourResultStatQuery.data), statsLoading: tourResultStatQuery.isLoading }}>

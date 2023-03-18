@@ -25,7 +25,7 @@ export const getHeatTableRows = (heats?: Heat[]) => {
 }
 
 // Blocks
-export const getHeatTableBlocks = (heats?: Heat[], place?: boolean) => {
+export const getHeatTableBlocks = (heats?: Heat[], place?: boolean ) => {
   if (!heats) return undefined
   const heatResults = heats.map((heat: any) => heat.heatResults)
   const longestHeat = heatResults.sort((a: any, b: any) => b.length - a.length)[0]

@@ -53,7 +53,7 @@ export const countryRouter = createTRPCRouter({
         surfers: {
           some: {
             tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } },
-            eventResults: { some: { eventSlug: input.surferEventSlug } },
+            eventResults: { some: { eventSlug: input.surferEventSlug, place: { not: 0 }, injured: { not: true }, withdrawn: { not: true } } },
           },
         },
       },
@@ -72,11 +72,12 @@ export const countryRouter = createTRPCRouter({
     return country
   }),
 
-  getManyByEvent: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
+  getOptionByEvent: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
     const country = ctx.prisma.country.findMany({
       where: {
         events: { some: { tour: { gender: input.gender, year: input.eventYear } } },
       },
+      select: { name: true, slug: true },
       orderBy: {
         name: 'asc',
       },
@@ -92,12 +93,15 @@ export const countryRouter = createTRPCRouter({
       where: {
         surfers: { some: { tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } } } },
       },
-      include: {
+      select: {
+        name: true,
+        slug: true,
+        flagLink: true,
         surfers: {
           where: { tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } } },
           select: {
             name: true,
-            eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } } },
+            eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } }, select: { place: true } },
             tourResults: { where: { worldTitle: true, AND: { tour: { year: input.surferYear } } }, select: { tour: { select: { year: true } } } },
           },
         },
@@ -116,10 +120,17 @@ export const countryRouter = createTRPCRouter({
   getOne: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
     const country = ctx.prisma.country.findUniqueOrThrow({
       where: { slug: input.countrySlug },
-      include: {
+      select: {
+        name: true,
+        slug: true,
+        flagLink: true,
         surfers: {
           where: { tourResults: { some: { tour: { year: input.surferYear, gender: input.gender } } } },
-          select: { name: true, eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } } } },
+          select: {
+            name: true,
+            eventResults: { where: { place: 1, AND: { event: { year: input.surferYear } } }, select: { place: true } },
+            tourResults: { where: { worldTitle: true, AND: { tour: { year: input.surferYear } } }, select: { tour: { select: { year: true } } } },
+          },
         },
         events: { where: { tour: { year: input.surferYear, gender: input.gender }, eventStatus: input.eventStaus } },
       },

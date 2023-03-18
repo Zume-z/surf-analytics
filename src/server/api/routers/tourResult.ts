@@ -43,9 +43,11 @@ export const tourResultRouter = createTRPCRouter({
           gender: input?.gender,
         },
       },
-      include: {
-        surfer: { include: { country: true } },
-        tour: true,
+      select: {
+        surferPoints: true,
+        surferRank: true,
+        tour: { select: { year: true } },
+        surfer: { select: { name: true, stance: true, dob: true, heightCm: true, weightKg: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } },
       },
       orderBy: {
         surferRank: input?.sortSurferRank,
@@ -102,10 +104,14 @@ export const tourResultRouter = createTRPCRouter({
           gender: input?.gender,
         },
       },
-      include: {
-        surfer: { include: { country: true } },
-        tour: true,
+
+      select: {
+        surferPoints: true,
+        surferRank: true,
+        tour: { select: { year: true } },
+        surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } },
       },
+
       orderBy: {
         surferRank: input?.sortSurferRank,
         tour: yearSort,

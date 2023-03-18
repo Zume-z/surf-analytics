@@ -29,9 +29,10 @@ export default function EventResults() {
     eventStatus: 'COMPLETED',
   }
 
-  const eventQuery = api.event.getOne.useQuery({ slug: eventId }, { enabled: !!eventId })
+  const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
   const eventGender = eventQuery.data?.tour.gender
-  const eventsQuery = api.event.getManyLocation.useQuery({ locationSlug: filters.locationSlug, gender: eventGender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !!eventGender })
+  const eventsQuery = api.event.getManyByLocation.useQuery({ locationSlug: filters.locationSlug, gender: eventGender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !!eventGender })
+
   const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId })
   const onSelectEvent = (event: Event) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })
 

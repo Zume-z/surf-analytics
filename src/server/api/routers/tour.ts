@@ -43,13 +43,29 @@ export const tourRouter = createTRPCRouter({
     return ctx.prisma.tour.findUniqueOrThrow({ where: { slug: input.tourSlug } })
   }),
 
-  getYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
+  getEventYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
     const query = ctx.prisma.tour.findMany({
       where: {
-        year: { gte: 2010 },
         gender: input.gender,
         tourResults: { some: { surfer: { countrySlug: input.countrySlugSurfer } } },
         events: { some: { countrySlug: input.countrySlugEvent, eventStatus: input.eventStatus } },
+      },
+      distinct: ['year'],
+      select: { year: true },
+      orderBy: {
+        year: input.sortYear,
+      },
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
+    return query
+  }),
+  getSurferYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
+    const query = ctx.prisma.tour.findMany({
+      where: {
+        gender: input.gender,
+        tourResults: { some: { surfer: { countrySlug: input.countrySlugSurfer } } },
       },
       distinct: ['year'],
       select: { year: true },

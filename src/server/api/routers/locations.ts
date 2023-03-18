@@ -39,10 +39,16 @@ export const locationRouter = createTRPCRouter({
 
   getManyBySurfer: publicProcedure.input(LocationSchema).query(({ ctx, input }) => {
     const locations = ctx.prisma.location.findMany({
-      where: { events: { some: { eventResults: { some: { surferSlug: input.surferSlug, NOT: { place: { equals: 0 } } } } } } },
-      include: {
-        country: true,
-        events: { where: { eventResults: { some: { surferSlug: input.surferSlug, NOT: { place: { equals: 0 } } } } }, include: { tour: true, eventResults: { where: { surferSlug: input.surferSlug }, orderBy: { place: 'desc' } } } },
+      where: { events: { some: { eventResults: { some: { surferSlug: input.surferSlug, place: { not: 0 } } } } } },
+      select: {
+        name: true,
+        slug: true,
+        eventName: true,
+        country: { select: { name: true, slug: true, flagLink: true } },
+        events: {
+          where: { eventResults: { some: { surferSlug: input.surferSlug, place: { not: 0 } } } },
+          select: { name: true, address: true, tour: { select: { year: true } }, eventResults: { where: { surferSlug: input.surferSlug }, select: { place: true, surferSlug: true }, orderBy: { place: 'desc' } } },
+        },
       },
     })
     if (!locations) throw new TRPCError({ code: 'NOT_FOUND' })

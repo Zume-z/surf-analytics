@@ -35,6 +35,7 @@ model Surfer {
   surfersBeaten     HeatBeatenBy[]
 
   @@index([countrySlug])
+  @@index([slug])
 }
 
 model Tour {
@@ -48,9 +49,8 @@ model Tour {
   canceled    Boolean?
 
   @@index([gender, year])
+  @@index([year(sort: Desc)])
 }
-
-
 
 model TourResult {
   surferRank   Int
@@ -64,8 +64,6 @@ model TourResult {
   @@id([tourSlug, surferSlug])
   @@index([surferSlug])
   @@index([tourSlug])
-
-
   @@index([surferRank(sort: Asc)])
 }
 
@@ -92,9 +90,11 @@ model Event {
   country         Country       @relation(fields: [countrySlug], references: [slug])
   location        Location      @relation(fields: [locationSlug], references: [slug])
 
+  @@index([slug])
   @@index([tourSlug])
   @@index([countrySlug])
   @@index([locationSlug])
+  @@index([startDate(sort: Asc)])
 }
 
 model EventResult {
@@ -141,6 +141,10 @@ model Heat {
 
   @@index([breakSlug])
   @@index([eventSlug])
+  @@index([heatRound])
+  @@index([heatStatus])
+  @@index([heatNumber(sort: Asc)])
+  @@index([roundNumber(sort: Asc)])
 }
 
 model HeatResult {
@@ -220,6 +224,8 @@ model Country {
   events    Event[]
   breaks    Break[]
   locations Location[]
+
+  @@index([name(sort: Asc)])
 }
 
 model Break {

@@ -11,16 +11,14 @@ import CardSurfer from '@/components/CardSurfer'
 import { useQueryState } from 'next-usequerystate'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
-
+import { Event, EventResult } from '@/utils/interfaces'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { eventResultStats } from '@/utils/format/subHeaderStats'
-import { Event, EventResult, TourResult } from '@/utils/interfaces'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import { EventResultSchema } from '@/server/api/routers/eventResult'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import EventERPoints from '@/components/tableComponents/TableEventERPoints'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
-
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 
 export default function EventResults() {
   const router = useRouter()
@@ -33,24 +31,18 @@ export default function EventResults() {
     excludeNoPlace: true,
     surferCountrySlug: countrySlug || undefined,
   }
+
   const eventResultQuery = api.eventResult.getMany.useQuery(filters, { enabled: !!eventId })
-  const eventQuery = api.event.getOne.useQuery({ slug: eventId }, { enabled: !!eventId })
-  const countryQuery = api.country.getManyBySurfer.useQuery({ surferEventSlug: eventId }, { enabled: !!eventId })
+  const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
+  const countryQuery = api.country.getOptionsBySurfer.useQuery({ surferEventSlug: eventId }, { enabled: !!eventId })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
   const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId })
-  const onSelectSurfer = (tourResult: TourResult) => router.push({ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: tourResult.surfer.slug } })
+  const onSelectSurfer = (eventResult: EventResult) => router.push({ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: eventResult.surfer.slug } })
   const onGenderSelect = (linkedEventSlug: string) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: linkedEventSlug } })
   const genderOptions = eventQuery.data?.linkedEventSlug && [
     { label: 'Mens', value: eventQuery.data?.tour.gender == 'MALE' ? eventId : eventQuery.data?.linkedEventSlug },
     { label: 'Womens', value: eventQuery.data?.tour.gender == 'FEMALE' ? eventId : eventQuery.data?.linkedEventSlug },
   ]
-
-  const tableData: TableData[] = [
-    { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
-    { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item} /> },
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Heats</div> },
-  ]
-  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
@@ -65,6 +57,13 @@ export default function EventResults() {
     { label: 'Heats', active: false, router: { pathname: '/events/[eventId]/heats', query: { eventId: eventId } } },
     { label: 'Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: eventId, location: eventQuery.data?.locationSlug } } },
   ]
+
+  const tableData: TableData[] = [
+    { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
+    { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item} /> },
+    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Heats</div> },
+  ]
+  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
     <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>

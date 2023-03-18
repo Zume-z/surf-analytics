@@ -33,11 +33,24 @@ export const eventRouter = createTRPCRouter({
         countrySlug: input.countrySlug,
         locationSlug: input.locationSlug,
       },
-      include: {
-        eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
-        tour: true,
-        country: true,
+      // include: {
+      //   eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
+      //   tour: true,
+      //   country: true,
+      // },
+      select: {
+        name: true,
+        slug: true,
+        startDate: true,
+        endDate: true,
+        address: true,
+        eventRound: true,
+        eventStatus: true,
+        timeZone: true,
+        eventResults: { where: { place: 1 }, select: { surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
+        country: { select: { flagLink: true, name: true } },
       },
+
       orderBy: {
         startDate: input.sortStartDate,
         eventRound: input.sortEventRound,
@@ -78,7 +91,7 @@ export const eventRouter = createTRPCRouter({
     return event
   }),
 
-  getManyLocation: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
+  getManyByLocation: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
     const event = ctx.prisma.event.findMany({
       where: {
         slug: input.slug,
@@ -88,10 +101,11 @@ export const eventRouter = createTRPCRouter({
         countrySlug: input.countrySlug,
         locationSlug: input.locationSlug,
       },
-      include: {
-        eventResults: { where: { place: { lte: 2 } }, include: { surfer: { include: { country: true } } } },
-        tour: true,
-        country: true,
+      select: {
+        name: true,
+        address: true,
+        eventResults: { where: { place: { lte: 2 } }, select: { place: true, surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
+        tour: { select: { year: true } },
       },
       orderBy: {
         startDate: input.sortStartDate,
@@ -104,18 +118,60 @@ export const eventRouter = createTRPCRouter({
     return event
   }),
 
-  getOne: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
-    const event = ctx.prisma.event.findUnique({
+  getOneHeader: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
+    return ctx.prisma.event.findUniqueOrThrow({
       where: { slug: input.slug },
-      include: { country: true, tour: true, eventResults: { select: { surfer: true } } },
+      select: {
+        name: true,
+        slug: true,
+        startDate: true,
+        endDate: true,
+        address: true,
+        eventRound: true,
+        eventStatus: true,
+        timeZone: true,
+        linkedEvent: true,
+        linkedEventSlug: true,
+        locationSlug: true,
+        country: { select: { flagLink: true, name: true } },
+        tour: { select: { gender: true, year: true } },
+      },
     })
-    if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
-    return event
+  }),
+
+  getSurferOptionsByEvent: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
+    return ctx.prisma.event.findUniqueOrThrow({
+      where: { slug: input.slug },
+      select: {
+        name: true,
+        slug: true,
+        startDate: true,
+        endDate: true,
+        address: true,
+        eventRound: true,
+        eventStatus: true,
+        timeZone: true,
+        linkedEvent: true,
+        linkedEventSlug: true,
+        locationSlug: true,
+        country: { select: { flagLink: true, name: true } },
+        tour: { select: { gender: true, year: true } },
+        eventResults: { where: { place: { not: 0 }, injured: { not: true }, withdrawn: { not: true } }, select: { surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
+      },
+    })
+  }),
+
+  getOneHeats: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
+    return ctx.prisma.event.findUniqueOrThrow({
+      where: { slug: input.slug },
+      select: { name: true, slug: true, wavePoolEvent: true },
+    })
   }),
 
   getName: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
-    const event = ctx.prisma.event.findUnique({ where: { slug: input.slug }, select: { name: true } })
-    if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
-    return event
+    return ctx.prisma.event.findUniqueOrThrow({
+      where: { slug: input.slug },
+      select: { name: true },
+    })
   }),
 })

@@ -18,11 +18,11 @@ import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButto
 export default function SurferLocation() {
   const router = useRouter()
   const { surferId, locationId } = router.query as { surferId: string; locationId: string }
-  const eventResultQuery = api.eventResult.getMany.useQuery({ surferSlug: surferId, locationSlug: locationId, sortStartDate: 'desc', excludeNoPlace: true }, { enabled: !!surferId && !!locationId })
-  const onEventSelect = (item: EventResult) => router.replace({ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, event: item.eventSlug, year: item.event.tour.year } })
+  const eventResultQuery = api.eventResult.getManyBySurfer.useQuery({ surferSlug: surferId, locationSlug: locationId, sortStartDate: 'desc', excludeNoPlace: true }, { enabled: !!surferId && !!locationId })
   const locationQuery = api.location.getName.useQuery({ slug: locationId }, { enabled: !!locationId })
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
   const locationStatQuery = api.locationSurferStat.getLocationSurfer.useQuery({ surferSlug: surferId, locationSlug: locationId }, { enabled: !!surferId })
+  const onEventSelect = (item: EventResult) => router.replace({ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, event: item.eventSlug, year: item.event.tour.year } })
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },

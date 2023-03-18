@@ -30,6 +30,12 @@ export default function SurferLocations() {
     { content: <SubHeaderItem label="locations" value={'All'} subvalue="Locations" active={true} loading={tourResultQuery.isLoading} /> },
   ]
 
+  const subNavItems = [
+    { label: 'Career', active: false, router: { pathname: '/surfers/[surferId]/career', query: { surferId: surferId } } },
+    { label: 'Events', active: false, router: { pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: year ? year : tourResultQuery.data?.map((item: any) => item.tour.year)[0] } } },
+    { label: 'Locations', active: true, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } } },
+  ]
+
   const tableData: TableData[] = [
     { name: 'Location', id: 'location', content: (item: Location) => <CardEventLocation location={item} /> },
     { name: 'Best Result', id: 'bestResult', content: (item: Location) => (<div className='table-item'> {ordinalSuffix(bestResultByLocation(item).bestResult)} · {bestResultByLocation(item).year}</div>) }, // prettier-ignore
@@ -38,12 +44,6 @@ export default function SurferLocations() {
   ]
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
-
-  const subNavItems = [
-    { label: 'Career', active: false, router: { pathname: '/surfers/[surferId]/career', query: { surferId: surferId } } },
-    { label: 'Events', active: false, router: { pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: year ? year : tourResultQuery.data?.map((item: any) => item.tour.year)[0] } } },
-    { label: 'Locations', active: true, router: { pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } } },
-  ]
 
   return (
     <Layout title={tourResultQuery.data?.[0]?.surfer.name} subHeader={{ subHeaderData: subHeaderData, stats: surferCareerStats(surferStatQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined), statsLoading: surferStatQuery.isLoading }}>

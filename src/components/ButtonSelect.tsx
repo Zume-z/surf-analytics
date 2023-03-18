@@ -8,7 +8,7 @@ export type ButtonSelectProps = {
   placeHolder?: string
   options: { label: string; value: string | number }[] | undefined
   value?: string | number
-  setValue: (value: string ) => void
+  setValue: (value: string) => void
   loading?: boolean
   loadingText?: string
 }
@@ -18,17 +18,15 @@ export default function ButtonSelect({ className, placeHolder, value, setValue, 
   return (
     <div>
       {!loading && options && (
-        <div className={`px-2 my-1 sm:px-4 group cursor-pointer ${className}`} onClick={() => setBtnOpen(true)}>
+        <div className={`group my-1 cursor-pointer px-2 sm:px-4 ${className}`} onClick={() => setBtnOpen(true)}>
           <div className={btnOpen ? 'select-btn__open  ' : 'select-btn__closed'}>
             <Select.Root value={toString(value)} onValueChange={setValue} open={btnOpen} onOpenChange={setBtnOpen}>
-              {/* BUTTON */}
               <Select.Trigger className=" z-40 flex items-center outline-none">
                 {value != '' ? <Select.Value /> : placeHolder}
                 <Select.Icon className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5" /> : <ChevronDownIcon />}</Select.Icon>
               </Select.Trigger>
-              {/* DROPDOWN */}
-              <Select.Content className="-ml-2 max-h-60   rounded-md  border border-gray-100 bg-white shadow " position="popper" sideOffset={8} align="start">
-                <Select.Viewport className=" ">
+              <Select.Content className="z-40 -ml-2 max-h-60 rounded-md border border-gray-100 bg-white shadow" position="popper" sideOffset={8} align="start">
+                <Select.Viewport>
                   {options.map((f, i) => (
                     <Select.Item key={i} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
                       <Select.ItemText className="">{f.label}</Select.ItemText>
@@ -44,7 +42,7 @@ export default function ButtonSelect({ className, placeHolder, value, setValue, 
         </div>
       )}
       {loading && (
-        <div className={`px-2 my-1 sm:px-4 ${className}`}>
+        <div className={`my-1 px-2 sm:px-4 ${className}`}>
           <div className="flex animate-pulse items-center rounded border border-gray-200 bg-gray-md py-0.5 px-2 text-white ">
             <div>{loadingText}</div>
             <div className="ml-1">

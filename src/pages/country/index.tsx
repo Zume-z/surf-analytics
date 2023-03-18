@@ -12,14 +12,15 @@ import { Country, Surfer } from '@/utils/interfaces'
 import Table, { TableData } from '@/components/Table'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { CountrySchema } from '@/server/api/routers/country'
-import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import CardCountryLoader from '@/components/loaders/CardCountryLoader'
+import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
 
 export default function CountryIndex() {
   const router = useRouter()
   const [year, setYear] = useQueryState('year')
   const [gender, setGender] = useQueryState('gender')
-  const onSelectCountry = (item: any) => router.push({ pathname: '/country/[countryId]/surfers', query: { countryId: item.slug } })
+  const onSelectCountry = (item: Country) => router.push({ pathname: '/country/[countryId]/surfers', query: { countryId: item.slug } })
+
   const filters: z.infer<typeof CountrySchema> = {
     surferYear: Number(year) || undefined,
     gender: (gender as Gender | undefined) || undefined,
@@ -27,8 +28,6 @@ export default function CountryIndex() {
   }
 
   const countryQuery = api.country.getManyIncSurfers.useQuery(filters)
-  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, sortYear: 'desc' })
-  const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
   const getEventWins = (country: Country) => country.surfers.map((surfer: Surfer) => surfer.eventResults.length).reduce((a: number, b: any) => a + b, 0)
   const getWorldTitles = (country: Country) => country.surfers.map((surfer: Surfer) => surfer.tourResults.length).reduce((a: number, b: any) => a + b, 0)
 
@@ -45,8 +44,8 @@ export default function CountryIndex() {
     <Layout title={'Country'}>
       <h1 className="py-8 text-center text-3xl font-semibold">Country</h1>
       <FilterBar className="justify-center">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="Gender" />
-        <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loadingText="Gender" />
+        <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={YEAROPTIONS} loadingText="Year" />
       </FilterBar>
       <Table tableData={tableData} items={countryQuery.data || []} loading={countryQuery.isLoading} handleSelection={onSelectCountry} />
     </Layout>

@@ -77,6 +77,10 @@ export const surferRouter = createTRPCRouter({
     return ctx.prisma.surfer.findUniqueOrThrow({ where: { slug: input.slug }, include: { country: true } })
   }),
 
+  getOneHeader: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {
+    return ctx.prisma.surfer.findUniqueOrThrow({ where: { slug: input.slug }, select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } })
+  }),
+
   getName: publicProcedure.input(z.object({ slug: z.string().optional() })).query(({ ctx, input }) => {
     return ctx.prisma.surfer.findUniqueOrThrow({ where: { slug: input.slug }, select: { name: true } })
   }),

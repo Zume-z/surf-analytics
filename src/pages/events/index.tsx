@@ -13,27 +13,21 @@ import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { removeById } from '@/utils/format/removeById'
 import { EventSchema } from '@/server/api/routers/event'
-import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
-import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import ButtonSelectSearch from '@/components/ButtonSelectSearch'
+import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
+import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 
 export default function Events() {
   const router = useRouter()
   const [countrySlug, setCountrySlug] = useQueryState('country')
   const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
+  const updateYear = React.useCallback(async (value: string) => (await setYear(parseInt(value)), await setCountrySlug(null)), [])
+  const updateGender = React.useCallback(async (value: string) => (await setCountrySlug(null), await setGender(value)), [])
   const onSelectEvent = (item: Event) => item.eventStatus == 'COMPLETED' && router.push({ pathname: '/events/[eventId]/results', query: { eventId: item.slug } })
-  const updateYear = React.useCallback(async (value: string) => {
-    await setYear(parseInt(value))
-    await setCountrySlug(null)
-  }, [])
-  const updateGender = React.useCallback(async (value: string) => {
-    await setCountrySlug(null)
-    await setGender(value)
-  }, [])
 
   const filters: z.infer<typeof EventSchema> = {
     sortStartDate: 'asc',
@@ -43,10 +37,8 @@ export default function Events() {
   }
 
   const eventQuery = api.event.getMany.useQuery({ ...filters })
-  const countryQuery = api.country.getManyByEvent.useQuery({ gender: filters.gender, eventYear: filters.year })
+  const countryQuery = api.country.getOptionByEvent.useQuery({ gender: filters.gender, eventYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
-  const yearQuery = api.tour.getYears.useQuery({ gender: filters.gender, sortYear: 'desc' })
-  const yearOptions = yearQuery.data?.map((year: any) => ({ label: year.year.toString(), value: year.year }))
 
   const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} />, loader: <CardEventLoader /> },
@@ -61,8 +53,8 @@ export default function Events() {
     <Layout title={'Events'}>
       <h1 className="py-8 text-center text-3xl font-semibold">Events</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={yearQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={yearOptions} loading={yearQuery.isLoading} loadingText="Year" />
+        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
         <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
       <Table tableData={tableData} items={eventQuery.data || []} handleSelection={onSelectEvent} loading={eventQuery.isLoading} />
