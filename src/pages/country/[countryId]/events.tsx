@@ -44,6 +44,7 @@ export default function CountryEvents() {
   const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId })
   const yearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
+  
 
   const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} showYear={true} /> },

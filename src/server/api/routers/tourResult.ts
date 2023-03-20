@@ -46,7 +46,7 @@ export const tourResultRouter = createTRPCRouter({
       select: {
         surferPoints: true,
         surferRank: true,
-        tour: { select: { year: true } },
+        tour: { select: { year: true, canceled: true } },
         surfer: { select: { name: true, stance: true, dob: true, heightCm: true, weightKg: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } },
       },
       orderBy: {

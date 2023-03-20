@@ -25,16 +25,19 @@ export const getHeatTableRows = (heats?: Heat[]) => {
 }
 
 // Blocks
-export const getHeatTableBlocks = (heats?: Heat[], place?: boolean ) => {
+export const getHeatTableBlocks = (heats?: Heat[], place?: boolean) => {
   if (!heats) return undefined
+
   const heatResults = heats.map((heat: any) => heat.heatResults)
   const longestHeat = heatResults.sort((a: any, b: any) => b.length - a.length)[0]
-  const tableData = longestHeat.map((heatResult: any, index: number) => {
-    return {
+  const tableData = []
+
+  longestHeat.map((heatResult: any, index: number) => {
+    tableData.push({
       name: heatResult.heatPlace,
       id: heatResult.heatPlace,
-      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] ? <CardHeatSurferBlock heatResult={item.heatResults[index]!} place={place} /> : <div></div>}</div>,
-    }
+      content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}> {item.heatResults[index] && <CardHeatSurferBlock heatResult={item.heatResults[index]!} place={place} />}</div>,
+    })
   })
   tableData.unshift({
     name: '',

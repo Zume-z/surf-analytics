@@ -22,7 +22,7 @@ export interface SubheaderData {
 export default function ({ subHeaderData, stats, statsLoading, buttonBack }: SubHeaderProps) {
   const router = useRouter()
   const [showStats, setShowStats] = useState(false)
-  const [hoverStats, setHoverStats] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   const [sliderEnd, setSliderEnd] = useState(false)
   const [sliderStart, setSliderStart] = useState(true)
@@ -141,7 +141,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack }: Sub
           <div className="absolute h-screen w-full border-t border-b   bg-white shadow-sm sm:h-full">
             <div className="mx-8 flex-col justify-center  text-sm ">
               {stats.map((Column: any, i: number) => (
-                <div key={i} className="w-full border-b py-4 last: ">
+                <div key={i} className="last: w-full border-b py-4 ">
                   {Column?.map((stat: any, i: number) => (
                     <div key={i} className="flex w-full  justify-between  py-1">
                       <div className="whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
@@ -153,7 +153,10 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack }: Sub
               ))}
             </div>
             <div className=" flex items-center justify-center  p-1  ">
-              <div onClick={() => handleSelection(routerExample)} className="transition-200 -mt-3.5 flex cursor-pointer space-x-1 rounded bg-white px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white">
+              <div
+                onClick={() => handleSelection(routerExample)}
+                className="transition-200 -mt-3.5 flex cursor-pointer space-x-1 rounded bg-white px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white"
+              >
                 <CornersIcon />
                 <div>VIEW MORE</div>
               </div>
@@ -195,10 +198,41 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack }: Sub
               </div>
               <div className=" flex items-center justify-center  p-1  ">
                 <div onClick={() => handleSelection(routerExample)} className="transition-200 -mt-5 mb-1 flex cursor-pointer space-x-1 rounded px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white">
+
+                  {/* TESTING MODAL */}
+                {/* <div
+                  onClick={() => (setShowModal(true), setShowStats(false))}
+                  className="transition-200 -mt-5 mb-1 flex cursor-pointer space-x-1 rounded px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white"
+                > */}
                   <CornersIcon />
                   <div>VIEW MORE</div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* MODAL TESTING */}
+        {showModal && (
+          <div className="absolute h-screen w-screen bg-white ">
+            <div className="flex justify-center ">
+              <div className="flex w-full max-w-7xl items-center border-t px-8 ">
+                <div className="mx-8 flex-col w-full justify-center  text-sm ">
+                  {stats.map((Column: any, i: number) => (
+                    <div key={i} className="last: w-full border-b py-4 ">
+                      {Column?.map((stat: any, i: number) => (
+                        <div key={i} className="flex w-full  justify-between  py-1">
+                          <div className="whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
+                          {stat.subValue && <div className="text-gray-500">{stat.subValue}</div>}
+                          <div> {stat.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div onClick={() => setShowModal(false)}>X</div>
             </div>
           </div>
         )}

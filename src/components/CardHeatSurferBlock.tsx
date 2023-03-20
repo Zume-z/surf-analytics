@@ -11,7 +11,7 @@ export default function CardHeatSurferBlock({ heatResult, place }: { heatResult:
   const interference = !!heatResult.interferenceOne || !!heatResult.interferenceTwo || !!heatResult.interferenceThree
 
   return (
-    <div className="flex justify-between border-t py-2 ">
+    <div className="flex justify-between border-t py-3 ">
       <div className="group flex items-center whitespace-nowrap text-sm">
         {place && <div className="table-item mr-2 text-base text-gray-dark">{heatResult.heatPlace}</div>}
         <div className={`h-12 w-12 flex-shrink-0 rounded-full  ${bgJerseyColor(heatResult.jerseyColor)}`}>

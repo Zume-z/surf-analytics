@@ -35,7 +35,8 @@ export default function CountrySurfers() {
     year: Number(year) || undefined,
     gender: (gender as Gender | undefined) || undefined,
   }
-  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortYear: 'asc' }, { enabled: !!countryId })
+
+  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortSurferRank: 'asc' }, { enabled: !!countryId })
   const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
   const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId })
   const eventYearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })

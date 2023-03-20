@@ -103,6 +103,7 @@ export const eventRouter = createTRPCRouter({
       },
       select: {
         name: true,
+        slug: true,
         address: true,
         eventResults: { where: { place: { lte: 2 } }, select: { place: true, surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
         tour: { select: { year: true } },
@@ -153,6 +154,7 @@ export const eventRouter = createTRPCRouter({
         timeZone: true,
         linkedEvent: true,
         linkedEventSlug: true,
+        wavePoolEvent: true,
         locationSlug: true,
         country: { select: { flagLink: true, name: true } },
         tour: { select: { gender: true, year: true } },
