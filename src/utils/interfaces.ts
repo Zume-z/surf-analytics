@@ -201,3 +201,45 @@ export type InterferencePenalty = 'HALVED_ONE' | 'ZEROED_TWO' | 'ZEROED_THREE' |
 export type WaveDirection = 'LEFT' | 'RIGHT' | 'BOTH' | undefined
 export type Gender = 'MALE' | 'FEMALE'
 export type Stance = 'REGULAR' | 'GOOFY'
+
+// STATS
+export interface Stats {
+  surferRank?: { label: string; value: string | number }
+  surferPoints?: { label: string; value: string | number }
+  worldTitles?: { label: string; value: string | number }
+  prizeMoney?: { label: string; value: string | number }
+  totalEvents?: { label: string; value: string | number }
+  eventWins?: { label: string; value: string | number }
+  bestResult?: { label: string; value: string | number }
+  avgResult?: { label: string; value: string | number }
+  totalHeats?: { label: string; value: string | number }
+  heatWins?: { label: string; value: string | number }
+  avgHeatTotal?: { label: string; value: string | number }
+  heatWinPerc?: { label: string; value: string | number }
+  totalWaves?: { label: string; value: string | number }
+  totalCountedWaves?: { label: string; value: string | number }
+  avgWaveScore?: { label: string; value: string | number }
+  avgCountedWaveScore?: { label: string; value: string | number }
+  highestWaveScore?: { label: string; value: string | number }
+  waveRange?: { label: string; value: string | number }
+  windConditions?: { label: string; value: string | number }
+  waveType?: { label: string; value: string | number }
+  breakName?: { label: string; value: string | number }
+  heatPlace?: { label: string; value: string | number }
+  heatTotal?: { label: string; value: string | number }
+  heatDifferential?: { label: string; value: string | number }
+  excellentWaves?: { label: string; value: string | number }
+  eventBreaks?: { label: string; value: string | number }
+  avgWaveRange?: { label: string; value: string | number }
+  avgWindConditions?: { label: string; value: string | number }
+  highestHeatTotal?: { label: string; value: string | number }
+  excellentHeats?: { label: string; value: string | number }
+  place?: { label: string; value: string | number }
+  points?: { label: string; value: string | number }
+  knockedOutBy?: { label: string; value: string | number }
+  event?: { label: string; value: string | number }
+  combinedHeatTotal?: { label: string; value: string | number }
+  avgRank?: { label: string; value: string | number }
+  avgPoints?: { label: string; value: string | number }
+  eventWinPerc?: { label: string; value: string | number }
+}

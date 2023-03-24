@@ -14,14 +14,18 @@ import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TableEventResultPlace from '@/components/tableComponents/TableSurferERPlace'
 import TableEventResultPoints from '@/components/tableComponents/TableSurferERPoints'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
+import { useState } from 'react'
 
 export default function SurferLocation() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId, locationId } = router.query as { surferId: string; locationId: string }
   const eventResultQuery = api.eventResult.getManyBySurfer.useQuery({ surferSlug: surferId, locationSlug: locationId, sortStartDate: 'desc', excludeNoPlace: true }, { enabled: !!surferId && !!locationId })
   const locationQuery = api.location.getName.useQuery({ slug: locationId }, { enabled: !!locationId })
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
-  const locationStatQuery = api.locationSurferStat.getLocationSurfer.useQuery({ surferSlug: surferId, locationSlug: locationId }, { enabled: !!surferId })
+  const locationStatQuery = api.locationSurferStat.getLocationSurfer.useQuery({ surferSlug: surferId, locationSlug: locationId }, { enabled: !!surferId && !eventResultQuery.isLoading })
+  const locationStatAllQuery = api.locationSurferStat.getAll.useQuery({ surferSlug: surferId, locationSlug: locationId }, { enabled: !!surferId && statToggle })
+
   const onEventSelect = (item: EventResult) => router.replace({ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, event: item.eventSlug, year: item.event.tour.year } })
 
   const subHeaderData = [
@@ -43,9 +47,11 @@ export default function SurferLocation() {
       title={tourResultQuery.data?.[0]?.surfer.name}
       subHeader={{
         subHeaderData: subHeaderData,
-        stats: surferLocationStats(locationStatQuery.data),
-        statsLoading: locationStatQuery.isLoading,
+        stats: surferLocationStats(locationStatQuery.data, locationStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? locationStatQuery.isLoading : locationStatAllQuery.isLoading,
         buttonBack: <SubHeaderButtonBack label="Locations" routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } }} />,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
       }}
     >
       <ButtonBack className="hidden sm:block" label="Locations" routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } }} />

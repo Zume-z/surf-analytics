@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { api } from '@/utils/api'
 import Table from '@/components/Table'
 import { useRouter } from 'next/router'
@@ -18,6 +18,7 @@ import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFo
 
 export default function EventHeats() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const [surferSlug, setSurferSlug] = useQueryState('surfer')
   const [heatRound, setHeatRound] = useQueryState('heatRound')
   const updateSurfer = React.useCallback(async (value: string | null) => (await setSurferSlug(value), await setHeatRound(null)), [])
@@ -33,7 +34,8 @@ export default function EventHeats() {
   const heatQuery = api.heat.getMany.useQuery(filters)
   const eventQuery: any = api.event.getSurferOptionsByEvent.useQuery({ slug: filters.eventSlug as string }, { enabled: !!filters.eventSlug })
   const surferQuery = api.surfer.getName.useQuery({ slug: filters.surferSlug }, { enabled: !!filters.surferSlug })
-  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: filters.eventSlug as string }, { enabled: !!filters.eventSlug })
+  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: filters.eventSlug as string }, { enabled: !!filters.eventSlug && !heatQuery.isLoading })
+  const eventStatAllQuery = api.eventStat.getAll.useQuery({ eventSlug: filters.eventSlug as string }, { enabled: !!filters.eventSlug && statToggle })
   const tableDataRows = getHeatTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
@@ -75,7 +77,16 @@ export default function EventHeats() {
   ]
 
   return (
-    <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: getSubheaderData(), stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
+    <Layout
+      title={eventQuery.data?.name}
+      subHeader={{
+        subHeaderData: getSubheaderData(),
+        stats: eventResultStats(eventStatQuery.data, eventStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? eventStatQuery.isLoading : eventStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="scrollbar-none mt-8 justify-start overflow-auto">
         <ButtonSelectSearch className="border-r" searchPlaceHolder="Search surfers" placeHolder="Surfer" value={filters.surferSlug} setValue={updateSurfer} options={surferOptions} loading={surferOptions ? false : true} loadingText="Surfer" />

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -22,7 +22,8 @@ import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 
 export default function EventResults() {
   const router = useRouter()
-  const eventId = router.query.eventId as string
+  const { eventId } = router.query as { eventId: string }
+  const [statToggle, setStatToggle] = useState(false)
   const [countrySlug, setCountrySlug] = useQueryState('country')
 
   const filters: z.infer<typeof EventResultSchema> = {
@@ -36,7 +37,8 @@ export default function EventResults() {
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
   const countryQuery = api.country.getOptionsBySurfer.useQuery({ surferEventSlug: eventId }, { enabled: !!eventId })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
-  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId })
+  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId && !eventResultQuery.isLoading })
+  const eventStatAllQuery = api.eventStat.getAll.useQuery({ eventSlug: eventId }, { enabled: !!eventId && statToggle })
   const onSelectSurfer = (eventResult: EventResult) => router.push({ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: eventResult.surfer.slug } })
   const onGenderSelect = (linkedEventSlug: string) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: linkedEventSlug } })
   const genderOptions = eventQuery.data?.linkedEventSlug && [
@@ -66,7 +68,16 @@ export default function EventResults() {
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
-    <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
+    <Layout
+      title={eventQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: eventResultStats(eventStatQuery.data, eventStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? eventStatQuery.isLoading : eventStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="my-8 justify-start">
         {eventQuery.data?.linkedEventSlug && <ButtonSelect className="border-r" placeHolder="Mens" value={eventId} setValue={onGenderSelect} options={genderOptions || []} loading={countryQuery.isLoading} loadingText="Gender" />}

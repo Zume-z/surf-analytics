@@ -13,12 +13,15 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TourResultRank from '@/components/tableComponents/TableTourResultRank'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TourResultPoints from '@/components/tableComponents/TableTourResultPoints'
+import { useState } from 'react'
 
 export default function SurferCareer() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId } = router.query as { surferId: string }
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
-  const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId })
+  const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId && !tourResultQuery.isLoading })
+  const surferStatAllQuery = api.surferStat.getAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
   const onYearSelect = (item: TourResult) => !item.tour.canceled && item.tour.year >= 2010 && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
 
   const subHeaderData = [
@@ -43,7 +46,16 @@ export default function SurferCareer() {
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
-    <Layout title={tourResultQuery.data?.[0]?.surfer.name} subHeader={{ subHeaderData: subHeaderData, stats: surferCareerStats(surferStatQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined), statsLoading: surferStatQuery.isLoading }}>
+    <Layout
+      title={tourResultQuery.data?.[0]?.surfer.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: surferCareerStats(surferStatQuery.data, surferStatAllQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined, statToggle),
+        statsLoading: !statToggle ? surferStatQuery.isLoading : surferStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <Table tableData={tableData} items={tourResultQuery.data || []} handleSelection={onYearSelect} loading={tourResultQuery.isLoading} />
     </Layout>

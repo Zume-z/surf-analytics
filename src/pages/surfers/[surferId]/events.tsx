@@ -13,14 +13,18 @@ import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TableEventResultPlace from '@/components/tableComponents/TableSurferERPlace'
 import TableEventResultPoints from '@/components/tableComponents/TableSurferERPoints'
 import SubNavbar from '@/components/SubNavbar'
+import { useState } from 'react'
 
 export default function SurferEvents() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId, year } = router.query as { surferId: string; year: string }
   const surferQuery = api.surfer.getOneHeader.useQuery({ slug: surferId }, { enabled: !!surferId })
   const eventResultQuery = api.eventResult.getManyBySurfer.useQuery({ surferSlug: surferId, year: Number(year), sortStartDate: 'asc' }, { enabled: !!surferId && !!year })
-  const tourResultStatQuery = api.tourResultStat.getEvents.useQuery({ surferSlug: surferId, year: Number(year) }, { enabled: !!surferId && !!year })
+  const tourResultStatQuery = api.tourResultStat.getEvents.useQuery({ surferSlug: surferId, year: Number(year) }, { enabled: !!surferId && !!year && !eventResultQuery.isLoading })
+  const tourResultAllStatQuery = api.tourResultStat.getAll.useQuery({ surferSlug: surferId, year: Number(year) }, { enabled: !!surferId && !!year && statToggle })
   const onEventSelect = (item: EventResult) => !item.injured && !item.withdrawn && item.place != 0 && router.replace({ pathname: '/surfers/[surferId]/heats', query: { ...router.query, event: item.eventSlug } })
+
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} subData={year} flagAlignBottom={true} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
@@ -45,7 +49,16 @@ export default function SurferEvents() {
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
 
   return (
-    <Layout title={surferQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: surferEventStats(tourResultStatQuery.data), statsLoading: tourResultStatQuery.isLoading }}>
+    <Layout
+      title={surferQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: surferEventStats(tourResultStatQuery.data, tourResultAllStatQuery.data, statToggle),
+        statsLoading: !statToggle ? tourResultStatQuery.isLoading : tourResultAllStatQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <Table tableData={tableData} items={eventResultQuery.data || []} handleSelection={onEventSelect} loading={eventResultQuery.isLoading} />
     </Layout>

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -20,6 +20,7 @@ import { filterERByPlace, findERByPlace } from '@/utils/format/getEventResultByP
 export default function EventResults() {
   const router = useRouter()
   const eventId = router.query.eventId as string
+  const [statToggle, setStatToggle] = useState(false)
   const locationSlug = router.query.location as string
 
   const filters: z.infer<typeof EventSchema> = {
@@ -30,10 +31,9 @@ export default function EventResults() {
   }
 
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
-  const eventGender = eventQuery.data?.tour.gender
-  const eventsQuery = api.event.getManyByLocation.useQuery({ locationSlug: filters.locationSlug, gender: eventGender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !!eventGender })
-
-  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId })
+  const eventsQuery = api.event.getManyByLocation.useQuery({ locationSlug: filters.locationSlug, gender: eventQuery.data?.tour.gender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !!eventQuery.data?.tour.gender }) // prettier-ignore
+  const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId && !eventsQuery.isLoading })
+  const eventStatAllQuery = api.eventStat.getAll.useQuery({ eventSlug: eventId }, { enabled: !!eventId && statToggle })
   const onSelectEvent = (event: Event) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })
 
   const tableData: TableData[] = [
@@ -60,7 +60,16 @@ export default function EventResults() {
   ]
 
   return (
-    <Layout title={eventQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: eventResultStats(eventStatQuery.data), statsLoading: eventStatQuery.isLoading }}>
+    <Layout
+      title={eventQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: eventResultStats(eventStatQuery.data, eventStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? eventStatQuery.isLoading : eventStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <Table tableData={tableData} items={eventsQuery.data || []} handleSelection={onSelectEvent} loading={eventsQuery.isLoading} />
     </Layout>

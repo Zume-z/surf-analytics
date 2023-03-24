@@ -3,17 +3,18 @@ import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import { Event } from '@/utils/interfaces'
 import TableWaves from '@/components/TableWaves'
+import ButtonBack from '@/components/ButtonBack'
 import { leadingZero } from '@/utils/format/leadingZero'
 import { eventWaveStats } from '@/utils/format/subHeaderStats'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
-
-import ButtonBack from '@/components/ButtonBack'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
+import { useState } from 'react'
 
 export default function EventWaves() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { eventId, heatRound, heatNumber } = router.query as { eventId: string; heatRound: string; heatNumber: string }
   const heatQuery = api.heat.getOneByEvent.useQuery({ eventSlug: eventId, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!eventId && !!heatRound && !!heatNumber })
 
@@ -24,7 +25,9 @@ export default function EventWaves() {
   }
 
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
-  const heatStatQuery = api.heatStat.getWaves.useQuery({ heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug })
+  const heatStatQuery = api.heatStat.getWaves.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && !heatQuery.isLoading })
+  const heatStatQueryAll = api.heatStat.getAll.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && statToggle })
+
   const tableColumns = getWaveTableCol(filters.heatResults)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
 
@@ -40,9 +43,11 @@ export default function EventWaves() {
       title={eventQuery.data?.name}
       subHeader={{
         subHeaderData: subHeaderData,
-        stats: eventWaveStats(heatStatQuery.data),
-        statsLoading: heatStatQuery.isLoading,
+        stats: eventWaveStats(heatStatQuery.data, heatStatQueryAll.data, statToggle),
+        statsLoading: !statToggle ? heatStatQuery.isLoading : heatStatQueryAll.isLoading,
         buttonBack: <SubHeaderButtonBack label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: router.query.eventId } }} />,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
       }}
     >
       <ButtonBack className="hidden sm:block" label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} />

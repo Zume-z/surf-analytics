@@ -33,18 +33,8 @@ export const SUBHEADERLOADEREVENT = [
   { label: '', value: '' },
 ]
 
-// OTHER PRESETS
-export const BREAKPOINT = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-}
-
-export const CONTACT_URLS = {
-  EMAIL: 'surfanalytica@gmail.com',
-  INSTAGRAM: 'https://www.instagram.com/surf_analytics/',
-  TWITTER: 'https://twitter.com/Surf_Analytics',
-}
-
+// OTHER CONSTANTS
+export const DATA_DISCLAIMER = 'All data is taken from the 2010-2023 WSL Championship Tour.'
+export const BREAKPOINT = { sm: 640, md: 768, lg: 1024, xl: 1280 }
+export const CONTACT_URLS = { EMAIL: 'surfanalytica@gmail.com', INSTAGRAM: 'https://www.instagram.com/surf_analytics/', TWITTER: 'https://twitter.com/Surf_Analytics' }
 export const HTH_LABELS = ['Heat Wins', 'Avg. Heat Total', 'Max Heat Total', 'Heat Total Differential', 'Total Waves', 'Avg. Wave Score', 'Max Wave Score', 'Avg. Counted Wave Score', 'Interferences']

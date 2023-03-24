@@ -162,7 +162,7 @@ const excellentWaves = async (ctx: Context, input: z.infer<typeof countryStatSch
 const prizeMoney = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { event: eventFilter(input) }, _sum: { prizeMoney: true } })
   const prizeMoney = query._sum.prizeMoney !== undefined ? getMoneyFormat(query._sum.prizeMoney) : '-'
-  return { prizeMoney: { label: 'Event Prize Money', value: prizeMoney } }
+  return { prizeMoney: { label: 'Total Prize Money', value: prizeMoney } }
 }
 
 // Country Events

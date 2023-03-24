@@ -10,9 +10,11 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
+import { useState } from 'react'
 
 export default function SurferWaves() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId, event, heatRound, heatNumber, year } = router.query as { surferId: string; event: string; heatRound: string; heatNumber: string; year: string }
   const heatQuery = api.heat.getOneByEvent.useQuery({ eventSlug: event, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!event && !!heatRound && !!heatNumber })
 
@@ -24,7 +26,8 @@ export default function SurferWaves() {
   }
 
   const surferQuery = api.surfer.getOneHeader.useQuery({ slug: surferId }, { enabled: !!surferId })
-  const heatResultStatQuery = api.heatResultStat.getWaves.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId })
+  const heatResultStatQuery = api.heatResultStat.getWaves.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId && !heatQuery.isLoading })
+  const heatResultAllStatQuery = api.heatResultStat.getAll.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId && statToggle })
   const tableColumns = getWaveTableCol(filters.heatResults)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
 
@@ -41,9 +44,11 @@ export default function SurferWaves() {
       title={surferQuery.data?.name}
       subHeader={{
         subHeaderData: subHeaderData,
-        stats: surferWaveStats(heatResultStatQuery.data),
-        statsLoading: heatResultStatQuery.isLoading,
+        stats: surferWaveStats(heatResultStatQuery.data, heatResultAllStatQuery.data, statToggle),
+        statsLoading: !statToggle ? heatResultStatQuery.isLoading : heatResultAllStatQuery.isLoading,
         buttonBack: <SubHeaderButtonBack label="Heats" routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }} />,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
       }}
     >
       <ButtonBack className="hidden sm:block" label={filters.eventName} routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }} />

@@ -3,11 +3,11 @@ import { api } from '@/utils/api'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
-import React, { useEffect } from 'react'
 import SubNavbar from '@/components/SubNavbar'
 import FilterBar from '@/components/FilterBar'
 import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
+import React, { useEffect, useState } from 'react'
 import Table, { TableData } from '@/components/Table'
 import { SubheaderData } from '@/components/SubHeader'
 import ButtonSelectX from '@/components/ButtonSelectX'
@@ -23,6 +23,7 @@ import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
 
 export default function CountrySurfers() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const countryId = router.query.countryId as string
   const [year, setYear] = useQueryState('year', queryTypes.integer)
   const [gender, setGender] = useQueryState('gender')
@@ -36,9 +37,10 @@ export default function CountrySurfers() {
     gender: (gender as Gender | undefined) || undefined,
   }
 
-  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortSurferRank: 'asc' }, { enabled: !!countryId })
+  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortYear: !year ? 'asc' : undefined, sortSurferRank: year ? 'asc' : undefined }, { enabled: !!countryId })
   const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
-  const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId })
+  const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId && !tourResultQuery.isLoading })
+  const countrySurferStatAllQuery = api.countrySurferStat.getAll.useQuery(filters, { enabled: !!countryId && statToggle })
   const eventYearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearQuery = api.tour.getSurferYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
@@ -74,7 +76,16 @@ export default function CountrySurfers() {
   }
 
   return (
-    <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countrySurferStats(countrySurferStatQuery.data), statsLoading: countrySurferStatQuery.isLoading }}>
+    <Layout
+      title={countryQuery.data?.name}
+      subHeader={{
+        subHeaderData: getSubHeaderData(),
+        stats: countrySurferStats(countrySurferStatQuery.data, countrySurferStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? countrySurferStatQuery.isLoading : countrySurferStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
         <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="GENDER" />

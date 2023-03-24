@@ -13,14 +13,39 @@ const locationSurferStatSchema = z.object({
 })
 
 export const locationSurferStatRouter = createTRPCRouter({
-  // getAll: publicProcedure.input(locationSurferStatSchema).query(({ ctx, input }) => {
-  //   return getAll(ctx, input)
-  // }),
+  getAll: publicProcedure.input(locationSurferStatSchema).query(({ ctx, input }) => {
+    return getAll(ctx, input)
+  }),
 
   getLocationSurfer: publicProcedure.input(locationSurferStatSchema).query(({ ctx, input }) => {
     return getLocationSurfer(ctx, input)
   }),
 })
+
+const getAll = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
+  const query = {
+    ...(await totalEvents(ctx, input)),
+    ...(await eventWins(ctx, input)),
+    ...(await eventWinPerc(ctx, input)),
+    ...(await bestResult(ctx, input)),
+    ...(await avgResult(ctx, input)),
+    ...(await totalHeats(ctx, input)),
+    ...(await heatWins(ctx, input)),
+    ...(await heatWinPerc(ctx, input)),
+    ...(await excellentHeats(ctx, input)),
+    ...(await avgHeatTotal(ctx, input)),
+    ...(await highestHeatTotal(ctx, input)),
+    ...(await totalWaves(ctx, input)),
+    ...(await avgWaveScore(ctx, input)),
+    ...(await excellentWaves(ctx, input)),
+    ...(await totalCountedWaves(ctx, input)),
+    ...(await avgCountedWaveScore(ctx, input)),
+    ...(await highestWaveScore(ctx, input)),
+    ...(await prizeMoney(ctx, input)),
+  }
+  if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
+  return query
+}
 
 const getLocationSurfer = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = {
@@ -42,7 +67,7 @@ const getLocationSurfer = async (ctx: Context, input: z.infer<typeof locationSur
 }
 
 // FITERS
-const eventResultFilter = (input: z.infer<typeof locationSurferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, NOT: { place: 0 }, event: { locationSlug: input.locationSlug, eventStatus: 'COMPLETED' as Status } })
+const eventResultFilter = (input: z.infer<typeof locationSurferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, place: { not: 0 }, event: { locationSlug: input.locationSlug, eventStatus: 'COMPLETED' as Status } })
 const heatResultFilter = (input: z.infer<typeof locationSurferStatSchema>) => ({ surferSlug: input.surferSlug, heat: { heatStatus: 'COMPLETED' as Status, event: { locationSlug: input.locationSlug } } })
 const waveFilter = (input: z.infer<typeof locationSurferStatSchema>) => ({ surferSlug: input.surferSlug, heat: { event: { locationSlug: input.locationSlug } } })
 
@@ -58,7 +83,7 @@ const eventWins = async (ctx: Context, input: z.infer<typeof locationSurferStatS
 }
 
 const bestResult = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
-  const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug, event: { locationSlug: input.locationSlug }, NOT: { place: 0 } }, _min: { place: true } })
+  const query = await ctx.prisma.eventResult.aggregate({ where: eventResultFilter(input), _min: { place: true } })
   return { bestResult: { label: 'Best Result', value: querySuffix(query._min.place) } }
 }
 
@@ -150,7 +175,7 @@ const excellentWaves = async (ctx: Context, input: z.infer<typeof locationSurfer
 // OTHER
 const prizeMoney = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: eventResultFilter(input), _sum: { prizeMoney: true } })
-  return { prizeMoney: { label: 'Career Earnings', value: queryMoney(query._sum.prizeMoney) } }
+  return { prizeMoney: { label: 'Location Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }
 
 // Locations Stats Short

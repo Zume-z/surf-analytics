@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -17,10 +18,12 @@ import { bestResultByLocation, getApperances } from '@/utils/format/getLocationR
 
 export default function SurferLocations() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId, year } = router.query as { surferId: string; year: string }
-  const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
   const locationsQuery = api.location.getManyBySurfer.useQuery({ surferSlug: surferId }, { enabled: !!surferId })
-  const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId })
+  const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
+  const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId && !locationsQuery.isLoading })
+  const surferStatAllQuery = api.surferStat.getAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
   const onLocationSelect = (item: Location) => router.replace({ pathname: '/surfers/[surferId]/[locationId]', query: { surferId: surferId, locationId: item.slug } })
 
   const subHeaderData = [
@@ -46,7 +49,16 @@ export default function SurferLocations() {
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
-    <Layout title={tourResultQuery.data?.[0]?.surfer.name} subHeader={{ subHeaderData: subHeaderData, stats: surferCareerStats(surferStatQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined), statsLoading: surferStatQuery.isLoading }}>
+    <Layout
+      title={tourResultQuery.data?.[0]?.surfer.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: surferCareerStats(surferStatQuery.data, surferStatAllQuery.data, tourResultQuery.data?.[0]?.surfer as Surfer | undefined, statToggle),
+        statsLoading: !statToggle ? surferStatQuery.isLoading : surferStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <Table tableData={tableData} items={locationsQuery.data || []} handleSelection={onLocationSelect} loading={locationsQuery.isLoading} />
     </Layout>

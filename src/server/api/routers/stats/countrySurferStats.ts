@@ -51,10 +51,6 @@ const getAll = async (ctx: Context, input: z.infer<typeof countryStatSchema>) =>
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
     ...(await prizeMoney(ctx, input)),
-
-    // ...(await totalCompletedWaves(ctx, input)),
-    // ...(await avgCompletedWaveScore(ctx, input)),
-    // ...(await waveCompletionPerc(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
@@ -212,7 +208,7 @@ const excellentWaves = async (ctx: Context, input: z.infer<typeof countryStatSch
 // // OTHER
 const prizeMoney = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surfer: surferFilter(input), event: { year: input.year } }, _sum: { prizeMoney: true } })
-  return { prizeMoney: { label: 'Career Earnings', value: queryMoney(query._sum.prizeMoney) } }
+  return { prizeMoney: { label: 'Total Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }
 
 // Country Surfers

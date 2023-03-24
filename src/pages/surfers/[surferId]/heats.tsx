@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { api } from '@/utils/api'
 import Table from '@/components/Table'
 import { useRouter } from 'next/router'
@@ -12,11 +13,14 @@ import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFo
 
 export default function SurferHeats() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
   const { surferId, event, year } = router.query as { surferId: string; event: string; year: string }
   const heatQuery = api.heat.getMany.useQuery({ surferSlug: surferId, eventSlug: event, sortRoundNumber: 'asc' }, { enabled: !!surferId && !!event })
   const surferQuery = api.surfer.getOneHeader.useQuery({ slug: surferId }, { enabled: !!surferId })
   const eventQuery: any = api.event.getOneHeats.useQuery({ slug: event }, { enabled: !!event })
-  const eventResultStatQuery = api.eventResultStat.getHeats.useQuery({ surferSlug: surferId, eventSlug: event }, { enabled: !!surferId && !!event })
+  const eventResultStatQuery = api.eventResultStat.getHeats.useQuery({ surferSlug: surferId, eventSlug: event }, { enabled: !!surferId && !!event && !heatQuery.isLoading })
+  const eventResultAllStatQuery = api.eventResultStat.getAll.useQuery({ surferSlug: surferId, eventSlug: event }, { enabled: !!surferId && !!event && statToggle })
+
   const tableDataRows = getHeatTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeatTableBlocks(heatQuery.data as Heat[] | undefined, eventQuery.data?.wavePoolEvent)
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/surfers/[surferId]/waves', query: { ...router.query, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
@@ -38,7 +42,16 @@ export default function SurferHeats() {
   ]
 
   return (
-    <Layout title={surferQuery.data?.name} subHeader={{ subHeaderData: subHeaderData, stats: surferHeatStats(eventResultStatQuery.data), statsLoading: eventResultStatQuery.isLoading }}>
+    <Layout
+      title={surferQuery.data?.name}
+      subHeader={{
+        subHeaderData: subHeaderData,
+        stats: surferHeatStats(eventResultStatQuery.data, eventResultAllStatQuery.data, statToggle),
+        statsLoading: !statToggle ? eventResultStatQuery.isLoading : eventResultAllStatQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       {!eventQuery.data?.wavePoolEvent && <Table className="hidden lg:block" tableData={tableDataRows} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />}
       {!eventQuery.data?.wavePoolEvent && <TableHeat className="block lg:hidden" tableData={tableDataBlocks} items={heatQuery.data || []} handleSelection={onSelectHeat} loading={heatQuery.isLoading} />}

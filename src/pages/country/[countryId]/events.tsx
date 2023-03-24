@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { api } from '@/utils/api'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
@@ -27,6 +27,8 @@ import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
 
 export default function CountryEvents() {
   const router = useRouter()
+  const [statToggle, setStatToggle] = useState(false)
+
   const countryId = router.query.countryId as string
   const [year, setYear] = useQueryState('year')
   const [gender, setGender] = useQueryState('gender')
@@ -41,10 +43,11 @@ export default function CountryEvents() {
   }
 
   const countryQuery = api.country.getOneEvents.useQuery({ ...filters, eventYear: filters.year, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
-  const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId })
+  const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId && !countryQuery.isLoading })
+  const countryEventStatAllQuery = api.countryEventStat.getAll.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId && statToggle })
+
   const yearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
-  
 
   const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} showYear={true} /> },
@@ -76,7 +79,16 @@ export default function CountryEvents() {
   ]
 
   return (
-    <Layout title={countryQuery.data?.name} subHeader={{ subHeaderData: getSubHeaderData(), stats: countryEventStats(countryEventStatQuery.data), statsLoading: countryEventStatQuery.isLoading }}>
+    <Layout
+      title={countryQuery.data?.name}
+      subHeader={{
+        subHeaderData: getSubHeaderData(),
+        stats: countryEventStats(countryEventStatQuery.data, countryEventStatAllQuery.data, statToggle),
+        statsLoading: !statToggle ? countryEventStatQuery.isLoading : countryEventStatAllQuery.isLoading,
+        statToggle: statToggle,
+        setStatToggle: setStatToggle,
+      }}
+    >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
         <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="Gender" />

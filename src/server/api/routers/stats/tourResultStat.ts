@@ -34,18 +34,14 @@ export const tourResultStatRouter = createTRPCRouter({
   }),
 })
 
-const getAnalytics = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
-  const year = { year: { label: 'Year', value: input.year } }
+const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = {
-    ...year,
-    ...(await surferRank_SurferRank(ctx, input)),
-    // Events
+    ...(await surferRank_SurferPoints(ctx, input)),
     ...(await totalEvents(ctx, input)),
     ...(await eventWins(ctx, input)),
     ...(await bestResult(ctx, input)),
     ...(await avgResult(ctx, input)),
     ...(await eventWinPerc(ctx, input)),
-    // // Heats
     ...(await totalHeats(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
@@ -54,30 +50,28 @@ const getAnalytics = async (ctx: Context, input: z.infer<typeof tourResultStatSc
     ...(await heatTotalDifferential(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await excellentHeats(ctx, input)),
-    // // Waves
     ...(await totalWaves(ctx, input)),
     ...(await avgWaveScore(ctx, input)),
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
-    // // Other
     ...(await prizeMoney(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
 }
 
-const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+const getAnalytics = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+  const year = { year: { label: 'Year', value: input.year } }
   const query = {
-    ...(await surferRank_SurferRank(ctx, input)),
-    // Events
+    ...year,
+    ...(await surferRank_SurferPoints(ctx, input)),
     ...(await totalEvents(ctx, input)),
     ...(await eventWins(ctx, input)),
     ...(await bestResult(ctx, input)),
     ...(await avgResult(ctx, input)),
     ...(await eventWinPerc(ctx, input)),
-    // Heats
     ...(await totalHeats(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
@@ -86,14 +80,12 @@ const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>)
     ...(await heatTotalDifferential(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await excellentHeats(ctx, input)),
-    // Waves
     ...(await totalWaves(ctx, input)),
     ...(await avgWaveScore(ctx, input)),
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
-    // Other
     ...(await prizeMoney(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
@@ -102,7 +94,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>)
 
 const getEvents = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = {
-    ...(await surferRank_SurferRank(ctx, input)),
+    ...(await surferRank_SurferPoints(ctx, input)),
     ...(await worldTitles(ctx, input)),
     ...(await totalEvents(ctx, input)),
     ...(await eventWins(ctx, input)),
@@ -124,7 +116,7 @@ const heatResultFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ sur
 const waveFilter = (input: z.infer<typeof tourResultStatSchema>) => ({ surferSlug: input.surferSlug, heat: { event: { year: input.year } } })
 
 // TOURESULT QUERYS //
-const surferRank_SurferRank = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+const surferRank_SurferPoints = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.tourResult.findFirstOrThrow({ where: { surfer: { slug: input.surferSlug }, tour: { year: input.year } }, select: { surferRank: true, surferPoints: true } })
   return {
     surferRank: { label: 'Rank', value: querySuffix(query?.surferRank) },
@@ -220,7 +212,6 @@ const excellentHeats = async (ctx: Context, input: z.infer<typeof tourResultStat
 // WAVES //
 const totalWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: waveFilter(input) })
-
   return { totalWaves: { label: 'Total Waves', value: queryFormat(query) } }
 }
 
@@ -241,7 +232,7 @@ const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof tourResul
 
 const highestWaveScore = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.aggregate({ where: waveFilter(input), _max: { waveScore: true } })
-  return { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) }
+  return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
 const excellentWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {

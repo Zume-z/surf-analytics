@@ -22,7 +22,10 @@ export const eventStatRouter = createTRPCRouter({
 
 const getAll = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = {
-    ...(   totalHeats(ctx, input)),
+    ...(await eventBreaks(ctx, input)),
+    ...(await avgWaveRange(ctx, input)),
+    ...(await avgWindConditions(ctx, input)),
+    ...(await totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await highestHeatTotal(ctx, input)),
@@ -87,7 +90,7 @@ const totalHeats = async (ctx: Context, input: z.infer<typeof eventStatSchema>) 
 
 const avgHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatTotal: true } })
-  return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } } 
+  return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {

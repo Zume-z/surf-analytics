@@ -21,7 +21,7 @@ export default function Layout({ title, children, slider, subHeader }: LayoutPro
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      {subHeader && <SubHeader subHeaderData={subHeader.subHeaderData} stats={subHeader.stats} statsLoading={subHeader.statsLoading} buttonBack={subHeader.buttonBack} />}
+      {subHeader && <SubHeader subHeaderData={subHeader.subHeaderData} stats={subHeader.stats} statsLoading={subHeader.statsLoading} buttonBack={subHeader.buttonBack} setStatToggle={subHeader.setStatToggle} statToggle={subHeader.statToggle} />}
       {slider && <SliderEvents events={slider.events} loading={slider.loading} />}
       <div>
         <main className="mx-auto max-w-7xl px-4 md:px-16  ">{children}</main>
