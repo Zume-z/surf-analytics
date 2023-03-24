@@ -225,6 +225,7 @@ const interferences = async (ctx: Context, input: z.infer<typeof matchupStatSche
 
   return { label: 'Interferences', surferA: queryFormat(surferATotalInterferences), surferB: queryFormat(surferBTotalInterferences) }
 }
+
 // Direct Compare Stats
 // ---------------------
 // Heat Wins

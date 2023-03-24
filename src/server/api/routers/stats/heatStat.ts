@@ -29,7 +29,9 @@ const getAll = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
+    ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
@@ -102,11 +104,30 @@ const highestWaveScore = async (ctx: Context, input: z.infer<typeof heatStatSche
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
+const totalTens = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {
+  const query = await ctx.prisma.wave.count({ where: { heatSlug: input.heatSlug, waveScore: 10 } })
+  return { totalTens: { label: 'Ten Point Waves', value: queryFormat(query) } }
+}
+
 const excellentWaves = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { heatSlug: input.heatSlug, waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
 }
 
+const totalInterferences = async (ctx: Context, input: z.infer<typeof heatStatSchema>) => {
+  const query = await ctx.prisma.heatResult.aggregate({ where: { heatSlug: input.heatSlug, OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) //prettier-ignore
+  const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+  return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
+}
+
+
+
+
+// const totalInterferences = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+//   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) //prettier-ignore
+//   const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+//   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
+// }
 // heat
 // ---------------
 // conditions

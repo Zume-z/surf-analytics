@@ -7,10 +7,20 @@ export const queryRound = (query: number | string | undefined | null) => (query 
 export const queryMoney = (query: number | string | undefined | null) => (query != undefined ? getMoneyFormat(query) : '-')
 export const queryFormat = (query: number | string | undefined | null) => (query != undefined ? query.toLocaleString('en-US') : '-')
 export const querySuffix = (query: number | string | undefined | null) => (query != undefined ? ordinalSuffix(Math.round(Number(query))) : '-')
-// export const queryPerc = (query: number | string | undefined) => (query !== undefined ? getPerc(query) : '-')
+export const queryDifferential = (query: number | string | undefined | null) => (query != undefined ? query > 0 ? '+' + twoDec(query) : twoDec(query) : '-')
+export const queryDivide = (valueA: number | string | undefined, valueB: number | string | undefined) => {
+  if (valueA === '0' || valueA === 0) return '-'
+  if (valueA !== undefined && valueB !== undefined) {
+    valueA = valueA.toString().replaceAll(',', '')
+    valueB = valueB.toString().replaceAll(',', '')
+    const perc = Number(valueA) / Number(valueB)
+    return twoDec(perc)
+  }
+  return '-'
+}
+
 
 export const queryPerc = (valueA: number | string | undefined, valueB: number | string | undefined) => {
-  
   if (valueA === '0' || valueA === 0) return '-'
   if (valueA !== undefined && valueB !== undefined) {
     valueA = valueA.toString().replaceAll(',', '')

@@ -46,7 +46,7 @@ const ButtonSelectX = ({ className, placeHolder, value, setValue, options, loadi
           ) : (
             <div className={`my-1 px-2 sm:px-4 ${className}`}>
               <div className="select-btn__closed ">
-                <button className="z-40 flex items-center whitespace-nowrap outline-none  " onClick={() => setValue(null)}>
+                <button className="z-40 flex items-center whitespace-nowrap outline-none" onClick={() => setValue(null)}>
                   {selectedItem?.label} <Cross2Icon className="ml-1" />
                 </button>
               </div>

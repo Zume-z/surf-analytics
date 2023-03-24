@@ -50,7 +50,7 @@ export const eventResultRouter = createTRPCRouter({
       select: {
         place: true,
         points: true,
-        surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } },
+        surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { flagLink: true, name: true } } } },
       },
       orderBy: {
         place: input?.sortPlace,

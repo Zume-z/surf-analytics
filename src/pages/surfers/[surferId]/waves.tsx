@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -10,7 +11,6 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
-import { useState } from 'react'
 
 export default function SurferWaves() {
   const router = useRouter()

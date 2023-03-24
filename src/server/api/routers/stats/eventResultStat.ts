@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { queryDifferential, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 import { Context } from '@/utils/interfaces'
 import { Status } from '@prisma/client'
 
@@ -45,8 +45,10 @@ const getAll = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>
     ...(await heatTotalDifferential(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
+    ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
     ...(await prizeMoney(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
 
     // (..{await totalCompletedWaves(ctx, input)),
     // (..{await avgCompletedWaveScore(ctx, input)),
@@ -169,12 +171,12 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof eventResultStatS
 
 const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryRound(query._sum.heatDifferential) } }
+  return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
 }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryRound(query._avg.heatDifferential) } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
@@ -213,6 +215,11 @@ const highestWaveScore = async (ctx: Context, input: z.infer<typeof eventResultS
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
+const totalTens = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
+  const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: 10 } })
+  return { totalTens: { label: 'Total Tens', value: query ?? '-' } }
+}
+
 const excellentWaves = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: query ?? '-' } }
@@ -222,6 +229,12 @@ const excellentWaves = async (ctx: Context, input: z.infer<typeof eventResultSta
 const prizeMoney = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug, event: { slug: input.eventSlug } }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Prize Money', value: queryMoney(query._sum.prizeMoney) } }
+}
+
+const totalInterferences = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
+  const query = await ctx.prisma.heatResult.aggregate({where: { ...heatResultFilter(input), OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) // prettier-ignore
+  const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+  return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }
 
 // eventResult

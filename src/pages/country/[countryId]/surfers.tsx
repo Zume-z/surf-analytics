@@ -27,7 +27,7 @@ export default function CountrySurfers() {
   const countryId = router.query.countryId as string
   const [year, setYear] = useQueryState('year', queryTypes.integer)
   const [gender, setGender] = useQueryState('gender')
-  const handleSetYear = (value: string | null) => setYear(Number(value))
+  const handleSetYear = (value: string | null) => (value == null ? setYear(null) : setYear(Number(value)))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   useEffect(() => void setYear(year || new Date().getFullYear()), [])
 

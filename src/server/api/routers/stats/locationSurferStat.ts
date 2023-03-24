@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server'
 import { getMoneyFormat } from '@/utils/format/moneyFormat'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { queryDifferential, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 import { Context } from '@/utils/interfaces'
 import { Status } from '@prisma/client'
 
@@ -32,9 +32,12 @@ const getAll = async (ctx: Context, input: z.infer<typeof locationSurferStatSche
     ...(await totalHeats(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
+    ...(await totalTens(ctx, input)),
     ...(await excellentHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
     ...(await highestHeatTotal(ctx, input)),
+    ...(await heatTotalDifferential(ctx, input)),
+    ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await totalWaves(ctx, input)),
     ...(await avgWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
@@ -42,6 +45,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof locationSurferStatSche
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await prizeMoney(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
@@ -128,12 +132,12 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof locationSurf
 
 const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Differential', value: queryRound(query._sum.heatDifferential) } }
+  return { heatTotalDifferential: { label: 'Heat Differential', value: queryDifferential(query._sum.heatDifferential) } }
 }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryRound(query._avg.heatDifferential) } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
@@ -167,6 +171,12 @@ const highestWaveScore = async (ctx: Context, input: z.infer<typeof locationSurf
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
+const totalTens = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
+  const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: 10 } })
+  return { totalTens: { label: 'Ten Point Waves', value: queryFormat(query) } }
+}
+
+
 const excellentWaves = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
@@ -177,6 +187,13 @@ const prizeMoney = async (ctx: Context, input: z.infer<typeof locationSurferStat
   const query = await ctx.prisma.eventResult.aggregate({ where: eventResultFilter(input), _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Location Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }
+
+const totalInterferences = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
+  const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } })
+  const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+  return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
+}
+
 
 // Locations Stats Short
 // ------------------------

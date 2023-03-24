@@ -4,7 +4,7 @@ import { TRPCError } from '@trpc/server'
 import { Context } from '@/utils/interfaces'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { queryDifferential, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 
 const tourResultStatSchema = z.object({
   year: z.number().min(1900).max(2100),
@@ -29,9 +29,6 @@ export const tourResultStatRouter = createTRPCRouter({
     const queries = input.yearsArr.map((year) => getAnalytics(ctx, { year, surferSlug: input.surferSlug }))
     return Promise.all(queries)
   }),
-  test: publicProcedure.input(tourResultStatSchema).query(({ ctx, input }) => {
-    /// TEST AREA ///
-  }),
 })
 
 const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
@@ -50,12 +47,32 @@ const getAll = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>)
     ...(await heatTotalDifferential(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await excellentHeats(ctx, input)),
+    ...(await totalTens(ctx, input)),
     ...(await totalWaves(ctx, input)),
     ...(await avgWaveScore(ctx, input)),
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
+    ...(await prizeMoney(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
+  }
+  if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
+  return query
+}
+
+const getEvents = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+  const query = {
+    ...(await surferRank_SurferPoints(ctx, input)),
+    ...(await worldTitles(ctx, input)),
+    ...(await totalEvents(ctx, input)),
+    ...(await eventWins(ctx, input)),
+    ...(await bestResult(ctx, input)),
+    ...(await avgResult(ctx, input)),
+    ...(await totalHeats(ctx, input)),
+    ...(await heatWins(ctx, input)),
+    ...(await heatWinPerc(ctx, input)),
+    ...(await avgHeatTotal(ctx, input)),
     ...(await prizeMoney(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
@@ -86,24 +103,6 @@ const getAnalytics = async (ctx: Context, input: z.infer<typeof tourResultStatSc
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
-    ...(await prizeMoney(ctx, input)),
-  }
-  if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
-  return query
-}
-
-const getEvents = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
-  const query = {
-    ...(await surferRank_SurferPoints(ctx, input)),
-    ...(await worldTitles(ctx, input)),
-    ...(await totalEvents(ctx, input)),
-    ...(await eventWins(ctx, input)),
-    ...(await bestResult(ctx, input)),
-    ...(await avgResult(ctx, input)),
-    ...(await totalHeats(ctx, input)),
-    ...(await heatWins(ctx, input)),
-    ...(await heatWinPerc(ctx, input)),
-    ...(await avgHeatTotal(ctx, input)),
     ...(await prizeMoney(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
@@ -191,17 +190,17 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof tourResultStatSc
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _max: { heatTotal: true } })
-  return { highestHeatTotal: { label: 'Highest Heat Total', value: query._max.heatTotal ?? '-' } }
+  return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
 const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Differential', value: query._sum.heatDifferential ?? '-' } }
+  return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
 }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: query._avg.heatDifferential ?? '-' } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
@@ -235,6 +234,11 @@ const highestWaveScore = async (ctx: Context, input: z.infer<typeof tourResultSt
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
+const totalTens = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+  const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: 10 } })
+  return { totalTens: { label: 'Ten Point Waves', value: queryFormat(query) } }
+}
+
 const excellentWaves = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { ...waveFilter(input), waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
@@ -244,6 +248,12 @@ const excellentWaves = async (ctx: Context, input: z.infer<typeof tourResultStat
 const prizeMoney = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({ where: { surferSlug: input.surferSlug, event: { year: input.year } }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Year Earnings', value: queryMoney(query._sum.prizeMoney) } }
+}
+
+const totalInterferences = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
+  const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true }}) // prettier-ignore
+  const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+  return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }
 
 // tourResult Stats

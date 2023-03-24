@@ -20,11 +20,11 @@ export const surferCareerStats = (statQuery?: Stats, allStatQuery?: Stats, surfe
 
   if (statToggle) {
     if (!allStatQuery || surfer == undefined) return undefined
-    const { eventWinPerc, totalHeats, avgHeatTotal, heatWins, heatWinPerc, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves } = allStatQuery
+    const { eventWinPerc, totalHeats, avgHeatTotal, heatWins, heatWinPerc, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, avgHeatTotalDifferential, heatTotalDifferential, totalInterferences, mostBeaten, mostBeatenBy} = allStatQuery //prettier-ignore
     const bio = { label: 'Bio', stats: [surferStance, surferAge, surferHeight, surferWeight, surferHomeTown] }
-    const career = { label: 'Career', stats: [surferRank, surferPoints, worldTitles, prizeMoney] }
+    const career = { label: 'Career', stats: [surferRank, surferPoints, worldTitles, prizeMoney, mostBeaten, mostBeatenBy] }
     const events = { label: 'Events', stats: [totalEvents, eventWins, eventWinPerc, avgResult, bestResult] }
-    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, highestHeatTotal] }
+    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, heatTotalDifferential, avgHeatTotalDifferential, highestHeatTotal, totalInterferences] }
     const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
     return [bio, career, events, heats, waves]
   }
@@ -41,11 +41,11 @@ export const surferEventStats = (statQuery?: Stats, statQueryAll?: Stats, statTo
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { surferRank, surferPoints, prizeMoney, totalEvents,  eventWins, bestResult, avgResult, eventWinPerc, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves} = statQueryAll //prettier-ignore
+    const { surferRank, surferPoints, prizeMoney, totalEvents,  eventWins, bestResult, avgResult, eventWinPerc, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, heatTotalDifferential, avgHeatTotalDifferential, totalInterferences, totalTens} = statQueryAll //prettier-ignore
     const results = { label: 'Results', stats: [surferRank, surferPoints, prizeMoney] }
     const events = { label: 'Events', stats: [totalEvents, eventWins, eventWinPerc, avgResult, bestResult] }
-    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, highestHeatTotal] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, heatTotalDifferential, avgHeatTotalDifferential, excellentHeats, highestHeatTotal, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, totalTens, excellentWaves] }
     return [results, events, heats, waves]
   }
 }
@@ -61,10 +61,10 @@ export const surferHeatStats = (statQuery?: Stats, statQueryAll?: Stats, statTog
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { place, points, knockedOutBy, prizeMoney, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves } = statQueryAll //prettier-ignore
+    const { place, points, knockedOutBy, prizeMoney, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, totalTens, heatTotalDifferential, avgHeatTotalDifferential, totalInterferences } = statQueryAll //prettier-ignore
     const results = { label: 'Results', stats: [place, points, prizeMoney, knockedOutBy] }
-    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, highestHeatTotal] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, heatTotalDifferential, avgHeatTotalDifferential, excellentHeats, highestHeatTotal, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, totalTens, excellentWaves] }
     return [results, heats, waves]
   }
 }
@@ -80,10 +80,10 @@ export const surferWaveStats = (statQuery?: Stats, statQueryAll?: Stats, statTog
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { waveRange, windConditions, waveType, breakName, heatPlace, heatTotal, heatDifferential, highestWaveScore, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves } = statQueryAll //prettier-ignore
+    const { waveRange, windConditions, waveType, breakName, heatPlace, heatTotal, heatDifferential, highestWaveScore, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves, totalTens, totalInterferences } = statQueryAll //prettier-ignore
     const conditions = { label: 'Conditions', stats: [breakName, waveRange, windConditions, waveType] }
-    const results = { label: 'Result', stats: [heatPlace, heatTotal, heatDifferential] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
+    const results = { label: 'Result', stats: [heatPlace, heatTotal, heatDifferential, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, totalTens, excellentWaves] }
     return [conditions, results, waves]
   }
 }
@@ -99,10 +99,10 @@ export const surferLocationStats = (statQuery?: Stats, statQueryAll?: Stats, sta
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { totalEvents, eventWins, bestResult, avgResult, eventWinPerc, excellentHeats, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, prizeMoney } = statQueryAll //prettier-ignore
+    const { totalEvents, eventWins, bestResult, avgResult, eventWinPerc, excellentHeats, totalHeats, heatWins, heatWinPerc, avgHeatTotal, highestHeatTotal, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, totalTens, prizeMoney, heatTotalDifferential, avgHeatTotalDifferential, totalInterferences } = statQueryAll //prettier-ignore
     const results = { label: 'Results', stats: [totalEvents, eventWins, eventWinPerc, avgResult, bestResult, prizeMoney] }
-    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, highestHeatTotal] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, heatTotalDifferential, avgHeatTotalDifferential, excellentHeats, highestHeatTotal, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, totalTens, excellentWaves] }
     return [results, heats, waves]
   }
 }
@@ -118,10 +118,10 @@ export const eventResultStats = (statQuery?: Stats, statQueryAll?: Stats, statTo
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { eventBreaks, avgWaveRange, avgWindConditions, totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves, prizeMoney } = statQueryAll //prettier-ignore
+    const { eventBreaks, avgWaveRange, avgWindConditions, totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore,totalTens, excellentWaves, prizeMoney, avgHeatTotalDifferential, totalInterferences } = statQueryAll //prettier-ignore
     const event = { label: 'Event', stats: [eventBreaks, avgWaveRange, avgWindConditions, prizeMoney] }
-    const heats = { label: 'Heats', stats: [totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [totalHeats, avgHeatTotal, avgHeatTotalDifferential, highestHeatTotal, excellentHeats, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, totalTens, excellentWaves] }
     return [event, heats, waves]
   }
 }
@@ -137,10 +137,10 @@ export const eventWaveStats = (statQuery?: Stats, statQueryAll?: Stats, statTogg
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { waveRange, windConditions, waveType, breakName, combinedHeatTotal, avgHeatTotal, heatDifferential, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves } = statQueryAll //prettier-ignore
+    const { waveRange, windConditions, waveType, breakName, combinedHeatTotal, avgHeatTotal, heatDifferential, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, totalTens , totalInterferences } = statQueryAll //prettier-ignore
     const conditions = { label: 'Conditions', stats: [breakName, waveRange, windConditions, waveType] }
-    const heats = { label: 'Heats', stats: [avgHeatTotal, heatDifferential, highestWaveScore, combinedHeatTotal] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [avgHeatTotal, heatDifferential, highestWaveScore, combinedHeatTotal, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, totalTens, excellentWaves] }
     return [conditions, heats, waves]
   }
 }
@@ -156,11 +156,12 @@ export const countrySurferStats = (statQuery?: Stats, statQueryAll?: Stats, stat
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { avgRank, avgPoints, worldTitles, prizeMoney, totalEvents, eventWins, avgResult, eventWinPerc, totalHeats, heatWins, heatWinPerc, avgHeatTotal } = statQueryAll //prettier-ignore
+    const { avgRank, avgPoints, worldTitles, prizeMoney, totalEvents, eventWins, avgResult, eventWinPerc, totalHeats, heatWins, heatWinPerc, avgHeatTotal, heatTotalDifferential, avgHeatTotalDifferential, totalInterferences, totalWaves, avgWaveScore,totalCountedWaves, avgCountedWaveScore, excellentWaves, totalTens } = statQueryAll //prettier-ignore
     const results = { label: 'Results', stats: [worldTitles, avgRank, avgPoints, prizeMoney] }
     const events = { label: 'Events', stats: [totalEvents, eventWins, avgResult, eventWinPerc] }
-    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal] }
-    return [results, events, heats]
+    const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, heatTotalDifferential, avgHeatTotalDifferential, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, totalTens, excellentWaves] }
+    return [results, events, heats, waves]
   }
 }
 
@@ -175,10 +176,10 @@ export const countryEventStats = (statQuery?: Stats, statQueryAll?: Stats, statT
   }
   if (statToggle) {
     if (!statQueryAll) return undefined
-    const { totalEvents, avgWaveRange, avgWindConditions, totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves, prizeMoney } = statQueryAll //prettier-ignore
+    const { totalEvents, avgWaveRange, avgWindConditions, totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, totalTens, excellentWaves, prizeMoney, avgHeatTotalDifferential, totalInterferences } = statQueryAll //prettier-ignore
     const events = { label: 'Events', stats: [totalEvents, avgWaveRange, avgWindConditions, prizeMoney] }
-    const heats = { label: 'Heats', stats: [totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats] }
-    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, excellentWaves] }
+    const heats = { label: 'Heats', stats: [totalHeats, avgHeatTotal, highestHeatTotal, excellentHeats, avgHeatTotalDifferential, totalInterferences] }
+    const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, totalTens, excellentWaves] }
     return [events, heats, waves]
   }
 }

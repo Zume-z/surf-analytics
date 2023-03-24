@@ -163,11 +163,11 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
         </div>
 
         {/* MOBILE: STATS */}
-        {showStats && (
+        {showStats && !statsLoading && stats && !statToggle &&  (
           <div className="absolute h-screen w-full border-t border-b bg-white shadow-sm sm:h-full">
             <div className="mx-8 flex-col justify-center  text-sm ">
               {stats.map((Column: any, i: number) => (
-                <div key={i} className="last: w-full border-b py-4 ">
+                <div key={i} className="w-full border-b py-4 ">
                   {Column?.map((stat: any, i: number) => (
                     <div key={i} className="flex w-full  py-1">
                       <div className="w-full whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>

@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server'
 import { twoDec } from '@/utils/format/roundTwoDec'
 import { getMoneyFormat } from '@/utils/format/moneyFormat'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryFormat, queryMoney, queryRound } from '@/utils/format/queryFormat'
+import { queryDifferential, queryFormat, queryMoney, queryRound } from '@/utils/format/queryFormat'
 import { Context } from '@/utils/interfaces'
 import { Status } from '@prisma/client'
 
@@ -35,8 +35,10 @@ const getAll = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
+    ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
     ...(await prizeMoney(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
@@ -106,8 +108,7 @@ const totalHeatDifferential = async (ctx: Context, input: z.infer<typeof eventSt
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _avg: { heatDifferential: true } })
-  const queryRound = query._avg.heatDifferential !== undefined ? twoDec(query._avg.heatDifferential) : '-'
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryRound } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Total Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
@@ -140,6 +141,11 @@ const highestWaveScore = async (ctx: Context, input: z.infer<typeof eventStatSch
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
+const totalTens = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
+  const query = await ctx.prisma.wave.count({ where: { heat: { eventSlug: input.eventSlug }, waveScore: { gte: 10 } } })
+  return { totalTens: { label: 'Ten Point Waves', value: queryFormat(query) } }
+}
+
 const excellentWaves = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { heat: { eventSlug: input.eventSlug }, waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
@@ -149,6 +155,20 @@ const prizeMoney = async (ctx: Context, input: z.infer<typeof eventStatSchema>) 
   const query = await ctx.prisma.eventResult.aggregate({ where: { eventSlug: input.eventSlug }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Event Prize Money', value: queryMoney(query._sum.prizeMoney) } }
 }
+
+const totalInterferences = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
+  const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } })
+  const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
+  return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
+}
+
+
+
+// const totalInterferences = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
+//   const query = await ctx.prisma.heatResult.findUniqueOrThrow({ where: { heatSlug_surferSlug: { heatSlug: input.heatSlug, surferSlug: input.surferSlug } }, select: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) // prettier-ignore
+//   const totalInt = (query.interferenceOne ? query.interferenceOne : 0) + (query.interferenceTwo ? query.interferenceTwo : 0) + (query.interferenceThree ? query.interferenceThree : 0)
+//   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
+// }
 
 // Conditions
 // ---------------
