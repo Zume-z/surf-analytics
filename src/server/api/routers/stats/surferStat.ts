@@ -33,7 +33,6 @@ const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => 
     ...(await eventWinPerc(ctx, input)),
     ...(await totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
-    ...(await heatTotalDifferential(ctx, input)),
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
@@ -49,8 +48,8 @@ const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => 
     ...(await prizeMoney(ctx, input)),
     ...(await totalInterferences(ctx, input)),
 
-    ...(await mostBeaten(ctx, input)),
-    ...(await mostBeatenBy(ctx, input)),
+    // ...(await mostBeaten(ctx, input)),
+    // ...(await mostBeatenBy(ctx, input)),
 
     // ...(await totalCompletedWaves(ctx, input)),
     // ...(await avgCompletedWaveScore(ctx, input)),
@@ -152,10 +151,10 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof surferStatSc
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
-}
+// const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+//   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
+//   return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
+// }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })
