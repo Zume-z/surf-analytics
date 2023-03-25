@@ -22,7 +22,7 @@ export const surferStatRouter = createTRPCRouter({
 })
 
 const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-  wavesPerMinute(ctx, input)
+  // wavesPerMinute(ctx, input)
   const query = {
     ...(await surferRank_surferPoints(ctx, input)),
     ...(await worldTitles(ctx, input)),
@@ -190,14 +190,14 @@ const avgWavesPerHeat = async (ctx: Context, input: z.infer<typeof surferStatSch
   return { avgWavesPerHeat: { label: 'Avg. Waves Per Heat', value: queryDivide(totalWavesQ.totalWaves.value, totalHeatsQ.totalHeats.value) } }
 }
 
-const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+// const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   
-  const totalWavesX = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: {not: null}}} })
-  // const totalMinutes = await ctx.prisma.
-  // console.log(totalWavesQ)
-  // console.log(totalWavesX)
+//   const totalWavesX = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: {not: null}}} })
+//   // const totalMinutes = await ctx.prisma.
+//   // console.log(totalWavesQ)
+//   // console.log(totalWavesX)
   
-}
+// }
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, countedWave: true } })
