@@ -25,7 +25,7 @@ export default function SurferCareer() {
   const onYearSelect = (item: TourResult) => !item.tour.canceled && item.tour.year >= 2010 && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
 
   const subHeaderData = [
-    { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
+    { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} />, primaryTab: true },
     { content: <SubHeaderItem label="career" value={surferYearSpan(tourResultQuery.data)} subvalue={'Career'} active={true} /> },
     { content: <SubHeaderItem className='sm:hidden block' label="Events" value={'-'} subvalue={'Events'} active={false} loading={tourResultQuery.isLoading} routePath={{ pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: tourResultQuery.data?.map((item: any) => item.tour.year)[0] } }}  /> }, //prettier-ignore
     { content: <SubHeaderItem className='sm:hidden block'label="Locations" value={'-'} subvalue={'Locations'} active={false} loading={tourResultQuery.isLoading} routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId } }} /> }, //prettier-ignore

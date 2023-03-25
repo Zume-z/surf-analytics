@@ -13,7 +13,7 @@ type ButtonSelectSearchSurfer = {
   className?: string
   placeHolder?: string
   searchPlaceHolder?: string
-  options: { label: string; value: string; surfer: Surfer }[] | undefined
+  options: { label: string; value: string; surfer: Surfer; matchupCount?: number }[] | undefined
   value?: string | number
   setValue: (value: string | null) => void
   loading?: boolean
@@ -87,24 +87,9 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                       <Command.List>
                         {optionsFilter.map((option, i) => (
                           <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive group'}>
-                            {/* <div>
-                              <div className="py-1 sm:pr-4 ">
-                                <div className="flex items-center whitespace-nowrap text-sm">
-                                  <div className={`transition-200 h-10 w-10 flex-shrink-0 rounded-full bg-gray-100 hover-mod:group-hover:bg-white`}>
-                                    <Image src={option.surfer.profileImage} className="rounded-full" width={100} height={99} />
-                                  </div>
-                                  <div className="ml-2">
-                                    <div className="">{option.surfer.name}</div>
-                                    <div className="flex items-center space-x-1">
-                                      <Image src={option.surfer.country.flagLink} width={16} height={11} />
-                                      <div className=" text-gray-400 hover-mod:group-hover:text-gray-dark ">{option.surfer.country.name}</div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div> */}
+                           
                             <div>
-                              <div className="min-w-[200px] ">
+                              <div className="min-w-[220px] flex justify-between ">
                                 <div className="flex items-center whitespace-nowrap text-sm">
                                   <div className={`transition-200 h-8 w-8 flex-shrink-0 rounded-full bg-gray-100 hover-mod:group-hover:bg-white`}>
                                     <Image src={option.surfer.profileImage} className="rounded-full" width={50} height={49} />
@@ -113,10 +98,11 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                                     <div className="">{option.surfer.name}</div>
                                     <div className="flex items-center space-x-1">
                                       <Image src={option.surfer.country.flagLink} width={16} height={11} />
-                                      <div className=" text-gray-400 hover-mod:group-hover:text-gray-dark text-xs ">{option.surfer.country.name}</div>
+                                      <div className=" text-xs text-gray-400 hover-mod:group-hover:text-gray-dark ">{option.surfer.country.name}</div>
                                     </div>
                                   </div>
                                 </div>
+                                {option.matchupCount && option.matchupCount > 0 && <div className='text-xs'>{option.matchupCount}</div>}
                               </div>
                             </div>
                           </Command.Item>

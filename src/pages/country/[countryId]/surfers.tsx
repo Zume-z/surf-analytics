@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { api } from '@/utils/api'
+import React, { useState } from 'react'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -7,15 +8,14 @@ import SubNavbar from '@/components/SubNavbar'
 import FilterBar from '@/components/FilterBar'
 import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
-import React, { useEffect, useState } from 'react'
 import Table, { TableData } from '@/components/Table'
 import { SubheaderData } from '@/components/SubHeader'
 import ButtonSelectX from '@/components/ButtonSelectX'
-import { Country, TourResult } from '@/utils/interfaces'
+import { Country, Surfer } from '@/utils/interfaces'
 import { genderFormat } from '@/utils/format/genderFormat'
 import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
-import { countrySurferYearSpan } from '@/utils/format/getYearSpan'
+import { surfersOrderBy } from '@/utils/format/getSurferSorted'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import { countrySurferStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
@@ -28,8 +28,7 @@ export default function CountrySurfers() {
   const [year, setYear] = useQueryState('year', queryTypes.integer)
   const [gender, setGender] = useQueryState('gender')
   const handleSetYear = (value: string | null) => (value == null ? setYear(null) : setYear(Number(value)))
-  const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
-  useEffect(() => void setYear(year || new Date().getFullYear()), [])
+  const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.slug } })
 
   const filters: z.infer<typeof TourResultSchema> = {
     countrySlug: countryId,
@@ -37,14 +36,14 @@ export default function CountrySurfers() {
     gender: (gender as Gender | undefined) || undefined,
   }
 
-  const tourResultQuery = api.tourResult.getManyDistinct.useQuery({ ...filters, sortYear: !year ? 'asc' : undefined, sortSurferRank: year ? 'asc' : undefined }, { enabled: !!countryId })
+  const surferQuery = api.surfer.getManyCountries.useQuery(filters, { enabled: !!countryId })
+  const surferSorted = surfersOrderBy(surferQuery.isLoading ? undefined : (surferQuery.data as Surfer[]))
   const countryQuery = api.country.getOne.useQuery({ ...filters, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
-  const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId && !tourResultQuery.isLoading })
+  const countrySurferStatQuery = api.countrySurferStat.getCountrySurfer.useQuery(filters, { enabled: !!countryId && !surferQuery.isLoading })
   const countrySurferStatAllQuery = api.countrySurferStat.getAll.useQuery(filters, { enabled: !!countryId && statToggle })
   const eventYearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearQuery = api.tour.getSurferYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
-  if (tourResultQuery.data?.length === 0) setYear(null)
 
   const subNavItems = [
     { label: 'Country', active: false, router: { pathname: '/country', query: {} } },
@@ -53,15 +52,15 @@ export default function CountrySurfers() {
   if (eventYearQuery.data?.length) subNavItems.push({ label: 'Events', active: false, router: { pathname: '/country/[countryId]/events', query: { countryId: countryId } } })
 
   const tableData: TableData[] = [
-    { name: 'Surfer', id: 'surfer', content: (item: TourResult) => <CardSurfer surfer={item.surfer} /> },
-    { name: 'Rank', id: 'rank', content: (item: TourResult) => <div className="table-item">{year ? item.surferRank : '-'}</div> },
-    { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{year && item.surferPoints ? item.surferPoints.toLocaleString('en-US') : '-'}</div> },
+    { name: 'Surfer', id: 'surfer', content: (item: Surfer) => <CardSurfer surfer={item} /> },
+    { name: 'World Titles', id: 'worldTitles', content: (item: Surfer) => <div className="table-item">{item.tourResults.length ? item.tourResults.length : '-'}</div> },
+    { name: 'Event Wins', id: 'eventWins', content: (item: Surfer) => <div className="table-item">{item.eventResults.length ? item.eventResults.length : '-'}</div> },
     { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
   ]
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   const getSubHeaderData = () => {
-    if (tourResultQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
+    if (surferQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
     const subHeaderData: SubheaderData[] = [
       { content: <SubHeaderCountry country={countryQuery.data as Country | undefined} routePath={{ pathname: '/country', query: {} }} />, primaryTab: true },
       { content: <SubHeaderItem className="block sm:hidden" label="country" value={'Country'} active={false} routePath={{ pathname: '/country', query: {} }} /> },
@@ -71,7 +70,7 @@ export default function CountrySurfers() {
       subHeaderData.push({ content: <SubHeaderItem className="block sm:hidden" label="events" value={'Events'} active={false} routePath={{ pathname: '/country/[countryId]/events', query: { countryId: countryId } }} /> })
     if (gender) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="gender" value={genderFormat(gender)} active={year ? false : true} /> })
     if (year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="year" value={year.toString()} active={true} /> })
-    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfers" value={countrySurferYearSpan(tourResultQuery.data)} subvalue="Surfers" active={true} /> })
+    if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfers" value={'All'} subvalue="Surfers" active={true} /> })
     return subHeaderData
   }
 
@@ -91,7 +90,7 @@ export default function CountrySurfers() {
         <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="GENDER" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
       </FilterBar>
-      <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />
+      <Table tableData={tableData} items={surferSorted || []} loading={surferQuery.isLoading} handleSelection={onSelectSurfer} />
     </Layout>
   )
 }

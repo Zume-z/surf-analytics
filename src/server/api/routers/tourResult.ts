@@ -92,7 +92,6 @@ export const tourResultRouter = createTRPCRouter({
 
   getManyDistinct: publicProcedure.input(TourResultSchema).query(({ ctx, input }) => {
     const yearSort = input.sortYear ? { year: input.sortYear } : undefined
-
     const tourResult = ctx.prisma.tourResult.findMany({
       where: {
         surfer: {
@@ -105,14 +104,9 @@ export const tourResultRouter = createTRPCRouter({
           gender: input?.gender,
         },
       },
-
       select: {
-        surferPoints: true,
-        surferRank: true,
         tour: { select: { year: true } },
-        surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } } },
       },
-
       orderBy: {
         surferRank: input?.sortSurferRank,
         tour: yearSort,

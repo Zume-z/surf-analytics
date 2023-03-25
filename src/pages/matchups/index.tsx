@@ -29,11 +29,15 @@ export default function MatchupsDev() {
 
   const heatQuery = api.heat.getManyMatchup.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck, heatStatus: 'COMPLETED' }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
   const heatStatQuery = api.matchupStat.getAll.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
+
+  // FIX SELECT WHEN NO SURFERSLUGFILTER SELECTED
   const surferOptionsQuery = api.surfer.getManyMatchup.useQuery({ surferSlugFilter: filters.surferSlugA ? filters.surferSlugA : filters.surferSlugB })
-  const surferOptions = surferOptionsQuery.data?.map((surfer) => ({ label: surfer.name, value: surfer.slug, surfer: surfer as Surfer }))
+
+  const surferOptions = surferOptionsQuery.data?.map((surfer) => ({ label: surfer.name, value: surfer.slug, surfer: surfer as Surfer, matchupCount: surfer.heatResults.length ? surfer.heatResults.length : undefined }))
+
   const tableDataRows = getHeadToHeadTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeadToHeadTableBlocks(heatQuery.data as Heat[] | undefined)
-  const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/events/[eventId]/waves', query: { eventId: item.eventSlug, heatRound: item.heatRound, heatNumber: item.heatNumber } })} //prettier-ignore
+  const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/matchups/waves', query: { eventId: item.eventSlug, heatRound: item.heatRound, heatNumber: item.heatNumber, surfera: filters.surferSlugA, surferb: filters.surferSlugB } })} //prettier-ignore
   const heatResultsLength = heatQuery.data?.map((heat) => heat.heatResults.length)
   const checkDisabled = !filters.surferSlugA || !filters.surferSlugB ? true : heatResultsLength?.includes(2) == false ? true : false
 

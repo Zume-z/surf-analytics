@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../trpc'
 import { GENDER, SORTDIR } from '@/utils/enums'
+import { Status } from '@prisma/client'
 
 export const SurferSchema = z.object({
   surferId: z.string().optional(),
@@ -48,13 +49,42 @@ export const surferRouter = createTRPCRouter({
     return surfer
   }),
 
+  getManyCountries: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+    const surfers = ctx.prisma.surfer.findMany({
+      where: {
+        gender: input.gender,
+        countrySlug: input.countrySlug,
+        tourResults: { some: { tour: { year: input?.year } } },
+      },
+      select: {
+        name: true,
+        slug: true,
+        profileImage: true,
+        country: { select: { name: true, slug: true, flagLink: true } },
+        eventResults: { where: { AND: [{ place: 1 }, { event: { tour: { year: input.year } } }] }, select: { place: true } },
+        tourResults: { where: { AND: [{ worldTitle: true }, { tour: { year: input.year } }] }, select: { worldTitle: true } },
+      },
+      orderBy: { name: 'asc' },
+    })
+    if (!surfers) throw new TRPCError({ code: 'NOT_FOUND' })
+    return surfers
+  }),
+
   getManyMatchup: publicProcedure.input(SurferSchema).query(({ ctx, input }) => {
+    const matchupCountFilter = input.surferSlugFilter ? { where: { heat: { heatStatus: 'COMPLETED' as Status, event: { wavePoolEvent: false }, heatResults: { some: { surferSlug: input.surferSlugFilter } } } } } : { where: { heatSlug: 'xxx' } }
     const surfer = ctx.prisma.surfer.findMany({
       where: {
         heatResults: { some: { heat: { heatStatus: 'COMPLETED', event: { wavePoolEvent: false }, heatResults: { some: { surferSlug: input.surferSlugFilter } } } } },
         tourResults: { some: { tour: { year: { gte: 2010 } } } },
       },
-      select: { name: true, slug: true, profileImage: true, country: { select: { name: true, flagLink: true } } },
+      select: {
+        name: true,
+        slug: true,
+        profileImage: true,
+        country: { select: { name: true, flagLink: true } },
+        heatResults: matchupCountFilter,
+        
+      },
       orderBy: { name: 'asc' },
     })
     if (!surfer) throw new TRPCError({ code: 'NOT_FOUND' })

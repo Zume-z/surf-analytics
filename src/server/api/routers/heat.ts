@@ -102,6 +102,7 @@ export const heatRouter = createTRPCRouter({
         heatNumber: true,
         heatStatus: true,
         heatDate: true,
+        eventSlug: true,
         event: { select: { name: true, year: true, heats: { select: { heatRound: true }, orderBy: { roundNumber: 'asc' } } } },
         heatResults: {
           orderBy: { heatPlace: 'asc' },

@@ -27,8 +27,8 @@ export default function SurferEvents() {
 
 
   const subHeaderData = [
-    { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} subData={year} flagAlignBottom={true} routePath={{ pathname: '/surfers', query: {} }} />, primaryTab: true },
-    { content: <SubHeaderItem label="year" value={year} subvalue="Career" routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: router.query.surferId } }} loading={surferQuery.isLoading} /> },
+    { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} subData={year} flagAlignBottom={true} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} />, primaryTab: true },
+    { content: <SubHeaderItem label="year" value={year} subvalue="Career" routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} loading={surferQuery.isLoading} /> },
     { content: <SubHeaderItem label="events" value="All" subvalue="Events" active={true} loading={surferQuery.isLoading} /> },
     { content: <SubHeaderItem className='sm:hidden block'label="Locations" value={'-'} loading={surferQuery.isLoading} subvalue={'Locations'} active={false} routePath={{ pathname: '/surfers/[surferId]/locations', query: { surferId: surferId,  year: year } }} /> }, //prettier-ignore
   ]

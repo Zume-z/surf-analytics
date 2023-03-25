@@ -45,13 +45,12 @@ export default function CountryEvents() {
   const countryQuery = api.country.getOneEvents.useQuery({ ...filters, eventYear: filters.year, eventStaus: 'COMPLETED' }, { enabled: !!countryId })
   const countryEventStatQuery = api.countryEventStat.getCountryEvents.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId && !countryQuery.isLoading })
   const countryEventStatAllQuery = api.countryEventStat.getAll.useQuery({ countrySlug: countryId, year: filters.year, gender: filters.gender }, { enabled: !!countryId && statToggle })
-
   const yearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
 
   const tableData: TableData[] = [
-    { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} showYear={true} /> },
-    { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} /> },
+    { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} /> },
+    { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} showYear={true} /> },
     { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
     { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
   ]

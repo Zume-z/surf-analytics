@@ -58,11 +58,11 @@ export default function EventHeats() {
   const getSubheaderData = () => {
     if (heatQuery.isLoading) return [{ content: <SubHeaderEvent event={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }, { content: <SubHeaderItem label="heats" value={undefined} /> }, { content: <SubHeaderItem className='sm:hidden' label="champions" value={undefined} /> }] //prettier-ignore
     const subHeaderData = [
-      { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events', query: {} }} />, primaryTab: true },
+      { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } }} />, primaryTab: true },
       { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {} }} loading={eventQuery.isLoading} /> },
       { content: <SubHeaderItem className='sm:hidden' label="results" value="All" subvalue="Results" active={false} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } }} /> }, //prettier-ignore
       { content: <SubHeaderItem className="sm:hidden" label="heats" value="All" subvalue="Heats" active={true} /> },
-      { content: <SubHeaderItem className="sm:hidden" label="Champions" value="All" subvalue="Champions" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug , location: eventQuery.data?.locationSlug } }} /> }, //prettier-ignore
+      { content: <SubHeaderItem className="sm:hidden" label="Past Champions" value="All" subvalue="Past Champions" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug , location: eventQuery.data?.locationSlug } }} /> }, //prettier-ignore
     ]
     if (surferSlug) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfer" value={surferQuery.data?.name} active={heatRound ? false : true} /> })
     if (heatRound) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="round" value={heatRound} active={true} /> })
@@ -73,7 +73,7 @@ export default function EventHeats() {
   const subNavItems = [
     { label: 'Results', active: false, router: { pathname: '/events/[eventId]/results', query: { eventId: filters.eventSlug } } },
     { label: 'Heats', active: true },
-    { label: 'Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug, location: eventQuery.data?.locationSlug } } },
+    { label: 'Past Champions', active: false, router: { pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug, location: eventQuery.data?.locationSlug } } },
   ]
 
   return (
