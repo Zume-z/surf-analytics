@@ -36,7 +36,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof locationSurferStatSche
     ...(await excellentHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
     ...(await highestHeatTotal(ctx, input)),
-    ...(await heatTotalDifferential(ctx, input)),
+    
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await totalWaves(ctx, input)),
     ...(await avgWaveScore(ctx, input)),
@@ -130,14 +130,14 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof locationSurf
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Differential', value: queryDifferential(query._sum.heatDifferential) } }
-}
+// const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
+//   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
+//   return { heatTotalDifferential: { label: 'Heat Differential', value: queryDifferential(query._sum.heatDifferential) } }
+// }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof locationSurferStatSchema>) => {

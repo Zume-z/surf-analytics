@@ -34,7 +34,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof countryStatSchema>) =>
 
     ...(await totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
-    ...(await heatTotalDifferential(ctx, input)),
+    
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
@@ -158,14 +158,14 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof countryStatS
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _sum: { heatDifferential: true } })
-  return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
-}
+// const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
+//   const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _sum: { heatDifferential: true } })
+//   return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
+// }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _avg: { heatDifferential: true } })
-  return { avgHeatTotalDifferential: { label: 'Avg.Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
+  return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {

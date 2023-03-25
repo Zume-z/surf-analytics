@@ -100,11 +100,11 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof eventStatSch
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-const totalHeatDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
-  const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _sum: { heatDifferential: true } })
-  const queryRound = query._sum.heatDifferential !== undefined ? twoDec(query._sum.heatDifferential) : '-'
-  return { totalHeatDifferential: { label: 'Total Heat Differential', value: queryRound } }
-}
+// const totalHeatDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
+//   const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _sum: { heatDifferential: true } })
+//   const queryRound = query._sum.heatDifferential !== undefined ? twoDec(query._sum.heatDifferential) : '-'
+//   return { totalHeatDifferential: { label: 'Total Heat Differential', value: queryRound } }
+// }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', eventSlug: input.eventSlug }, _avg: { heatDifferential: true } })
