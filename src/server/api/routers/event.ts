@@ -78,6 +78,7 @@ export const eventRouter = createTRPCRouter({
         startDate: true,
         endDate: true,
         address: true,
+        eventStatus: true,
         country: { select: { flagLink: true, name: true } },
       },
       orderBy: {

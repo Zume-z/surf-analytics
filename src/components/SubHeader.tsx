@@ -35,14 +35,14 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
   }
 
   return (
-    <div className="sticky top-[65px] z-40 flex w-full select-none justify-center border-b bg-white text-gray-900 shadow-sm backdrop-blur-md sm:bg-transparent">
+    <div className="sticky top-[65px] z-40 flex w-full select-none justify-center border-b bg-white text-gray-900 shadow-sm backdrop-blur-md sm:bg-transparent" onMouseLeave={() => !statsLoading && setShowStats(false)}>
       {/* DESKTOP */}
       <div className="hidden w-full sm:block">
         <div className="flex items-center justify-center">
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)} onMouseLeave={() => !statsLoading && tab.primaryTab && setShowStats(false)}>
+                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)} >
                   {tab.content}
                 </div>
               ))}
@@ -50,7 +50,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
 
             {/* DESKTOP: TOGGLE */}
             {!statsLoading && (
-              <div className="transition-200 cursor-pointer text-gray-500 hover-mod:hover:text-navy">
+              <div className="transition-200 cursor-pointer text-gray-500 hover-mod:hover:text-navy" >
                 {showStats || statToggle ? <XIcon onClick={() => (setShowStats(false), setStatToggle && setStatToggle(false))} height={24} /> : <ChevronDownIcon onClick={() => setShowStats(true)} height={24} />}
               </div>
             )}
