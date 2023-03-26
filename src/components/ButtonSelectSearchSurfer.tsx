@@ -86,12 +86,12 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                       <Command.Input className="w-full border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
                       <Command.List>
                         {optionsFilter.map((option, i) => (
-                          <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive group'}>
-                           
-                            <div>
-                              <div className="min-w-[220px] flex justify-between ">
+                          <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive group aria-selected:bg-gray-100'}>
+                          {/* // <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className=''>  */}
+                            <div className=''>
+                              <div className="flex min-w-[220px] justify-between ">
                                 <div className="flex items-center whitespace-nowrap text-sm">
-                                  <div className={`transition-200 h-8 w-8 flex-shrink-0 rounded-full bg-gray-100 hover-mod:group-hover:bg-white`}>
+                                  <div className={`transition-200 h-8 w-8 flex-shrink-0 rounded-full bg-gray-100  hover-mod:group-hover:bg-white`}>
                                     <Image src={option.surfer.profileImage} className="rounded-full" width={50} height={49} />
                                   </div>
                                   <div className="ml-2">
@@ -102,7 +102,11 @@ export default function ButtonSelectSearchSurfer({ className, placeHolder, searc
                                     </div>
                                   </div>
                                 </div>
-                                {option.matchupCount && option.matchupCount > 0 && <div className='text-xs'>{option.matchupCount}</div>}
+                                {option.matchupCount && option.matchupCount > 0 && (
+                                  <div className="flex items-center text-xs ">
+                                    <div>{option.matchupCount}</div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </Command.Item>

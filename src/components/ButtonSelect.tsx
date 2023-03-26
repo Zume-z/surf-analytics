@@ -28,7 +28,7 @@ export default function ButtonSelect({ className, placeHolder, value, setValue, 
               <Select.Content className="z-40 -ml-2 max-h-60 rounded-md border border-gray-100 bg-white shadow" position="popper" sideOffset={8} align="start">
                 <Select.Viewport>
                   {options.map((f, i) => (
-                    <Select.Item key={i} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive'}>
+                    <Select.Item key={i} value={f.value.toString()} className={f.value == value ? 'select-btn__item-active ' : 'select-btn__item-inactive'}>
                       <Select.ItemText className="">{f.label}</Select.ItemText>
                     </Select.Item>
                   ))}

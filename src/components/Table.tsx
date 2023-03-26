@@ -1,3 +1,6 @@
+import { ChevronDownIcon, XIcon, MinusIcon } from '@heroicons/react/outline'
+import { useState } from 'react'
+
 interface TableProps {
   title?: string
   tableData: any
@@ -17,7 +20,16 @@ export interface TableData {
 }
 
 export default function Table({ title, tableData, items, handleSelection, loading, className }: TableProps) {
+  const [sort, setSort] = useState('false')
+
+  const handleSort = () => {
+    sort == 'false' && setSort('asc')
+    sort == 'asc' && setSort('desc')
+    sort == 'desc' && setSort('false')
+  }
+
   const loadingRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
   const tableSpacing = 'whitespace-nowrap py-4 px-1.5 first:pl-6 last:pr-6 sm:px-6 '
   const tableCol = tableSpacing + ' font-medium text-left uppercase leading-4 tracking-wider text-xs font-medium'
   const tableRow = tableSpacing + ' text-sm'
@@ -36,7 +48,14 @@ export default function Table({ title, tableData, items, handleSelection, loadin
                       <tr>
                         {tableData.map((column: TableData, i: number) => (
                           <th key={i} scope="col" className={tableCol}>
-                            {column.name}
+                            <div>{column.name}</div>
+
+                            {/* SORTING TEST */}
+                            {/* <div className="flex items-center space-x-1" onClick={() => handleSort()}>
+                              <div>{column.name}</div>
+                              {sort == 'asc' && <ChevronDownIcon height={12} />}
+                              {sort == 'desc' && <ChevronDownIcon className="rotate-180" height={12} />}
+                            </div> */}
                           </th>
                         ))}
                       </tr>

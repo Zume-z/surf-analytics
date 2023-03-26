@@ -34,7 +34,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof countryStatSchema>) =>
 
     ...(await totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
-    
+
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await heatWins(ctx, input)),
     ...(await heatWinPerc(ctx, input)),
@@ -82,7 +82,7 @@ const tourResultFilter = (input: z.infer<typeof countryStatSchema>) => ({ surfer
 
 // ADD YEAR FILTER
 const worldTitles = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.tourResult.count({ where: { surfer: surferFilter(input), worldTitle: true } })
+  const query = await ctx.prisma.tourResult.count({ where: { surfer: surferFilter(input), worldTitle: true, tour: { year: input.year } } })
   return { worldTitles: { label: 'World Titles', value: queryFormat(query) } }
 }
 
@@ -106,7 +106,7 @@ const totalEvents = async (ctx: Context, input: z.infer<typeof countryStatSchema
 }
 
 const eventWins = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.eventResult.count({ where: { surfer: surferFilter(input), event: { year: input.year, eventStatus: 'COMPLETED' }, place: 1 } })
+  const query = await ctx.prisma.eventResult.count({ where: { surfer: surferFilter(input), event: { eventStatus: 'COMPLETED', tour: { year: input.year } }, place: 1 } })
   return { eventWins: { label: 'Ct. Event Wins', value: queryFormat(query) } }
 }
 
@@ -118,13 +118,13 @@ const eventWinPerc = async (ctx: Context, input: z.infer<typeof countryStatSchem
 }
 
 const bestResult = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.eventResult.aggregate({ where: { surfer: surferFilter(input), event: { year: input.year }, NOT: { place: 0 } }, _min: { place: true } })
+  const query = await ctx.prisma.eventResult.aggregate({ where: { surfer: surferFilter(input), event: { tour: { year: input.year } }, place: { not: 0 } }, _min: { place: true } })
   return { bestResult: { label: 'Best Result', value: querySuffix(query._min.place) } }
 }
 
 const avgResult = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
   const query = await ctx.prisma.eventResult.aggregate({
-    where: { surfer: surferFilter(input), event: { year: input.year, eventStatus: 'COMPLETED' }, injured: false, withdrawn: false, NOT: { place: 0 } },
+    where: { surfer: surferFilter(input), event: { year: input.year, eventStatus: 'COMPLETED' }, injured: false, withdrawn: false, place: { not: 0 } },
     _avg: { place: true },
   })
   return { avgResult: { label: 'Avg. Event Result', value: querySuffix(query._avg.place) } }
@@ -137,7 +137,7 @@ const totalHeats = async (ctx: Context, input: z.infer<typeof countryStatSchema>
 }
 
 const heatWins = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.count({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } }, heatPlace: 1, NOT: { heatTotal: null } } })
+  const query = await ctx.prisma.heatResult.count({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: { year: input.year } } }, heatPlace: 1, NOT: { heatTotal: null } } })
   return { heatWins: { label: 'Heat Wins', value: queryFormat(query) } }
 }
 
@@ -149,74 +149,74 @@ const heatWinPerc = async (ctx: Context, input: z.infer<typeof countryStatSchema
 }
 
 const avgHeatTotal = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } }, NOT: { heatTotal: null } }, _avg: { heatTotal: true } })
+  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: { year: input.year } } }, NOT: { heatTotal: null } }, _avg: { heatTotal: true } })
   return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
 
 const highestHeatTotal = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _max: { heatTotal: true } })
+  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: { year: input.year } } } }, _max: { heatTotal: true } })
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
 // const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-//   const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _sum: { heatDifferential: true } })
+//   const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: {year: input.year} } } }, _sum: { heatDifferential: true } })
 //   return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
 // }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } } }, _avg: { heatDifferential: true } })
+  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: { year: input.year } } } }, _avg: { heatDifferential: true } })
   return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
 }
 
 const excellentHeats = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.count({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { year: input.year } }, heatTotal: { gte: 16 } } })
+  const query = await ctx.prisma.heatResult.count({ where: { surfer: surferFilter(input), heat: { heatStatus: 'COMPLETED', event: { tour: { year: input.year } } }, heatTotal: { gte: 16 } } })
   return { excellentHeats: { label: 'Excellent Heats', value: queryFormat(query) } }
 }
 
 // WAVES //
 const totalWaves = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } } } })
+  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } } } })
   return { totalWaves: { label: 'Total Waves', value: queryFormat(query) } }
 }
 
 const avgWaveScore = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } } }, _avg: { waveScore: true } })
+  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } } }, _avg: { waveScore: true } })
   return { avgWaveScore: { label: 'Avg.Wave Score', value: queryRound(query._avg.waveScore) } }
 }
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } }, countedWave: true } })
+  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } }, countedWave: true } })
   return { totalCountedWaves: { label: 'Total Counted Waves', value: queryFormat(query) } }
 }
 
 const avgCountedWaveScore = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } }, countedWave: true }, _avg: { waveScore: true } })
+  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } }, countedWave: true }, _avg: { waveScore: true } })
   return { avgCountedWaveScore: { label: 'Avg.Counted Wave Score', value: queryFormat(query._avg.waveScore) } }
 }
 
 const highestWaveScore = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } } }, _max: { waveScore: true } })
+  const query = await ctx.prisma.wave.aggregate({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } } }, _max: { waveScore: true } })
   return { highestWaveScore: { label: 'Highest Wave Score', value: queryRound(query._max.waveScore) } }
 }
 
 const totalTens = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } }, waveScore: 10 } })
+  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } }, waveScore: 10 } })
   return { totalTens: { label: 'Ten Point Waves', value: queryFormat(query) } }
 }
 
 const excellentWaves = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } }, waveScore: { gte: 8 } } })
+  const query = await ctx.prisma.wave.count({ where: { surfer: surferFilter(input), heat: { event: { tour: { year: input.year } } }, waveScore: { gte: 8 } } })
   return { excellentWaves: { label: 'Excellent Waves', value: queryFormat(query) } }
 }
 
 // OTHER
 const prizeMoney = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.eventResult.aggregate({ where: { surfer: surferFilter(input), event: { year: input.year } }, _sum: { prizeMoney: true } })
+  const query = await ctx.prisma.eventResult.aggregate({ where: { surfer: surferFilter(input), event: { tour: { year: input.year } } }, _sum: { prizeMoney: true } })
   return { prizeMoney: { label: 'Total Earnings', value: queryMoney(query._sum.prizeMoney) } }
 }
 
 const totalInterferences = async (ctx: Context, input: z.infer<typeof countryStatSchema>) => {
-  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { event: { year: input.year } }, OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) //prettier-ignore
+  const query = await ctx.prisma.heatResult.aggregate({ where: { surfer: surferFilter(input), heat: { event: { tour: {year: input.year} } }, OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) //prettier-ignore
   const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }

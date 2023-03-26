@@ -28,10 +28,10 @@
     @apply transition-200 rounded border border-gray-50 py-0.5 pl-2 pr-1 text-gray-500 hover-mod:group-hover:bg-gray-400  hover-mod:group-hover:text-white;
   }
   .select-btn__item-active {
-    @apply cursor-pointer py-2 px-4 text-blue-base outline-none hover-mod:hover:bg-gray-100;
+    @apply cursor-pointer py-2 px-4 text-blue-base outline-none focus:bg-gray-100;
   }
   .select-btn__item-inactive {
-    @apply cursor-pointer py-2 px-4 text-gray-500 outline-none hover-mod:hover:bg-gray-100 hover-mod:hover:text-black;
+    @apply cursor-pointer py-2 px-4 text-gray-500 outline-none aria-selected:bg-gray-100 aria-selected:text-navy focus:bg-gray-100 focus:text-navy;
   }
 
   /* SUBNAV */

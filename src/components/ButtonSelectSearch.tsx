@@ -40,7 +40,7 @@ export default function ButtonSelectSearch({ className, placeHolder, searchPlace
                       <Command.Input className=" border-b py-2 pl-4 text-gray-500 focus:outline-none" placeholder={searchPlaceHolder} />
                       <Command.List>
                         {options!.map((option, i) => (
-                          <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className={option.value == value ? 'select-btn__item-active' : 'select-btn__item-inactive z-50'}>
+                          <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className="select-btn__item-inactive z-50">
                             {option.label}
                           </Command.Item>
                         ))}
