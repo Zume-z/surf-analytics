@@ -49,7 +49,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => 
     ...(await totalInterferences(ctx, input)),
 
     ...(await mostBeaten(ctx, input)),
-    ...(await mostBeatenBy(ctx, input)),
+    // ...(await mostBeatenBy(ctx, input)),
 
     // ...(await totalCompletedWaves(ctx, input)),
     // ...(await avgCompletedWaveScore(ctx, input)),
