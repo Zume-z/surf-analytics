@@ -48,8 +48,9 @@ const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => 
     ...(await prizeMoney(ctx, input)),
     ...(await totalInterferences(ctx, input)),
 
+    ...(await combinedMostBeaten(ctx, input)),
     // ...(await mostBeaten(ctx, input)),
-    ...(await mostBeatenBy(ctx, input)),
+    // ...(await mostBeatenBy(ctx, input)),
 
     // ...(await totalCompletedWaves(ctx, input)),
     // ...(await avgCompletedWaveScore(ctx, input)),
@@ -190,12 +191,11 @@ const avgWavesPerHeat = async (ctx: Context, input: z.infer<typeof surferStatSch
 }
 
 // const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-  
 //   const totalWavesX = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: {not: null}}} })
 //   // const totalMinutes = await ctx.prisma.
 //   // console.log(totalWavesQ)
 //   // console.log(totalWavesX)
-  
+
 // }
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
@@ -271,6 +271,45 @@ const mostBeatenBy = async (ctx: Context, input: z.infer<typeof surferStatSchema
   const mostBeatenByNames = mostBeatenBySurfers.length > 2 ? mostBeatenBySurfers.map((item: any) => item[0]).slice(0, 2).join(', ') + '...' : mostBeatenBySurfers.map((item: any) => item[0]).join(', ') // prettier-ignore
   const mostBeatenByCount = mostBeatenBySurfers[0]![1]
   return { mostBeatenBy: { label: 'Most Beaten By', value: mostBeatenByNames, subValue: mostBeatenByCount } }
+}
+
+const combinedMostBeaten = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+  // MOST BEATEN
+  const queryMB = await ctx.prisma.heatBeatenBy.findMany({ where: { surferBeatenBySlug: input.surferSlug }, select: { heatResult: { select: { surfer: { select: { name: true } } } } } })
+  const queryMapMB = queryMB.map((item) => item.heatResult.surfer.name)
+  const queryCountMB = queryMapMB.reduce((acc: any, cur) => {
+    typeof acc[cur] == 'undefined' ? (acc[cur] = 1) : (acc[cur] += 1)
+    return acc
+  }, {})
+  const querySortMB = Object.entries(queryCountMB).sort((a: any, b: any) => b[1] - a[1])
+  const mostBeatenSurfers = querySortMB.filter((item: any) => item[1] === querySortMB[0]![1])
+  const mostBeatenCount = mostBeatenSurfers[0]![1]
+  const mostBeatenNames = mostBeatenSurfers.length > 2 ? mostBeatenSurfers.map((item: any) => item[0]).slice(0, 2).join(', ') + '...' : mostBeatenSurfers.map((item: any) => item[0]).join(', ') // prettier-ignore
+
+  // MOST BEATEN BY
+  const queryMBY = await ctx.prisma.heatBeatenBy.findMany({ where: { surferSlug: input.surferSlug }, select: { surferBeatenBy: { select: { name: true } } } })
+  const queryMapMBY = queryMBY.map((item) => item.surferBeatenBy.name)
+  const queryCountMBY = queryMapMBY.reduce((acc: any, cur) => {
+    typeof acc[cur] == 'undefined' ? (acc[cur] = 1) : (acc[cur] += 1)
+    return acc
+  }, {})
+  const querySortMBY = Object.entries(queryCountMBY).sort((a: any, b: any) => b[1] - a[1])
+  const mostBeatenBySurfers = querySortMBY.filter((item: any) => item[1] === querySortMBY[0]![1])
+  const mostBeatenByNames = mostBeatenBySurfers.length > 2 ? mostBeatenBySurfers.map((item: any) => item[0]).slice(0, 2).join(', ') + '...' : mostBeatenBySurfers.map((item: any) => item[0]).join(', ') // prettier-ignore
+  const mostBeatenByCount = mostBeatenBySurfers[0]![1]
+
+  // return { mostBeaten: { label: 'Most Beaten', value: mostBeatenNames, subValue: mostBeatenCount } }
+  // return { mostBeatenBy: { label: 'Most Beaten By', value: mostBeatenByNames, subValue: mostBeatenByCount } }
+
+  // return {
+  //   surferRank: { label: 'Rank', value: querySuffix(query.surferRank), subValue: year },
+  //   surferPoints: { label: 'Points', value: queryFormat(query.surferPoints), subValue: year },
+  // }
+
+  return {
+    mostBeaten: { label: 'Most Beaten', value: mostBeatenNames, subValue: mostBeatenCount },
+    mostBeatenBy: { label: 'Most Beaten By', value: mostBeatenByNames, subValue: mostBeatenByCount },
+  }
 }
 
 // surfer
