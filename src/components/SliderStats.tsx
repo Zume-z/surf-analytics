@@ -11,7 +11,7 @@ interface SliderStatsProps {
 }
 
 export default function ({ statsBody, loading }: SliderStatsProps) {
-  if (statsBody == undefined) (<div></div>)
+  if (statsBody == undefined) <div></div>
   const [sliderEnd, setSliderEnd] = useState(false)
   const [sliderStart, setSliderStart] = useState(true)
 
@@ -57,7 +57,7 @@ export default function ({ statsBody, loading }: SliderStatsProps) {
                 {Column?.map((stat: any, i: number) => (
                   <div key={i} className="flex w-full px-10 lg:px-8  ">
                     <div className="w-full whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
-                    {stat.subValue && <div className="w-full whitespace-nowrap text-center text-gray-500">{stat.subValue}</div>}
+                    {stat.subvalue && <div className="w-full whitespace-nowrap text-center text-gray-500">{stat.subvalue}</div>}
                     <div className="w-full whitespace-nowrap text-end"> {stat.value}</div>
                   </div>
                 ))}

@@ -17,6 +17,7 @@ model Surfer {
   slug         String        @unique
   name         String
   dob          String?
+  deceased     Boolean?
   heightCm     Int?
   weightKg     Int?
   stance       Stance

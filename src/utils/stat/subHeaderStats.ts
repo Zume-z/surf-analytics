@@ -3,11 +3,11 @@ import { Stats, Surfer } from '../interfaces'
 
 export const surferCareerStats = (statQuery?: Stats, allStatQuery?: Stats, surfer?: Surfer, statToggle?: boolean) => {
   if (statQuery == undefined || surfer == undefined) return undefined
-  const { dob, heightCm, weightKg, stance, hometown } = surfer
+  const { dob, heightCm, weightKg, stance, hometown, deceased } = surfer
   const surferStance = { label: 'Stance', value: stance ? stance.charAt(0) + stance.slice(1).toLocaleLowerCase() : '-' }
-  const surferHeight = heightCm ? { label: 'Height', value: heightCm + 'cm', subValue: Math.floor(heightCm / 30.48) + "'" + Math.floor((heightCm % 30.48) / 2.54) + '"' } : { label: 'Height', value: '-' } //prettier-ignore
-  const surferWeight = weightKg ? { label: 'Weight', value: weightKg + 'kg', subValue: Math.floor(weightKg * 2.20462) + ' lbs' } : { label: 'Weight', value: '-' }
-  const surferAge = dob ? { label: 'Age', value: getAgeDob(dob).dob, subValue: getAgeDob(dob).age } : { label: 'Age', value: '-' }
+  const surferHeight = heightCm ? { label: 'Height', value: heightCm + 'cm', subvalue: Math.floor(heightCm / 30.48) + "'" + Math.floor((heightCm % 30.48) / 2.54) + '"' } : { label: 'Height', value: '-' } //prettier-ignore
+  const surferWeight = weightKg ? { label: 'Weight', value: weightKg + 'kg', subvalue: Math.floor(weightKg * 2.20462) + ' lbs' } : { label: 'Weight', value: '-' }
+  const surferAge = dob ? { label: 'Age', value: getAgeDob(dob).dob, subvalue: !deceased && getAgeDob(dob).age } : { label: 'Age', value: '-' }
   const surferHomeTown = hometown ? { label: 'Hometown', value: hometown } : { label: 'Hometown', value: '-' }
   const { surferRank, surferPoints, worldTitles, prizeMoney, totalEvents, eventWins, bestResult, avgResult } = statQuery
 

@@ -13,6 +13,7 @@ export interface Surfer {
 
   heightCm?: number
   weightKg?: number
+  deceased?: boolean
   stance: Stance
   hometown?: string
   profileImage: string

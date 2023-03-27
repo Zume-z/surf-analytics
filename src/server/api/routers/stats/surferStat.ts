@@ -73,7 +73,6 @@ const getCareer = async (ctx: Context, input: z.infer<typeof surferStatSchema>) 
   return query
 }
 const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-  // wavesPerMinute(ctx, input)
   const query = {
     ...(await eventWinPerc(ctx, input)),
     ...(await totalHeats(ctx, input)),
@@ -112,8 +111,8 @@ const surferRank_surferPoints = async (ctx: Context, input: z.infer<typeof surfe
   })
   const year = query.tour.year === new Date().getFullYear() ? undefined : query.tour.year
   return {
-    surferRank: { label: 'Rank', value: querySuffix(query.surferRank), subValue: year },
-    surferPoints: { label: 'Points', value: queryFormat(query.surferPoints), subValue: year },
+    surferRank: { label: 'Rank', value: querySuffix(query.surferRank), subvalue: year },
+    surferPoints: { label: 'Points', value: queryFormat(query.surferPoints), subvalue: year },
   }
 }
 
@@ -219,7 +218,7 @@ const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSche
   const totalWaves = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: { gt: 0 } } } })
   const totalMinutes = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', heatResults: { some: { surferSlug: input.surferSlug } } }, _sum: { heatDuration: true } })
   if (!totalMinutes._sum.heatDuration) return { wavesPerMinute: { label: 'Waves Per Minute', value: '-' } }
-  return { wavesPerMinute: { label: 'Waves Per Minute', value: queryDivide(totalWaves, totalMinutes._sum.heatDuration), subValue: `Avg. ${queryDivide(totalMinutes._sum.heatDuration, totalWaves)} min per wave` } }
+  return { wavesPerMinute: { label: 'Waves Per Minute', value: queryDivide(totalWaves, totalMinutes._sum.heatDuration), subvalue: `Avg. ${queryDivide(totalMinutes._sum.heatDuration, totalWaves)} min per wave` } }
 }
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
@@ -280,7 +279,7 @@ const mostBeaten = async (ctx: Context, input: z.infer<typeof surferStatSchema>)
   const mostBeatenSurfers = querySort.filter((item: any) => item[1] === querySort[0]![1])
   const mostBeatenCount = mostBeatenSurfers[0]![1]
   const mostBeatenNames = mostBeatenSurfers.length > 2 ? mostBeatenSurfers.map((item: any) => item[0]).slice(0, 2).join(', ') + '...' : mostBeatenSurfers.map((item: any) => item[0]).join(', ') // prettier-ignore
-  return { mostBeaten: { label: 'Most Beaten', value: mostBeatenNames, subValue: mostBeatenCount } }
+  return { mostBeaten: { label: 'Most Beaten', value: mostBeatenNames, subvalue: mostBeatenCount } }
 }
 
 const mostBeatenBy = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
@@ -294,7 +293,7 @@ const mostBeatenBy = async (ctx: Context, input: z.infer<typeof surferStatSchema
   const mostBeatenBySurfers = querySort.filter((item: any) => item[1] === querySort[0]![1])
   const mostBeatenByNames = mostBeatenBySurfers.length > 2 ? mostBeatenBySurfers.map((item: any) => item[0]).slice(0, 2).join(', ') + '...' : mostBeatenBySurfers.map((item: any) => item[0]).join(', ') // prettier-ignore
   const mostBeatenByCount = mostBeatenBySurfers[0]![1]
-  return { mostBeatenBy: { label: 'Most Beaten By', value: mostBeatenByNames, subValue: mostBeatenByCount } }
+  return { mostBeatenBy: { label: 'Most Beaten By', value: mostBeatenByNames, subvalue: mostBeatenByCount } }
 }
 
 // surfer

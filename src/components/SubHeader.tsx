@@ -42,7 +42,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)} >
+                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)}>
                   {tab.content}
                 </div>
               ))}
@@ -50,7 +50,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
 
             {/* DESKTOP: TOGGLE */}
             {!statsLoading && (
-              <div className="transition-200 cursor-pointer text-gray-500 hover-mod:hover:text-navy" >
+              <div className="transition-200 cursor-pointer text-gray-500 hover-mod:hover:text-navy">
                 {showStats || statToggle ? <XIcon onClick={() => (setShowStats(false), setStatToggle && setStatToggle(false))} height={24} /> : <ChevronDownIcon onClick={() => setShowStats(true)} height={24} />}
               </div>
             )}
@@ -97,7 +97,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
                       {Column?.stats.map((stat: any, i: number) => (
                         <div key={i} className="transition-200 flex w-full py-1 hover:bg-gray-100">
                           <div className="w-full whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
-                          {stat.subValue && <div className="w-full text-center text-gray-500">{stat.subValue}</div>}
+                          {stat.subvalue && <div className="w-full text-center text-gray-500">{stat.subvalue}</div>}
                           <div className="w-full whitespace-nowrap text-end"> {stat.value}</div>
                         </div>
                       ))}
@@ -163,7 +163,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
         </div>
 
         {/* MOBILE: STATS */}
-        {showStats && !statsLoading && stats && !statToggle &&  (
+        {showStats && !statsLoading && stats && !statToggle && (
           <div className="absolute h-screen w-full border-t border-b bg-white shadow-sm sm:h-full">
             <div className="mx-8 flex-col justify-center  text-sm ">
               {stats.map((Column: any, i: number) => (
@@ -171,7 +171,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
                   {Column?.map((stat: any, i: number) => (
                     <div key={i} className="flex w-full  py-1">
                       <div className="w-full whitespace-nowrap text-gray-500">{stat.label !== undefined ? stat.label : '-'}</div>
-                      {stat.subValue && <div className="w-full whitespace-nowrap text-center text-gray-500">{stat.subValue}</div>}
+                      {stat.subvalue && <div className="w-full whitespace-nowrap text-center text-gray-500">{stat.subvalue}</div>}
                       <div className="w-full whitespace-nowrap text-end"> {stat.value}</div>
                     </div>
                   ))}
