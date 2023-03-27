@@ -29,7 +29,7 @@ export default function EventWaves() {
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
   const heatStatQuery = api.heatStat.getWaves.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && !heatQuery.isLoading })
   const heatStatQueryAll = api.heatStat.getAll.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && statToggle })
-  const tableColumns = getWaveTableCol(filters.heatResults)
+  const tableColumns = getWaveTableCol(filters.heatResults, filters.waves)
   const tableData = getWaveTableData(filters.heatResults, filters.waves)
 
   const subHeaderData = [

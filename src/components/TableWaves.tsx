@@ -1,4 +1,6 @@
+import CardSurfer from './CardSurfer'
 import Image from 'next/legacy/image'
+import { Wave } from '@/utils/interfaces'
 import { BREAKPOINT } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
 import TriangleFill from './icons/IconTriangleFill'
@@ -99,6 +101,16 @@ const Wave = ({ item, col }: { item: any; col: any }) => {
   }
 }
 
+const WavePoolWave = ({ wave }: { wave: Wave }) => {
+  return (
+    <div className={`flex  ${wave.countedWave ? 'text-green-500' : 'text-gray-500'}`}>
+      <div className="flex w-full justify-center sm:justify-start">
+        <div className="">{twoDec(wave.waveScore)}</div>
+      </div>
+    </div>
+  )
+}
+
 export default function TableWaves({ tableData, items, handleSelection, loading }: TableWavesProps) {
   const loader = {
     headerColumns: [1, 2],
@@ -106,75 +118,151 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
     rows: [1, 2, 3, 4, 5],
   }
 
+  // CHANGE
+  const wavePool = false
+
   const tableSpacing = 'whitespace-nowrap  px-1.5 first:pl-6 last:pr-6 sm:px-6 '
   const tableCol = tableSpacing + ' font-medium text-left sm:py-4 py-2 pt-4 leading-4 tracking-wider text-xs font-medium'
   const tableRow = tableSpacing + ' text-sm py-4'
 
-  return (
-    <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
-      <div className="flex h-min flex-col">
-        <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
-          <div className="inline-block min-w-full align-middle">
-            <div className="scrollbar-none overflow-hidden">
-              {!loading && (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-light text-gray-dark">
-                    <tr>
-                      {tableData.map((heatResult: any, i: number) => (
-                        <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
-                          {heatResult.key == 'wave' && <div className="flex h-full uppercase sm:block">{heatResult.value}</div>}
-                          {heatResult.key != 'wave' && <Surfer heatResult={heatResult.value} />}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
-                    {items.map((item: any, i: number) => (
-                      <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
-                        {tableData.map((col: any, i: number) => (
-                          <td key={i} className={tableRow}>
-                            {col.key == 'wave' && <div className="ml-3"> {item[col.key]} </div>}
-                            {item[col.key] != null && col.key != 'wave' && <Wave item={item} col={col} />}
-                          </td>
+  if (!wavePool) {
+    return (
+      <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
+        <div className="flex h-min flex-col">
+          <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
+            <div className="inline-block min-w-full align-middle">
+              <div className="scrollbar-none overflow-hidden">
+                {!loading && (
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-light text-gray-dark">
+                      <tr>
+                        {tableData.map((heatResult: any, i: number) => (
+                          <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
+                            {heatResult.key == 'wave' && <div className="flex h-full uppercase sm:block">{heatResult.value}</div>}
+                            {heatResult.key != 'wave' && <Surfer heatResult={heatResult.value} />}
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-              {loading && (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className=" bg-gray-light text-gray-dark ">
-                    <tr>
-                      <th scope="col" className={tableCol + ' align-bottom sm:min-w-[150px] sm:align-middle '}>
-                        <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
-                      </th>
-                      {loader.headerColumns.map((key: number, i: number) => (
-                        <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
-                          <div>{SurferLoader()}</div>
-                        </th>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {items.map((item: any, i: number) => (
+                        <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                          {tableData.map((col: any, i: number) => (
+                            <td key={i} className={tableRow}>
+                              {col.key == 'wave' && <div className="ml-3"> {item[col.key]} </div>}
+                              {item[col.key] != null && col.key != 'wave' && <Wave item={item} col={col} />}
+                            </td>
+                          ))}
+                        </tr>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
-                    {loader.rows.map((item: any, index: number) => (
-                      <tr className="hover-mod:hover:bg-gray-100 " key={index}>
-                        {loader.columns.map((col: any, i: number) => (
-                          <td key={i} className={tableRow}>
-                            <div className="flex justify-center sm:block ">
-                              <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
-                            </div>
-                          </td>
+                    </tbody>
+                  </table>
+                )}
+                {loading && (
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className=" bg-gray-light text-gray-dark ">
+                      <tr>
+                        <th scope="col" className={tableCol + ' align-bottom sm:min-w-[150px] sm:align-middle '}>
+                          <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
+                        </th>
+                        {loader.headerColumns.map((key: number, i: number) => (
+                          <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
+                            <div>{SurferLoader()}</div>
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {loader.rows.map((item: any, index: number) => (
+                        <tr className="hover-mod:hover:bg-gray-100 " key={index}>
+                          {loader.columns.map((col: any, i: number) => (
+                            <td key={i} className={tableRow}>
+                              <div className="flex justify-center sm:block ">
+                                <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
+                              </div>
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  } else {
+    return (
+      <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
+        <div className="flex h-min flex-col">
+          <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
+            <div className="inline-block min-w-full align-middle">
+              <div className="scrollbar-none overflow-hidden">
+                {!loading && (
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-light text-gray-dark">
+                      <tr>
+                        {tableData.map((item: any, i: number) => (
+                          <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
+                            {item.value}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {items.map((item: any, i: number) => (
+                        <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                          {tableData.map((col: any, i: number) => (
+                            <td key={i} className={tableRow}>
+                              {col.key == 'surfer' && (
+                                <div className="ml-3">
+                                  <CardSurfer surfer={item.surfer.surfer} place={item.surfer.heatPlace} />{' '}
+                                </div>
+                              )}
+                              {col.key != 'surfer' && <div className="ml-3"> {item.waves[i - 1] && <WavePoolWave wave={item.waves[i - 1]} />} </div>}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+                {loading && (
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className=" bg-gray-light text-gray-dark ">
+                      <tr>
+                        <th scope="col" className={tableCol + ' align-bottom sm:min-w-[150px] sm:align-middle '}>
+                          <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
+                        </th>
+                        {loader.headerColumns.map((key: number, i: number) => (
+                          <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
+                            <div>{SurferLoader()}</div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {loader.rows.map((item: any, index: number) => (
+                        <tr className="hover-mod:hover:bg-gray-100 " key={index}>
+                          {loader.columns.map((col: any, i: number) => (
+                            <td key={i} className={tableRow}>
+                              <div className="flex justify-center sm:block ">
+                                <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
+                              </div>
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 }

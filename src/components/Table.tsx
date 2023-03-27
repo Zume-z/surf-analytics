@@ -94,9 +94,9 @@ export default function Table({ title, tableData, items, handleSelection, loadin
                         ))}
 
                         <tr>
-                          <td className="w-full bg-gray-400 p-4 font-semibold text-white">MID-SEASON CUT LINE</td>
-                          <td className="w-full bg-gray-400"></td>
-                          <td className="w-full bg-gray-400"></td>
+                          <td className=" bg-gray-400 p-4 font-semibold text-white">MID-SEASON CUT LINE</td>
+                          <td className=" bg-gray-400"></td>
+                          <td className=" bg-gray-400"></td>
                         </tr>
 
                         {afterCutoff.map((item: any, i: number) => (
