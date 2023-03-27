@@ -22,7 +22,7 @@ export const getHeadToHeadTableRows = (heats?: Heat[]) => {
   tableData.unshift({ name: 'Event', id: 'event', content: (item: Heat) => <div className={`${heatCanceled(item)  && 'opacity-50'}`}>
     <div className='text-navy text-base  '>{item.event.year} {item.event.name}</div>
     <div className='text-gray-dark '>{item.heatRound} · Heat {leadingZero(item.heatNumber)}</div>
-  </div> }) // prettier-ignore
+  </div> })
   longestHeat.length <= 3 && tableData.push({ name: '', id: 'link', className: 'w-px', content: (item: Heat) => <TableLink className={`${heatCanceled(item)  && 'opacity-50'}`} label="View Waves" canceled={item.heatStatus == 'CANCELED'} /> }) //prettier-ignore
   return tableData
 }

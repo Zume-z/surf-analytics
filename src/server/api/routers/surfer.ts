@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../trpc'
-import { GENDER, SORTDIR } from '@/utils/enums'
+import { GENDER, SORTDIR } from '@/utils/interfaces'
 import { Status } from '@prisma/client'
 
 export const SurferSchema = z.object({
@@ -83,7 +83,6 @@ export const surferRouter = createTRPCRouter({
         profileImage: true,
         country: { select: { name: true, flagLink: true } },
         heatResults: matchupCountFilter,
-        
       },
       orderBy: { name: 'asc' },
     })

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { GENDER } from '@/utils/enums'
+import { GENDER } from '@/utils/interfaces'
 import { TRPCError } from '@trpc/server'
 import { twoDec } from '@/utils/format/roundTwoDec'
 import { queryDifferential, queryFormat } from '@/utils/format/queryFormat'

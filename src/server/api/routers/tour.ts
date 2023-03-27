@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../trpc'
-import { GENDER, SORTDIR, STATUS } from '@/utils/enums'
+import { GENDER, SORTDIR, STATUS } from '@/utils/interfaces'
 
 export const TourSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -47,7 +47,7 @@ export const tourRouter = createTRPCRouter({
         gender: input.gender,
         tourResults: { some: { worldTitle: true } },
       },
-      include: { tourResults: {where: {worldTitle: true}, include: { surfer: true } } },
+      include: { tourResults: { where: { worldTitle: true }, include: { surfer: true } } },
       orderBy: {
         year: input.sortYear,
       },
@@ -57,7 +57,6 @@ export const tourRouter = createTRPCRouter({
     if (!tour) throw new TRPCError({ code: 'NOT_FOUND' })
     return tour
   }),
-
 
   getEventYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
     const query = ctx.prisma.tour.findMany({

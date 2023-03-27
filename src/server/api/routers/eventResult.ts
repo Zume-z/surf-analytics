@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { GENDER, SORTDIR } from '@/utils/enums'
+import { GENDER, SORTDIR } from '@/utils/interfaces'
 import { createTRPCRouter, publicProcedure } from '../trpc'
 
 export const EventResultSchema = z.object({

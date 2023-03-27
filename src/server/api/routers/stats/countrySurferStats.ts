@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { Context, Surfer } from '@/utils/interfaces'
-import { GENDER, SORTDIR } from '@/utils/enums'
+import { GENDER, SORTDIR } from '@/utils/interfaces'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
 import { queryDifferential, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 

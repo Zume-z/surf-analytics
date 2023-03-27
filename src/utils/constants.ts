@@ -1,7 +1,30 @@
+// ==============================
+// CONSTANTS
+// ==============================
+
+export const DATA_DISCLAIMER = 'All data is taken from the 2010-2023 WSL Championship Tour.'
+export const BREAKPOINT = { sm: 640, md: 768, lg: 1024, xl: 1280 }
+export const CONTACT_URLS = { EMAIL: 'brendan@surf-analytics.com', INSTAGRAM: 'https://www.instagram.com/surf_analytics/', TWITTER: 'https://twitter.com/Surf_Analytics' }
+export const HTH_LABELS = ['Heat Wins', 'Avg. Heat Total', 'Max Heat Total', 'Heat Total Differential', 'Total Waves', 'Avg. Wave Score', 'Max Wave Score', 'Avg. Counted Wave Score', 'Interferences']
+
+// ==============================
 // OPTION PRESETS
+// ==============================
+
 export const GENDEROPTIONS = [
   { label: 'Mens', value: 'MALE' },
   { label: 'Womens', value: 'FEMALE' },
+]
+
+export const GENDEREVENTOPTIONS = [
+  { label: 'Mens', value: '0' },
+  { label: 'Womens', value: '1' },
+]
+
+export const SUBHEADERLOADEREVENT = [
+  { label: 'eventPrimary', value: '' },
+  { label: '', value: '' },
+  { label: '', value: '' },
 ]
 
 export const YEAROPTIONS = [
@@ -20,21 +43,3 @@ export const YEAROPTIONS = [
   { label: '2011', value: '2011' },
   { label: '2010', value: '2010' },
 ]
-
-export const GENDEREVENTOPTIONS = [
-  { label: 'Mens', value: '0' },
-  { label: 'Womens', value: '1' },
-]
-
-// LOADER PRESETS
-export const SUBHEADERLOADEREVENT = [
-  { label: 'eventPrimary', value: '' },
-  { label: '', value: '' },
-  { label: '', value: '' },
-]
-
-// OTHER CONSTANTS
-export const DATA_DISCLAIMER = 'All data is taken from the 2010-2023 WSL Championship Tour.'
-export const BREAKPOINT = { sm: 640, md: 768, lg: 1024, xl: 1280 }
-export const CONTACT_URLS = { EMAIL: 'brendan@surf-analytics.com', INSTAGRAM: 'https://www.instagram.com/surf_analytics/', TWITTER: 'https://twitter.com/Surf_Analytics' }
-export const HTH_LABELS = ['Heat Wins', 'Avg. Heat Total', 'Max Heat Total', 'Heat Total Differential', 'Total Waves', 'Avg. Wave Score', 'Max Wave Score', 'Avg. Counted Wave Score', 'Interferences']

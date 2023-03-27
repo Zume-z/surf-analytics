@@ -1,22 +1,5 @@
-import { RouterOutputs } from './api'
-import { Prisma, PrismaClient } from '@prisma/client'
 import { Session } from 'next-auth'
-
-export interface Context {
-  session: Session | null
-  prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
-}
-
-export interface RouterType {
-  pathname: string
-  query: any
-}
-
-export interface TourWorldTitle {
-  year: number
-  mensTourResult: TourResult
-  womensTourResult: TourResult
-}
+import { Prisma, PrismaClient } from '@prisma/client'
 
 // =================================================================================================
 // SCHEMA
@@ -208,7 +191,9 @@ export type WaveDirection = 'LEFT' | 'RIGHT' | 'BOTH' | undefined
 export type Gender = 'MALE' | 'FEMALE'
 export type Stance = 'REGULAR' | 'GOOFY'
 
+// =================================================================================================
 // STATS
+// =================================================================================================
 export interface Stats {
   // Results
   worldTitles?: { label: string; value: string | number }
@@ -265,3 +250,32 @@ export interface Stats {
   prizeMoney?: { label: string; value: string | number }
   totalInterferences?: { label: string; value: string | number }
 }
+
+// =================================================================================================
+// TYPES
+// =================================================================================================
+
+export interface Context {
+  session: Session | null
+  prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
+}
+
+export interface RouterType {
+  pathname: string
+  query: any
+}
+
+export interface TourWorldTitle {
+  year: number
+  mensTourResult: TourResult
+  womensTourResult: TourResult
+}
+
+// =================================================================================================
+// ENUMS
+// =================================================================================================
+
+export const SORTDIR = ['asc', 'desc'] as const
+export const GENDER = ['MALE', 'FEMALE'] as const
+export const SWIPERDIR = ['NEXT', 'PREV'] as const
+export const STATUS = ['CANCELED', 'UPCOMING', 'COMPLETED'] as const

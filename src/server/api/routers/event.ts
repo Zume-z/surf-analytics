@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { createTRPCRouter, publicProcedure } from '../trpc'
-import { GENDER, SORTDIR, STATUS } from '@/utils/enums'
+import { GENDER, SORTDIR, STATUS } from '@/utils/interfaces'
 
 export const EventSchema = z.object({
   slug: z.string().optional(),
