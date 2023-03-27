@@ -32,7 +32,7 @@ export default function Champions() {
   }
 
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
-  const eventsQuery = api.event.getManyByLocation.useQuery({ locationSlug: filters.locationSlug, gender: eventQuery.data?.tour.gender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !!eventQuery.data?.tour.gender }) // prettier-ignore
+  const eventsQuery = api.event.getManyByLocation.useQuery({ locationSlug: eventQuery.data?.locationSlug, gender: eventQuery.data?.tour.gender, sortStartDate: filters.sortStartDate, eventStatus: filters.eventStatus }, { enabled: !eventQuery.isLoading }) // prettier-ignore
   const eventStatQuery = api.eventStat.getResult.useQuery({ eventSlug: eventId }, { enabled: !!eventId && !eventsQuery.isLoading })
   const eventStatAllQuery = api.eventStat.getAll.useQuery({ eventSlug: eventId }, { enabled: !!eventId && statToggle })
   const onSelectEvent = (event: Event) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: event.slug } })
