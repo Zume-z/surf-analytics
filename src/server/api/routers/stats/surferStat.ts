@@ -91,7 +91,7 @@ const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema
     ...(await excellentWaves(ctx, input)),
     // ...(await wavesPerMinute(ctx, input)),
     ...(await totalInterferences(ctx, input)),
-    ...(await mostBeaten(ctx, input)),
+    // ...(await mostBeaten(ctx, input)),
     // ...(await mostBeatenBy(ctx, input)),
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
