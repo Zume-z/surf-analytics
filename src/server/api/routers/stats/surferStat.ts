@@ -90,6 +90,7 @@ const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema
     ...(await highestWaveScore(ctx, input)),
     ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
+    ...(await wavesPerMinute(ctx, input)),
     ...(await totalInterferences(ctx, input)),
     ...(await mostBeaten(ctx, input)),
     ...(await mostBeatenBy(ctx, input)),
@@ -97,8 +98,6 @@ const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
 }
-
-
 
 // FITERS
 const eventResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, NOT: { place: 0 }, event: { eventStatus: 'COMPLETED' as Status } })
@@ -216,13 +215,12 @@ const avgWavesPerHeat = async (ctx: Context, input: z.infer<typeof surferStatSch
   return { avgWavesPerHeat: { label: 'Avg. Waves Per Heat', value: queryDivide(totalWavesQ.totalWaves.value, totalHeatsQ.totalHeats.value) } }
 }
 
-// const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-//   const totalWavesX = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: {not: null}}} })
-//   // const totalMinutes = await ctx.prisma.
-//   // console.log(totalWavesQ)
-//   // console.log(totalWavesX)
-
-// }
+const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+  const totalWaves = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: { gt: 0 } } } })
+  const totalMinutes = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', heatResults: { some: { surferSlug: input.surferSlug } } }, _sum: { heatDuration: true } })
+  if (!totalMinutes._sum.heatDuration) return { wavesPerMinute: { label: 'Waves Per Minute', value: '-' } }
+  return { wavesPerMinute: { label: 'Waves Per Minute', value: queryDivide(totalWaves, totalMinutes._sum.heatDuration), subValue: `Avg. ${queryDivide(totalMinutes._sum.heatDuration, totalWaves)} min per wave` } }
+}
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const query = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, countedWave: true } })
