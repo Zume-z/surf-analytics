@@ -22,7 +22,7 @@ export const surferCareerStats = (statQuery?: Stats, allStatQuery?: Stats, surfe
     if (!allStatQuery || surfer == undefined) return undefined
     const { eventWinPerc, totalHeats, avgHeatTotal, heatWins, heatWinPerc, highestHeatTotal, excellentHeats, totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves, avgHeatTotalDifferential, totalInterferences, mostBeaten, mostBeatenBy} = allStatQuery //prettier-ignore
     const bio = { label: 'Bio', stats: [surferStance, surferAge, surferHeight, surferWeight, surferHomeTown] }
-    const career = { label: 'Career', stats: [surferRank, surferPoints, worldTitles, prizeMoney, mostBeaten] } // mostBeatenBy
+    const career = { label: 'Career', stats: [surferRank, surferPoints, worldTitles, prizeMoney, mostBeatenBy] } //  mostBeaten
     const events = { label: 'Events', stats: [totalEvents, eventWins, eventWinPerc, avgResult, bestResult] }
     const heats = { label: 'Heats', stats: [totalHeats, heatWins, heatWinPerc, avgHeatTotal, excellentHeats, avgHeatTotalDifferential, highestHeatTotal, totalInterferences] }
     const waves = { label: 'Waves', stats: [totalWaves, avgWaveScore, totalCountedWaves, avgCountedWaveScore, highestWaveScore, excellentWaves] }
