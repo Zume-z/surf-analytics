@@ -22,7 +22,7 @@ export default function Layout({ title, metaDescription, children, slider, subHe
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content={metaDescription ? metaDescription : 'Get all the latest world surfing league stats, athlete rankings, event results, and more.'}
+          content={metaDescription ? metaDescription : 'Surf Analytics provides all the latest world surfing league stats, athlete rankings, event results, and more.'}
           key="desc"
         />
       </Head>
