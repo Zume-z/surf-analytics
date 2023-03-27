@@ -23,9 +23,7 @@ export default function Surfers() {
   const [countrySlug, setCountrySlug] = useQueryState('country')
   const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
-  const midSeasonCutLine = year == new Date().getFullYear() ? gender == 'FEMALE' ? 10 : 23 : undefined
-
-
+  const midSeasonCutLine = year == new Date().getFullYear() && !countrySlug ? (gender == 'FEMALE' ? 10 : 23) : undefined
 
   const updateYear = React.useCallback(async (value: string) => {
     await setCountrySlug(null)
@@ -47,11 +45,11 @@ export default function Surfers() {
   const countryQuery = api.country.getOptionsBySurfer.useQuery({ gender: filters.gender, surferYear: filters.year })
   const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug, country: country as Country }))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
-  
+
   const tableData: TableData[] = [
     { name: `Championship Tour`, id: 'name', content: (item: TourResult) => <CardSurfer surfer={item.surfer} place={item.surferRank} showFirst={true} />, loader: <CardSurferLoader /> },
     { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{item.surferPoints.toLocaleString('en-US')}</div> },
-    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label='View Surfer' /> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label="View Surfer" /> },
   ]
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
