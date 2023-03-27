@@ -21,7 +21,7 @@ export default function SurferCareer() {
   const { surferId } = router.query as { surferId: string }
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
   const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId && !tourResultQuery.isLoading })
-  const surferStatAllQuery = api.surferStat.getAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
+  const surferStatAllQuery = api.surferStat.getCareerAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
   const onYearSelect = (item: TourResult) => !item.tour.canceled && item.tour.year >= 2010 && router.replace({ pathname: '/surfers/[surferId]/events', query: { ...router.query, year: item.tour.year } })
 
   const subHeaderData = [

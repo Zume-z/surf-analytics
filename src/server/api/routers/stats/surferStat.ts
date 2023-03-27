@@ -1,11 +1,10 @@
 import { z } from 'zod'
+import { Status } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import { getMoneyFormat } from '@/utils/format/moneyFormat'
+import { Context } from '@/utils/interfaces'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
 import { queryDifferential, queryDivide, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
-import { Context } from '@/utils/interfaces'
-import { Status } from '@prisma/client'
 
 const surferStatSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -19,18 +18,19 @@ export const surferStatRouter = createTRPCRouter({
   getCareer: publicProcedure.input(surferStatSchema).query(({ ctx, input }) => {
     return getCareer(ctx, input)
   }),
+  getCareerAll: publicProcedure.input(surferStatSchema).query(({ ctx, input }) => {
+    return getCareerAll(ctx, input)
+  }),
 })
 
 const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-  // wavesPerMinute(ctx, input)
-  // const { surferRank, surferPoints, worldTitles, prizeMoney, totalEvents, eventWins, bestResult, avgResult } = statQuery
   const query = {
-    // ...(await surferRank_surferPoints(ctx, input)),
-    // ...(await worldTitles(ctx, input)),
-    // ...(await totalEvents(ctx, input)),
-    // ...(await eventWins(ctx, input)),
-    // ...(await bestResult(ctx, input)),
-    // ...(await avgResult(ctx, input)),
+    ...(await surferRank_surferPoints(ctx, input)),
+    ...(await worldTitles(ctx, input)),
+    ...(await totalEvents(ctx, input)),
+    ...(await eventWins(ctx, input)),
+    ...(await bestResult(ctx, input)),
+    ...(await avgResult(ctx, input)),
     ...(await eventWinPerc(ctx, input)),
     ...(await totalHeats(ctx, input)),
     ...(await avgHeatTotal(ctx, input)),
@@ -46,7 +46,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => 
     ...(await highestWaveScore(ctx, input)),
     ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
-    // ...(await prizeMoney(ctx, input)),
+    ...(await prizeMoney(ctx, input)),
     ...(await totalInterferences(ctx, input)),
     ...(await mostBeaten(ctx, input)),
     ...(await mostBeatenBy(ctx, input)),
@@ -72,6 +72,33 @@ const getCareer = async (ctx: Context, input: z.infer<typeof surferStatSchema>) 
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
 }
+const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
+  // wavesPerMinute(ctx, input)
+  const query = {
+    ...(await eventWinPerc(ctx, input)),
+    ...(await totalHeats(ctx, input)),
+    ...(await avgHeatTotal(ctx, input)),
+    ...(await avgHeatTotalDifferential(ctx, input)),
+    ...(await heatWins(ctx, input)),
+    ...(await heatWinPerc(ctx, input)),
+    ...(await highestHeatTotal(ctx, input)),
+    ...(await excellentHeats(ctx, input)),
+    ...(await totalWaves(ctx, input)),
+    ...(await avgWaveScore(ctx, input)),
+    ...(await totalCountedWaves(ctx, input)),
+    ...(await avgCountedWaveScore(ctx, input)),
+    ...(await highestWaveScore(ctx, input)),
+    ...(await totalTens(ctx, input)),
+    ...(await excellentWaves(ctx, input)),
+    ...(await totalInterferences(ctx, input)),
+    ...(await mostBeaten(ctx, input)),
+    ...(await mostBeatenBy(ctx, input)),
+  }
+  if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
+  return query
+}
+
+
 
 // FITERS
 const eventResultFilter = (input: z.infer<typeof surferStatSchema>) => ({ surferSlug: input.surferSlug, injured: false, withdrawn: false, NOT: { place: 0 }, event: { eventStatus: 'COMPLETED' as Status } })

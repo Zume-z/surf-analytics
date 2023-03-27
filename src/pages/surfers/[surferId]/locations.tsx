@@ -16,7 +16,6 @@ import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import { bestResultByLocation, getApperances } from '@/utils/function/getLocationResults'
 
-
 export default function SurferLocations() {
   const router = useRouter()
   const [statToggle, setStatToggle] = useState(false)
@@ -24,7 +23,7 @@ export default function SurferLocations() {
   const locationsQuery = api.location.getManyBySurfer.useQuery({ surferSlug: surferId }, { enabled: !!surferId })
   const tourResultQuery = api.tourResult.getMany.useQuery({ surferSlug: surferId, sortYear: 'desc', itemsPerPage: 14 }, { enabled: !!surferId })
   const surferStatQuery = api.surferStat.getCareer.useQuery({ surferSlug: surferId }, { enabled: !!surferId && !locationsQuery.isLoading })
-  const surferStatAllQuery = api.surferStat.getAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
+  const surferStatAllQuery = api.surferStat.getCareerAll.useQuery({ surferSlug: surferId }, { enabled: !!surferId && statToggle })
   const onLocationSelect = (item: Location) => router.replace({ pathname: '/surfers/[surferId]/[locationId]', query: { surferId: surferId, locationId: item.slug } })
 
   const subHeaderData = [
