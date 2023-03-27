@@ -12,6 +12,12 @@ export interface RouterType {
   query: any
 }
 
+export interface TourWorldTitle {
+  year: number
+  mensTourResult: TourResult
+  womensTourResult: TourResult
+}
+
 // =================================================================================================
 // SCHEMA
 // =================================================================================================

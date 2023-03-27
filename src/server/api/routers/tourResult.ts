@@ -9,6 +9,7 @@ export const TourResultSchema = z.object({
   tourSlug: z.string().optional(),
   gender: z.enum(GENDER).optional(),
   countrySlug: z.string().optional(),
+  worldTitle: z.boolean().optional(),
 
   // Sort
   sortSurferRank: z.enum(SORTDIR).optional(),
@@ -33,6 +34,39 @@ export const tourResultRouter = createTRPCRouter({
     const yearSort = input.sortYear ? { year: input.sortYear } : undefined
     const tourResult = ctx.prisma.tourResult.findMany({
       where: {
+        worldTitle: input.worldTitle,
+        surfer: {
+          slug: input.surferSlug,
+          countrySlug: input.countrySlug,
+        },
+        tour: {
+          slug: input?.tourSlug,
+          year: input?.year,
+          gender: input?.gender,
+        },
+      },
+      select: {
+        surferPoints: true,
+        surferRank: true,
+        tour: { select: { year: true, canceled: true, gender: true } },
+        surfer: { select: { name: true, stance: true, dob: true, heightCm: true, weightKg: true, slug: true, profileImage: true, hometown: true, country: { select: { name: true, flagLink: true } } } },
+      },
+      orderBy: {
+        surferRank: input?.sortSurferRank,
+        tour: yearSort,
+      },
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!tourResult) throw new TRPCError({ code: 'NOT_FOUND' })
+    return tourResult
+  }),
+
+  getManyWorldtitle: publicProcedure.input(TourResultSchema).query(({ ctx, input }) => {
+    const yearSort = input.sortYear ? { year: input.sortYear } : undefined
+    const tourResult = ctx.prisma.tourResult.findMany({
+      where: {
+        worldTitle: input.worldTitle,
         surfer: {
           slug: input.surferSlug,
           countrySlug: input.countrySlug,

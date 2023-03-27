@@ -39,9 +39,25 @@ export const tourRouter = createTRPCRouter({
     return tour
   }),
 
-  getOne: publicProcedure.input(z.object({ surferSlug: z.string(), tourSlug: z.string() })).query(({ ctx, input }) => {
-    return ctx.prisma.tour.findUniqueOrThrow({ where: { slug: input.tourSlug } })
+  getManyWorldtitles: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
+    const tour = ctx.prisma.tour.findMany({
+      where: {
+        slug: input.tourSlug,
+        year: input.year,
+        gender: input.gender,
+        tourResults: { some: { worldTitle: true } },
+      },
+      include: { tourResults: {where: {worldTitle: true}, include: { surfer: true } } },
+      orderBy: {
+        year: input.sortYear,
+      },
+      take: input?.itemsPerPage,
+      skip: input?.offset,
+    })
+    if (!tour) throw new TRPCError({ code: 'NOT_FOUND' })
+    return tour
   }),
+
 
   getEventYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
     const query = ctx.prisma.tour.findMany({
@@ -61,6 +77,7 @@ export const tourRouter = createTRPCRouter({
     if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
     return query
   }),
+
   getSurferYears: publicProcedure.input(TourSchema).query(({ ctx, input }) => {
     const query = ctx.prisma.tour.findMany({
       where: {
@@ -77,5 +94,9 @@ export const tourRouter = createTRPCRouter({
     })
     if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
     return query
+  }),
+
+  getOne: publicProcedure.input(z.object({ surferSlug: z.string(), tourSlug: z.string() })).query(({ ctx, input }) => {
+    return ctx.prisma.tour.findUniqueOrThrow({ where: { slug: input.tourSlug } })
   }),
 })

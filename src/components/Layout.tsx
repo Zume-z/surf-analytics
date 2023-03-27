@@ -6,6 +6,7 @@ import SliderEvents, { SliderEventProps } from './SliderEvents'
 
 interface LayoutProps {
   title?: string
+  metaDescription?: string
   children: React.ReactNode
   subHeader?: SubHeaderProps
   subheaderLoading?: boolean
@@ -13,12 +14,17 @@ interface LayoutProps {
   slider?: SliderEventProps
 }
 
-export default function Layout({ title, children, slider, subHeader }: LayoutProps) {
+export default function Layout({ title, metaDescription, children, slider, subHeader }: LayoutProps) {
   return (
     <div>
       <Head>
         <title>{title ? `Surf Analytics | ${title}` : 'Surf Analytics'}</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content={metaDescription ? metaDescription : 'Get all the latest world surfing league stats, athlete rankings, event results, and more.'}
+          key="desc"
+        />
       </Head>
       <Header />
       {subHeader && <SubHeader subHeaderData={subHeader.subHeaderData} stats={subHeader.stats} statsLoading={subHeader.statsLoading} buttonBack={subHeader.buttonBack} setStatToggle={subHeader.setStatToggle} statToggle={subHeader.statToggle} />}

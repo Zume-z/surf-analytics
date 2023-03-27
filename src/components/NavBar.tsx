@@ -15,7 +15,7 @@ export default function Header() {
     { name: 'Events', href: '/events' },
     { name: 'Country', href: '/country' },
     { name: 'Matchups', href: '/matchups' },
-    // { name: 'World Titles', href: '/country' },
+    { name: 'World Titles', href: '/worldtitles' },
     { name: 'Analytics', href: '/analytics' },
   ]
 
@@ -35,7 +35,7 @@ export default function Header() {
 
                 {/* Desktop NavBar */}
                 <div className="hidden sm:ml-6 sm:block ">
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-2 lg:space-x-4">
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
