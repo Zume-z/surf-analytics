@@ -60,6 +60,7 @@ export const countryRouter = createTRPCRouter({
       select: {
         name: true,
         slug: true,
+        flagLink: true,
       },
       orderBy: {
         name: 'asc',
@@ -77,7 +78,7 @@ export const countryRouter = createTRPCRouter({
       where: {
         events: { some: { tour: { gender: input.gender, year: input.eventYear } } },
       },
-      select: { name: true, slug: true },
+      select: { name: true, slug: true, flagLink: true },
       orderBy: {
         name: 'asc',
       },

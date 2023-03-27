@@ -1,6 +1,7 @@
 import { Event } from '@/utils/interfaces'
 import { CardEventStatus } from '../CardEventStatus'
-import { waitingPeriod } from '@/utils/format/getWaitingPeriod'
+import { waitingPeriod } from '@/utils/function/getWaitingPeriod'
+
 
 export default function TableEventDate({ event, showYear }: { event: Event, showYear?: boolean }) {
   return (

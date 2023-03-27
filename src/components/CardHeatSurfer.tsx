@@ -3,16 +3,15 @@ import TriangleFill from './icons/IconTriangleFill'
 import { twoDec } from '@/utils/format/roundTwoDec'
 import type { HeatResult } from '@/utils/interfaces'
 import TriangleOutline from './icons/IconTriangleOutline'
-import { bgJerseyColor } from '@/utils/format/bgJerseyColor'
+import { bgJerseyColor } from '@/utils/function/getJerseyColor'
 import { configSurferImage } from '@/utils/format/configSurferImage'
-
 
 export default function CardHeatSurferRow({ heatResult }: { heatResult: HeatResult }) {
   const surferProfile = configSurferImage(heatResult.surfer.profileImage, 96)
   const interference = heatResult.interferenceOne || heatResult.interferenceTwo || heatResult.interferenceThree
   return (
     <div className="group flex items-center whitespace-nowrap text-sm">
-      <div className={`h-12 w-12 flex-shrink-0 rounded-full  ${bgJerseyColor(heatResult.jerseyColor, 'bg-gray-100 transition-200 hover-mod:group-hover:bg-white')}`}>
+      <div className={`h-12 w-12 flex-shrink-0 rounded-full  ${bgJerseyColor(heatResult.jerseyColor, 'transition-200 bg-gray-100 hover-mod:group-hover:bg-white')}`}>
         <Image src={surferProfile} className="rounded-full" width={100} height={99} />
       </div>
       <div className="ml-2">

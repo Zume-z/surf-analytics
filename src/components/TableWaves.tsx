@@ -4,9 +4,9 @@ import { windowSize } from '@/utils/windowSize'
 import TriangleFill from './icons/IconTriangleFill'
 import { twoDec } from '@/utils/format/roundTwoDec'
 import TriangleOutline from './icons/IconTriangleOutline'
-import { bgJerseyColor } from '@/utils/format/bgJerseyColor'
+import { bgJerseyColor } from '@/utils/function/getJerseyColor'
 import { capitalizeFirst } from '@/utils/format/capitalizeFirst'
-import { shortSurferName } from '@/utils/format/shortSurferName'
+import { shortSurferName } from '@/utils/format/truncate/shortSurferName'
 
 export interface TableData {
   value: string | number
@@ -44,7 +44,7 @@ const Surfer = ({ heatResult }: { heatResult: any }) => {
   )
 }
 
-const surferLoader = () => {
+const SurferLoader = () => {
   return (
     <div className="items-center whitespace-nowrap text-sm sm:-ml-3 sm:flex">
       <div className="flex items-center justify-center  pb-1">
@@ -151,7 +151,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                       </th>
                       {loader.headerColumns.map((key: number, i: number) => (
                         <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
-                          <div>{surferLoader()}</div>
+                          <div>{SurferLoader()}</div>
                         </th>
                       ))}
                     </tr>

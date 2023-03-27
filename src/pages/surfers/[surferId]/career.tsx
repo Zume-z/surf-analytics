@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -6,14 +7,13 @@ import SubNavbar from '@/components/SubNavbar'
 import { windowSize } from '@/utils/windowSize'
 import Table, { TableData } from '@/components/Table'
 import { Surfer, TourResult } from '@/utils/interfaces'
-import { surferYearSpan } from '@/utils/format/getYearSpan'
+import { surferYearSpan } from '@/utils/function/getYearSpan'
 import TableLink from '@/components/tableComponents/TableLink'
-import { surferCareerStats } from '@/utils/format/subHeaderStats'
+import { surferCareerStats } from '@/utils/stat/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TourResultRank from '@/components/tableComponents/TableTourResultRank'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TourResultPoints from '@/components/tableComponents/TableTourResultPoints'
-import { useState } from 'react'
 
 export default function SurferCareer() {
   const router = useRouter()

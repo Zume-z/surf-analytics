@@ -6,7 +6,7 @@ import { Surfer } from '@/utils/interfaces'
 import { Cross2Icon } from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import { PlusIcon, ChevronDownIcon } from '@heroicons/react/outline'
-import { shortSurferName } from '@/utils/format/shortSurferName'
+import { shortSurferName } from '@/utils/format/truncate/shortSurferName'
 import { shortCountryName } from '@/utils/format/truncate/shortCountryName'
 
 type ButtonSelectSearchSurfer = {

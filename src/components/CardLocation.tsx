@@ -1,7 +1,6 @@
-import type { Event, Location } from '@/utils/interfaces'
-import { windowSize } from '@/utils/windowSize'
-import { shortEventAddress } from '@/utils/format/shortEventAddress'
-import { shortEventName } from '@/utils/format/shortEventName'
+import type { Location } from '@/utils/interfaces'
+import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress'
+
 import Image from 'next/legacy/image'
 
 export default function CardLocation({ location }: { location: Location }) {
@@ -15,4 +14,3 @@ export default function CardLocation({ location }: { location: Location }) {
     </div>
   )
 }
-

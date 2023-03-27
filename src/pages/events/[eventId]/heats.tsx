@@ -11,10 +11,11 @@ import { Event, Heat } from '@/utils/interfaces'
 import { useQueryState } from 'next-usequerystate'
 import { HeatSchema } from '@/server/api/routers/heat'
 import ButtonSelectSearch from '@/components/ButtonSelectSearch'
-import { eventResultStats } from '@/utils/format/subHeaderStats'
+import { eventResultStats } from '@/utils/stat/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
-import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFormat'
+import { getHeatTableBlocks, getHeatTableRows } from '@/utils/table/heatTableFormat'
+
 
 export default function EventHeats() {
   const router = useRouter()

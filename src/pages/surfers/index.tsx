@@ -5,7 +5,7 @@ import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import FilterBar from '@/components/FilterBar'
-import { TourResult } from '@/utils/interfaces'
+import { Country, TourResult } from '@/utils/interfaces'
 import CardSurfer from '@/components/CardSurfer'
 import { windowSize } from '@/utils/windowSize'
 import ButtonSelect from '@/components/ButtonSelect'
@@ -15,6 +15,8 @@ import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
+import TableLink from '@/components/tableComponents/TableLink'
+import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
 
 export default function Surfers() {
   const router = useRouter()
@@ -40,23 +42,23 @@ export default function Surfers() {
 
   const tourResultQuery = api.tourResult.getMany.useQuery(filters)
   const countryQuery = api.country.getOptionsBySurfer.useQuery({ gender: filters.gender, surferYear: filters.year })
-  const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
+  const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug, country: country as Country }))
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
   
   const tableData: TableData[] = [
     { name: `Championship Tour`, id: 'name', content: (item: TourResult) => <CardSurfer surfer={item.surfer} place={item.surferRank} showFirst={true} />, loader: <CardSurferLoader /> },
     { name: 'Points', id: 'points', content: (item: TourResult) => <div className="table-item">{item.surferPoints.toLocaleString('en-US')}</div> },
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label='View Surfer' /> },
   ]
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
     <Layout title={'Surfers'}>
-      <h1 className="py-8 text-center text-3xl font-semibold">Surfers</h1>
+      <h1 className="header-1">Surfers</h1>
       <FilterBar className=" justify-center">
         <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
-        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelectSearchCountry placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
 
       <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />

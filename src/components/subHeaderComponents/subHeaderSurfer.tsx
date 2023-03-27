@@ -1,9 +1,8 @@
-import { RouterOutputs } from '@/utils/api'
-import { configSurferImage } from '@/utils/format/configSurferImage'
-import { RouterType, Surfer } from '@/utils/interfaces'
 import Image from 'next/legacy/image'
 import { useRouter } from 'next/router'
+import { RouterType, Surfer } from '@/utils/interfaces'
 import CardSurferLoader from '../loaders/CardSurferLoader'
+import { configSurferImage } from '@/utils/format/configSurferImage'
 
 interface subHeaderSurferProps {
   surfer: Surfer | undefined 

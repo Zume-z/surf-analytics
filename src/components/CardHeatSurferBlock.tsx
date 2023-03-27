@@ -1,10 +1,10 @@
 import Image from 'next/legacy/image'
-import { twoDec } from '@/utils/format/roundTwoDec'
-import { bgJerseyColor } from '@/utils/format/bgJerseyColor'
-import { configSurferImage } from '@/utils/format/configSurferImage'
-import TriangleFill from './icons/IconTriangleFill'
-import TriangleOutline from './icons/IconTriangleOutline'
 import { HeatResult } from '@/utils/interfaces'
+import TriangleFill from './icons/IconTriangleFill'
+import { twoDec } from '@/utils/format/roundTwoDec'
+import TriangleOutline from './icons/IconTriangleOutline'
+import { bgJerseyColor } from '@/utils/function/getJerseyColor'
+import { configSurferImage } from '@/utils/format/configSurferImage'
 
 export default function CardHeatSurferBlock({ heatResult, place }: { heatResult: HeatResult; place?: boolean }) {
   const surferProfile = configSurferImage(heatResult.surfer.profileImage, 96)
@@ -27,7 +27,7 @@ export default function CardHeatSurferBlock({ heatResult, place }: { heatResult:
       </div>
       <div className="flex items-center ">
         <div className="text-end ">
-          <div className={`justify-end text-sm ${interference ? 'text-red-500': ''} `}>{twoDec(heatResult.heatTotal)}</div>
+          <div className={`justify-end text-sm ${interference ? 'text-red-500' : ''} `}>{twoDec(heatResult.heatTotal)}</div>
           <div className="flex items-center">
             {heatResult.interferenceOne && !heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleOutline className="mr-1 h-3 w-3 text-red-500 " />}
             {heatResult.interferenceTwo && !heatResult.interferenceThree && <TriangleFill className=" mr-1 h-3 w-3 text-red-500 " />}

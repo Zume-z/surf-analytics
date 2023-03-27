@@ -4,7 +4,7 @@ import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import { Gender } from '@prisma/client'
 import Layout from '@/components/Layout'
-import { Event } from '@/utils/interfaces'
+import { Country, Event } from '@/utils/interfaces'
 import CardEvent from '@/components/CardEvent'
 import FilterBar from '@/components/FilterBar'
 import { windowSize } from '@/utils/windowSize'
@@ -19,6 +19,7 @@ import CardEventLoader from '@/components/loaders/CardEventLoader'
 import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
+import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
 
 export default function Events() {
   const router = useRouter()
@@ -38,7 +39,7 @@ export default function Events() {
 
   const eventQuery = api.event.getMany.useQuery({ ...filters })
   const countryQuery = api.country.getOptionByEvent.useQuery({ gender: filters.gender, eventYear: filters.year })
-  const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug }))
+  const countryOptions = countryQuery.data?.map((country) => ({ label: country.name, value: country.slug, country: country as Country }))
 
   const tableData: TableData[] = [
     { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} />, loader: <CardEventLoader /> },
@@ -51,11 +52,11 @@ export default function Events() {
 
   return (
     <Layout title={'Events'}>
-      <h1 className="py-8 text-center text-3xl font-semibold">Events</h1>
+      <h1 className="header-1">Events</h1>
       <FilterBar className="justify-center">
         <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
-        <ButtonSelectSearch placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
+        <ButtonSelectSearchCountry placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
         {/* <ButtonSelectSearch placeHolder="Event" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" /> */}
       </FilterBar>
       <Table tableData={tableData} items={eventQuery.data || []} handleSelection={onSelectEvent} loading={eventQuery.isLoading} />

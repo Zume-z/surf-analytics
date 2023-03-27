@@ -6,13 +6,12 @@ import { useEffect, useState } from 'react'
 import ButtonBack from '@/components/ButtonBack'
 import TableWaves from '@/components/TableWaves'
 import { leadingZero } from '@/utils/format/leadingZero'
-import { eventWaveStats } from '@/utils/format/subHeaderStats'
-import { redirectPrevPage } from '@/utils/format/redirectPrevPage'
-import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
+import { eventWaveStats } from '@/utils/stat/subHeaderStats'
+import { redirectPrevPage } from '@/utils/function/redirectPrevPage'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
-import { getWaveTableCol, getWaveTableData } from '@/utils/format/waveTableFormat'
+import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
+import { getWaveTableCol, getWaveTableData } from '@/utils/table/waveTableFormat'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
-
 
 export default function EventWaves() {
   const router = useRouter()
@@ -20,8 +19,6 @@ export default function EventWaves() {
   const { eventId, heatRound, heatNumber, surfer } = router.query as { eventId: string; heatRound: string; heatNumber: string; surfer: string }
   const heatQuery = api.heat.getOneByEvent.useQuery({ eventSlug: eventId, heatRound: heatRound, heatNumber: Number(heatNumber) }, { enabled: !!eventId && !!heatRound && !!heatNumber })
   useEffect(() => redirectPrevPage(router, { pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: surfer ? surfer : null } }), [router])
-
-  
 
   const filters = {
     waves: heatQuery.data ? heatQuery.data.waves : [],
@@ -54,7 +51,7 @@ export default function EventWaves() {
         setStatToggle: setStatToggle,
       }}
     >
-      <ButtonBack className="hidden sm:block" label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: surfer ? surfer : null  } }} />
+      <ButtonBack className="hidden sm:block" label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: surfer ? surfer : null } }} />
       <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} />
     </Layout>
   )

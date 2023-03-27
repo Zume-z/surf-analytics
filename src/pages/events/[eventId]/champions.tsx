@@ -11,11 +11,12 @@ import CardSurfer from '@/components/CardSurfer'
 import Table, { TableData } from '@/components/Table'
 import { EventSchema } from '@/server/api/routers/event'
 import CardEventChampion from '@/components/CardLocationResult'
-import { eventResultStats } from '@/utils/format/subHeaderStats'
+import { eventResultStats } from '@/utils/stat/subHeaderStats'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
-import { filterERByPlace, findERByPlace } from '@/utils/format/getEventResultByPlace'
+import { filterERByPlace, findERByPlace } from '@/utils/function/getEventResultByPlace'
+import TableLink from '@/components/tableComponents/TableLink'
 
 export default function Champions() {
   const router = useRouter()
@@ -54,7 +55,7 @@ export default function Champions() {
     { name: 'Event', id: 'event', content: (item: Event) => <CardEventChampion event={item} showYear={true} />, loader: <CardEventLoader /> },
     { name: 'Winner', id: 'winner', content: (item: Event) => <div>{filterERByPlace(item.eventResults, 1).length == 1 ? <CardSurfer surfer={findERByPlace(item.eventResults, 1)!.surfer} /> : <div className='text-gray-500'>-</div>}</div> }, //prettier-ignore
     { name: 'Runner Up', id: 'runnerup', content: (item: Event) =>  <div>{filterERByPlace(item.eventResults, 2).length == 1 ? <CardSurfer surfer={findERByPlace(item.eventResults, 2)!.surfer} /> : <div className='text-gray-500'>-</div>}</div> }, //prettier-ignore
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Event</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label="View Event" /> },
   ]
   if (windowSize().width! < BREAKPOINT.lg) tableData.pop()
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()

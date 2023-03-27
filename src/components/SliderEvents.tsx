@@ -8,10 +8,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Pagination, Navigation, FreeMode } from 'swiper'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
-import { waitingPeriod } from '@/utils/format/getWaitingPeriod'
-import { shortEventAddress } from '@/utils/format/shortEventAddress'
+
 import { BREAKPOINT } from '@/utils/constants'
 import { windowSize } from '@/utils/windowSize'
+import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress'
+import { waitingPeriod } from '@/utils/function/getWaitingPeriod'
 
 export interface SliderEventProps {
   events: any

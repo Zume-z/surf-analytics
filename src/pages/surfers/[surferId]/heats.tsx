@@ -6,11 +6,12 @@ import { useEffect, useState } from 'react'
 import TableHeat from '@/components/TableHeat'
 import SubNavbar from '@/components/SubNavbar'
 import { Heat, Surfer } from '@/utils/interfaces'
-import { surferHeatStats } from '@/utils/format/subHeaderStats'
-import { redirectPrevPage } from '@/utils/format/redirectPrevPage'
+import { surferHeatStats } from '@/utils/stat/subHeaderStats'
+import { redirectPrevPage } from '@/utils/function/redirectPrevPage'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
-import { getHeatTableRows, getHeatTableBlocks } from '@/utils/format/heatTableFormat'
+import { getHeatTableBlocks, getHeatTableRows } from '@/utils/table/heatTableFormat'
+
 
 export default function SurferHeats() {
   const router = useRouter()

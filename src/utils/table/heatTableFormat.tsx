@@ -1,10 +1,10 @@
 import { Heat } from '../interfaces'
-import { leadingZero } from './leadingZero'
 import CardHeat from '@/components/CardHeat'
-import { placeToString } from './placeToString'
+import { leadingZero } from '../format/leadingZero'
+import { placeToString } from '../format/placeToString'
 import CardHeatSurferRow from '@/components/CardHeatSurfer'
-import CardHeatSurferBlock from '@/components/CardHeatSurferBlock'
 import TableLink from '@/components/tableComponents/TableLink'
+import CardHeatSurferBlock from '@/components/CardHeatSurferBlock'
 const heatCanceled = (heat: any) => heat.heatStatus == 'CANCELED'
 
 // Rows

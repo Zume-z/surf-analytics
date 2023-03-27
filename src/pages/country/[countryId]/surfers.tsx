@@ -15,9 +15,10 @@ import { Country, Surfer } from '@/utils/interfaces'
 import { genderFormat } from '@/utils/format/genderFormat'
 import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
-import { surfersOrderBy } from '@/utils/format/getSurferSorted'
+import TableLink from '@/components/tableComponents/TableLink'
+import { countrySurferStats } from '@/utils/stat/subHeaderStats'
+import { surfersOrderBy } from '@/utils/function/getSurferSorted'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
-import { countrySurferStats } from '@/utils/format/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
 
@@ -45,20 +46,6 @@ export default function CountrySurfers() {
   const yearQuery = api.tour.getSurferYears.useQuery({ gender: filters.gender, countrySlugSurfer: filters.countrySlug, sortYear: 'desc' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
 
-  const subNavItems = [
-    { label: 'Country', active: false, router: { pathname: '/country', query: {} } },
-    { label: 'Surfers', active: true },
-  ]
-  if (eventYearQuery.data?.length) subNavItems.push({ label: 'Events', active: false, router: { pathname: '/country/[countryId]/events', query: { countryId: countryId } } })
-
-  const tableData: TableData[] = [
-    { name: 'Surfer', id: 'surfer', content: (item: Surfer) => <CardSurfer surfer={item} /> },
-    { name: 'World Titles', id: 'worldTitles', content: (item: Surfer) => <div className="table-item">{item.tourResults.length ? item.tourResults.length : '-'}</div> },
-    { name: 'Event Wins', id: 'eventWins', content: (item: Surfer) => <div className="table-item">{item.eventResults.length ? item.eventResults.length : '-'}</div> },
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Surfer</div> },
-  ]
-  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
-
   const getSubHeaderData = () => {
     if (surferQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
     const subHeaderData: SubheaderData[] = [
@@ -73,6 +60,20 @@ export default function CountrySurfers() {
     if (!gender && !year) subHeaderData.push({ content: <SubHeaderItem className="hidden sm:block" label="surfers" value={'All'} subvalue="Surfers" active={true} /> })
     return subHeaderData
   }
+
+  const subNavItems = [
+    { label: 'Country', active: false, router: { pathname: '/country', query: {} } },
+    { label: 'Surfers', active: true },
+  ]
+  if (eventYearQuery.data?.length) subNavItems.push({ label: 'Events', active: false, router: { pathname: '/country/[countryId]/events', query: { countryId: countryId } } })
+
+  const tableData: TableData[] = [
+    { name: 'Surfer', id: 'surfer', content: (item: Surfer) => <CardSurfer surfer={item} /> },
+    { name: 'World Titles', id: 'worldTitles', content: (item: Surfer) => <div className="table-item">{item.tourResults.length ? item.tourResults.length : '-'}</div> },
+    { name: 'Event Wins', id: 'eventWins', content: (item: Surfer) => <div className="table-item">{item.eventResults.length ? item.eventResults.length : '-'}</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label="View Surfer" /> },
+  ]
+  if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
     <Layout

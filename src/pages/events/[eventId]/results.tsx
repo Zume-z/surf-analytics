@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import React, { useState } from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import Layout from '@/components/Layout'
 import FilterBar from '@/components/FilterBar'
 import SubNavbar from '@/components/SubNavbar'
@@ -13,12 +13,13 @@ import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { Event, EventResult } from '@/utils/interfaces'
 import ButtonSelectSearch from '@/components/ButtonSelectSearch'
-import { eventResultStats } from '@/utils/format/subHeaderStats'
+import { eventResultStats } from '@/utils/stat/subHeaderStats'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import { EventResultSchema } from '@/server/api/routers/eventResult'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import EventERPoints from '@/components/tableComponents/TableEventERPoints'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
+import TableLink from '@/components/tableComponents/TableLink'
 
 export default function EventResults() {
   const router = useRouter()
@@ -63,7 +64,7 @@ export default function EventResults() {
   const tableData: TableData[] = [
     { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
     { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item} /> },
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Heats</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label='View Heats'/> },
   ]
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 

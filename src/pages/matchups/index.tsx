@@ -4,13 +4,13 @@ import Table from '@/components/Table'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import TableHeat from '@/components/TableHeat'
-import { HTH_LABELS } from '@/utils/constants'
+import { DATA_DISCLAIMER, HTH_LABELS } from '@/utils/constants'
 import { Heat, Surfer } from '@/utils/interfaces'
 import ButtonSwitch from '@/components/ButtonSwitch'
 import { leadingZero } from '@/utils/format/leadingZero'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import ButtonSelectSearchSurfer from '@/components/ButtonSelectSearchSurfer'
-import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/format/headToHeadTableFormat'
+import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/table/headToHeadTableFormat'
 
 export default function MatchupsDev() {
   const router = useRouter()
@@ -43,11 +43,12 @@ export default function MatchupsDev() {
 
   return (
     <Layout title={'Matchups'}>
-      <h1 className="pt-8 pb-4 text-center text-3xl font-semibold">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
-      {heatQuery.data && <ButtonSwitch className={`my-4 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
-      {heatQuery.isLoading && <ButtonSwitch className="my-4 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
-
-      {/* Matchups TABLE */}
+      <h1 className="header-1 pb-2 sm:pb-4">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
+      <div className='flex items-baseline justify-between'>
+        {heatQuery.data && <ButtonSwitch className={`my-4 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
+        {heatQuery.isLoading && <ButtonSwitch className="my-4 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
+        <div className="sm:block hidden text-end text-xs text-gray-400 ">{DATA_DISCLAIMER}</div>
+      </div>
       <div className="relative -mx-4 flex items-center justify-center sm:-mx-0 ">
         <div className="w-full rounded shadow">
           <div className="flex w-full justify-evenly border-b  bg-gray-100 py-2">
@@ -80,7 +81,6 @@ export default function MatchupsDev() {
             </div>
           </div>
 
-          {/* NOT LOADING */}
           {surferSlugA && surferSlugB && !heatStatQuery.isLoading && (
             <div className="w-full flex-col ">
               {heatStatQuery.data?.map((stat, i) => (
@@ -93,7 +93,6 @@ export default function MatchupsDev() {
             </div>
           )}
 
-          {/* LOADING */}
           {(!surferSlugA || !surferSlugB || heatStatQuery.isLoading) && (
             <div>
               <div className={`w-full flex-col opacity-50 `}>
@@ -120,7 +119,6 @@ export default function MatchupsDev() {
         </div>
       </div>
 
-      {/* HEAT TABLE */}
       {!heatQuery.isLoading && (
         <div className="pt-8 sm:pt-10">
           <h1 className=" text-center text-xl font-semibold text-navy sm:text-start">Heats Matchups</h1>

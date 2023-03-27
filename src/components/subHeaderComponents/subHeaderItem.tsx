@@ -1,5 +1,5 @@
-import { RouterType } from '@/utils/interfaces'
 import { useRouter } from 'next/router'
+import { RouterType } from '@/utils/interfaces'
 
 interface subHeaderSurferProps {
   label?: string

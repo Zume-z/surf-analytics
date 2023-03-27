@@ -1,7 +1,8 @@
 import Image from 'next/legacy/image'
 import type { Surfer } from '@/utils/interfaces'
 import { configSurferImage } from '@/utils/format/configSurferImage'
-import { shortSurferName } from '@/utils/format/shortSurferName'
+import { shortSurferName } from '@/utils/format/truncate/shortSurferName'
+
 
 interface CardSurferProps {
   surfer: Surfer

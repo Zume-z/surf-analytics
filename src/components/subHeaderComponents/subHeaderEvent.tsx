@@ -2,8 +2,9 @@ import { useRouter } from 'next/router'
 import { RouterType, Event } from '@/utils/interfaces'
 import { leadingZero } from '@/utils/format/leadingZero'
 import CardEventLoader from '../loaders/CardEventLoader'
-import { waitingPeriod } from '@/utils/format/getWaitingPeriod'
-import { shortEventAddress } from '@/utils/format/shortEventAddress'
+import { waitingPeriod } from '@/utils/function/getWaitingPeriod'
+import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress'
+
 
 interface subHeaderEventProps {
   event: Event | undefined

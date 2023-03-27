@@ -7,15 +7,16 @@ import { windowSize } from '@/utils/windowSize'
 import ButtonBack from '@/components/ButtonBack'
 import Table, { TableData } from '@/components/Table'
 import { EventResult, Surfer } from '@/utils/interfaces'
-import { surferYearSpan } from '@/utils/format/getYearSpan'
+import { surferYearSpan } from '@/utils/function/getYearSpan'
 import CardLocationResult from '@/components/CardLocationResult'
-import { redirectPrevPage } from '@/utils/format/redirectPrevPage'
-import { surferLocationStats } from '@/utils/format/subHeaderStats'
+import { surferLocationStats } from '@/utils/stat/subHeaderStats'
+import { redirectPrevPage } from '@/utils/function/redirectPrevPage'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
 import TableEventResultPlace from '@/components/tableComponents/TableSurferERPlace'
 import TableEventResultPoints from '@/components/tableComponents/TableSurferERPoints'
 import SubHeaderButtonBack from '@/components/subHeaderComponents/subHeaderButtonBack'
+import TableLink from '@/components/tableComponents/TableLink'
 
 export default function SurferLocation() {
   const router = useRouter()
@@ -39,7 +40,7 @@ export default function SurferLocation() {
     { name: 'Event', id: 'event', content: (item: EventResult) => <CardLocationResult event={item.event} /> },
     { name: 'Place', id: 'place', content: (item: EventResult) => <TableEventResultPlace eventResult={item} /> },
     { name: 'Points', id: 'points', content: (item: EventResult) => <TableEventResultPoints eventResult={item} showThrowaways={false} /> },
-    { name: '', id: 'link', className: 'w-px', content: (item: EventResult) => <div className="text-blue-base">View Heats</div> },
+    { name: '', id: 'link', className: 'w-px', content: (item: EventResult) => <TableLink label='View Heats'/> },
   ]
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
 

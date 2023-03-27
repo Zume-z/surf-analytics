@@ -1,6 +1,5 @@
 import Image from 'next/legacy/image'
 import { useRouter } from 'next/router'
-import CardEventLoader from '../loaders/CardEventLoader'
 import { RouterType, Country } from '@/utils/interfaces'
 import CardCountryLoader from '../loaders/CardCountryLoader'
 import { configFlagImage } from '@/utils/format/configFlagImage'

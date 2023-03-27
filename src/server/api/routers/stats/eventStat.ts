@@ -74,6 +74,7 @@ const avgWaveRange = async (ctx: Context, input: z.infer<typeof eventStatSchema>
 
 const avgWindConditions = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heat.groupBy({ by: ['windConditions'], where: { eventSlug: input.eventSlug, NOT: { windConditions: '-' } }, _count: { windConditions: true } })
+  if(!query.length) return { avgWindConditions: { label: 'Avg. Wind Conditions', value: '-' } }
   const averageWindConditions = query.reduce((a, b) => (a._count.windConditions > b._count.windConditions ? a : b))
   return { avgWindConditions: { label: 'Avg. Wind Conditions', value: averageWindConditions.windConditions ?? '-' } }
 }

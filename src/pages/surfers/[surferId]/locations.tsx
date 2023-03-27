@@ -8,13 +8,14 @@ import { windowSize } from '@/utils/windowSize'
 import Table, { TableData } from '@/components/Table'
 import { Location, Surfer } from '@/utils/interfaces'
 import CardEventLocation from '@/components/CardLocation'
-import { surferYearSpan } from '@/utils/format/getYearSpan'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
+import { surferYearSpan } from '@/utils/function/getYearSpan'
 import TableLink from '@/components/tableComponents/TableLink'
-import { surferCareerStats } from '@/utils/format/subHeaderStats'
+import { surferCareerStats } from '@/utils/stat/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import SubHeaderSurfer from '@/components/subHeaderComponents/subHeaderSurfer'
-import { bestResultByLocation, getApperances } from '@/utils/format/getLocationResults'
+import { bestResultByLocation, getApperances } from '@/utils/function/getLocationResults'
+
 
 export default function SurferLocations() {
   const router = useRouter()
@@ -27,7 +28,12 @@ export default function SurferLocations() {
   const onLocationSelect = (item: Location) => router.replace({ pathname: '/surfers/[surferId]/[locationId]', query: { surferId: surferId, locationId: item.slug } })
 
   const subHeaderData = [
-    { content: <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} />, primaryTab: true },
+    {
+      content: (
+        <SubHeaderSurfer surfer={tourResultQuery.data?.[0]?.surfer as Surfer | undefined} flagAlignBottom={true} subData={surferYearSpan(tourResultQuery.data)} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} />
+      ),
+      primaryTab: true,
+    },
     { content: <SubHeaderItem label="career" value={surferYearSpan(tourResultQuery.data)} subvalue="Career" active={false} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} loading={tourResultQuery.isLoading} /> },
     { content: <SubHeaderItem className='sm:hidden' label="Events" value={surferYearSpan(tourResultQuery.data)} subvalue='Events'active={false} routePath={{ pathname: '/surfers/[surferId]/events', query: { surferId: surferId, year: year ? year : tourResultQuery.data?.map((item: any) => item.tour.year)[0] }}} loading={tourResultQuery.isLoading} /> }, //prettier-ignore
     { content: <SubHeaderItem label="locations" value={'All'} subvalue="Locations" active={true} loading={tourResultQuery.isLoading} /> },

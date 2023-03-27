@@ -1,5 +1,5 @@
-import { eventStatus } from '@/utils/format/eventStatus'
 import type { Event } from '@/utils/interfaces'
+import { eventStatus } from '@/utils/function/getEventStatus'
 
 export const CardEventStatus = (event: Event) => {
   const status = eventStatus(event)
@@ -19,4 +19,3 @@ export const CardEventStatus = (event: Event) => {
   if (status == 'In Progress') return inProgress
   if (status == 'Upcoming') return upcoming
 }
- 

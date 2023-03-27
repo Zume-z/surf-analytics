@@ -14,6 +14,7 @@ import ButtonSelectX from '@/components/ButtonSelectX'
 import { CountrySchema } from '@/server/api/routers/country'
 import CardCountryLoader from '@/components/loaders/CardCountryLoader'
 import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
+import TableLink from '@/components/tableComponents/TableLink'
 
 export default function CountryIndex() {
   const router = useRouter()
@@ -33,16 +34,16 @@ export default function CountryIndex() {
 
   const tableData: TableData[] = [
     { name: 'Country', id: 'country', content: (item: Country) => <CardCountry country={item} />, loader: <CardCountryLoader /> },
-    { name: 'World Titles', id: 'worldTitles', className: 'flex sm:table-cell  ml-10 sm:ml-0 ', content: (item: Country) => <div className="table-item">{getWorldTitles(item)}</div> }, //{getWorldTitles(item)}
+    { name: 'World Titles', id: 'worldTitles', className: 'flex sm:table-cell ml-10 sm:ml-0 ', content: (item: Country) => <div className="table-item">{getWorldTitles(item)}</div> }, //{getWorldTitles(item)}
     { name: 'CT. Event Wins', id: 'eventWins', content: (item: Country) => <div className="table-item">{getEventWins(item)}</div> },
-    { name: '', id: 'link', className: 'w-px', content: () => <div className="text-blue-base">View Country</div> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label='View Country'/> },
   ]
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 
   return (
     <Layout title={'Country'}>
-      <h1 className="py-8 text-center text-3xl font-semibold">Country</h1>
+      <h1 className="header-1">Country</h1>
       <FilterBar className="justify-center">
         <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={YEAROPTIONS} loadingText="Year" />

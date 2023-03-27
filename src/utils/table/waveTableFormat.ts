@@ -14,7 +14,6 @@ export const getWaveTableData = (heatResults: any[], waves: any[]) => {
     return { surfer: heatResult.surferSlug, waves: surferWaves }
   })
 
-  
   // surferData.forEach((surfer: any) => waveCounts.push(surfer.waves[surfer.waves.length - 1].waveNumber))
   surferData.forEach((surfer: any) => waveCounts.push(surfer.waves.length))
 

@@ -1,10 +1,9 @@
-import { Heat } from '../interfaces'
-import { leadingZero } from './leadingZero'
-import CardHeat from '@/components/CardHeat'
-import { placeToString } from './placeToString'
 import CardHeatSurferRow from '@/components/CardHeatSurfer'
 import CardHeatSurferBlock from '@/components/CardHeatSurferBlock'
 import TableLink from '@/components/tableComponents/TableLink'
+import { Heat } from '@/utils/interfaces'
+import { leadingZero } from '../format/leadingZero'
+import { placeToString } from '../format/placeToString'
 const heatCanceled = (heat: any) => heat.heatStatus == 'CANCELED'
 
 // Rows
@@ -19,10 +18,20 @@ export const getHeadToHeadTableRows = (heats?: Heat[]) => {
       content: (item: Heat) => <div className={`${heatCanceled(item) && 'opacity-50'}`}>{item.heatResults[index] && <CardHeatSurferRow heatResult={item.heatResults[index]!} />}</div>,
     }
   })
-  tableData.unshift({ name: 'Event', id: 'event', content: (item: Heat) => <div className={`${heatCanceled(item)  && 'opacity-50'}`}>
-    <div className='text-navy text-base  '>{item.event.year} {item.event.name}</div>
-    <div className='text-gray-dark '>{item.heatRound} · Heat {leadingZero(item.heatNumber)}</div>
-  </div> })
+  tableData.unshift({
+    name: 'Event',
+    id: 'event',
+    content: (item: Heat) => (
+      <div className={`${heatCanceled(item) && 'opacity-50'}`}>
+        <div className="text-base text-navy  ">
+          {item.event.year} {item.event.name}
+        </div>
+        <div className="text-gray-dark ">
+          {item.heatRound} · Heat {leadingZero(item.heatNumber)}
+        </div>
+      </div>
+    ),
+  })
   longestHeat.length <= 3 && tableData.push({ name: '', id: 'link', className: 'w-px', content: (item: Heat) => <TableLink className={`${heatCanceled(item)  && 'opacity-50'}`} label="View Waves" canceled={item.heatStatus == 'CANCELED'} /> }) //prettier-ignore
   return tableData
 }

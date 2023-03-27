@@ -2,8 +2,9 @@ import type{ Event } from '@/utils/interfaces'
 import { windowSize } from '@/utils/windowSize'
 import { leadingZero } from '@/utils/format/leadingZero'
 import { genderFormat } from '@/utils/format/genderFormat'
-import { shortEventAddress } from '@/utils/format/shortEventAddress'
-import { shortEventName } from '@/utils/format/shortEventName'
+import { shortEventName } from '@/utils/format/truncate/shortEventName';
+import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress';
+
 
 export default function CardEvent({ event, showYear }: { event: Event; showYear?: boolean }) {
   return (

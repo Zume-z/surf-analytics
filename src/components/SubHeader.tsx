@@ -90,7 +90,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
             <div className="mb-40 flex justify-center overflow-auto ">
               <div className="flex w-full max-w-7xl items-center overflow-auto border-t px-8 ">
                 <div className="mx-8 w-full flex-col justify-center  overflow-auto text-sm ">
-                  <div className="-mb-1 w-full pt-2 text-end text-xs text-gray-500 ">{DATA_DISCLAIMER}</div>
+                  <div className="-mb-1 w-full pt-2 text-end text-xs text-gray-400 ">{DATA_DISCLAIMER}</div>
                   {stats.map((Column: any, i: number) => (
                     <div key={i} className="w-full border-b py-2 last:border-none ">
                       <div className="">{Column.label}</div>

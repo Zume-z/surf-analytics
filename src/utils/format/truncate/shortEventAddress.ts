@@ -3,6 +3,5 @@ export const shortEventAddress = (address: string) => {
   const splitAddress = address.split(',')
   const formatAddress = splitAddress[1] + ', ' + splitAddress[splitAddress.length - 1]
   if(formatAddress.length > 30) return splitAddress[0]
-  // if(formatAddress === '')
   return formatAddress
 }

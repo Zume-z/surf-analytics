@@ -17,10 +17,10 @@ import { removeById } from '@/utils/format/removeById'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { EventSchema } from '@/server/api/routers/event'
 import { genderFormat } from '@/utils/format/genderFormat'
-import { eventYearSpan } from '@/utils/format/getYearSpan'
+import { eventYearSpan } from '@/utils/function/getYearSpan'
 import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
-import { countryEventStats } from '@/utils/format/subHeaderStats'
+import { countryEventStats } from '@/utils/stat/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import SubHeaderCountry from '@/components/subHeaderComponents/subHeaderCountry'
@@ -48,15 +48,6 @@ export default function CountryEvents() {
   const yearQuery = api.tour.getEventYears.useQuery({ gender: filters.gender, countrySlugEvent: filters.countrySlug, sortYear: 'desc', eventStatus: 'COMPLETED' }, { enabled: !!countryId })
   const yearOptions = yearQuery.data?.map((tour) => ({ label: tour.year.toString(), value: tour.year }))
 
-  const tableData: TableData[] = [
-    { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} /> },
-    { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} showYear={true} /> },
-    { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
-    { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
-  ]
-  if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
-  if (windowSize().width! < BREAKPOINT.md) tableData.pop()
-
   const getSubHeaderData = () => {
     if (countryQuery.isLoading) return [{ content: <SubHeaderCountry country={undefined} />, primaryTab: true }, { content: <SubHeaderItem label="year" value={undefined} /> }]
     const subHeaderData: SubheaderData[] = [
@@ -77,6 +68,16 @@ export default function CountryEvents() {
     { label: 'Events', active: true },
   ]
 
+  const tableData: TableData[] = [
+    { name: 'Event', id: 'event', content: (item: Event) => <CardEvent event={item} /> },
+    { name: 'Date', id: 'date', content: (item: Event) => <TableItemEventDate event={item} showYear={true} /> },
+    { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
+    { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
+  ]
+  if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
+  if (windowSize().width! < BREAKPOINT.md) tableData.pop()
+
+  
   return (
     <Layout
       title={countryQuery.data?.name}
