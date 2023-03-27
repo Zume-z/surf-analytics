@@ -23,6 +23,9 @@ export default function Surfers() {
   const [countrySlug, setCountrySlug] = useQueryState('country')
   const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
+  const midSeasonCutLine = year == new Date().getFullYear() ? gender == 'FEMALE' ? 10 : 23 : undefined
+
+
 
   const updateYear = React.useCallback(async (value: string) => {
     await setCountrySlug(null)
@@ -61,7 +64,7 @@ export default function Surfers() {
         <ButtonSelectSearchCountry placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
       </FilterBar>
 
-      <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} />
+      <Table tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} cutOff={midSeasonCutLine} />
     </Layout>
   )
 }

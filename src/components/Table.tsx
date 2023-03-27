@@ -5,6 +5,7 @@ interface TableProps {
   title?: string
   tableData: any
   loading?: boolean
+  cutOff?: number
   items: any[]
   handleSelection?: (item: any) => void
   className?: string
@@ -19,7 +20,7 @@ export interface TableData {
   cutOff?: (item: any) => boolean
 }
 
-export default function Table({ title, tableData, items, handleSelection, loading, className }: TableProps) {
+export default function Table({ title, tableData, items, handleSelection, loading, className, cutOff }: TableProps) {
   const [sort, setSort] = useState('false')
 
   const handleSort = () => {
@@ -29,6 +30,9 @@ export default function Table({ title, tableData, items, handleSelection, loadin
   }
 
   const loadingRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  const beforeCutoff = items.slice(0, cutOff)
+  const afterCutoff = items.slice(cutOff, items.length)
 
   const tableSpacing = 'whitespace-nowrap py-4 px-1.5 first:pl-6 last:pr-6 sm:px-6 '
   const tableCol = tableSpacing + ' font-medium text-left uppercase leading-4 tracking-wider text-xs font-medium'
@@ -60,17 +64,52 @@ export default function Table({ title, tableData, items, handleSelection, loadin
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y  divide-gray-200 bg-white  ">
-                      {items.map((item: any, i: number) => (
-                        <tr className="transition-200 group relative cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
-                          {tableData.map((row: TableData, index: number) => (
-                            <td key={index} className={`${tableRow} ${row.className}`}>
-                              {row.content(item)}
-                            </td>
-                          ))}
+
+                    {/* TABLE  */}
+                    {!cutOff && (
+                      <tbody className="divide-y  divide-gray-200 bg-white  ">
+                        {items.map((item: any, i: number) => (
+                          <tr className="transition-200 group relative cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                            {tableData.map((row: TableData, index: number) => (
+                              <td key={index} className={`${tableRow} ${row.className}`}>
+                                {row.content(item)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    )}
+
+                    {/* CUTOFF TABLE */}
+                    {cutOff && (
+                      <tbody className="divide-y divide-gray-200 bg-white  ">
+                        {beforeCutoff.map((item: any, i: number) => (
+                          <tr className="transition-200 group relative cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                            {tableData.map((row: TableData, index: number) => (
+                              <td key={index} className={`${tableRow} ${row.className}`}>
+                                {row.content(item)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+
+                        <tr>
+                          <td className="w-full bg-gray-400 p-4 font-semibold text-white">MID-SEASON CUT LINE</td>
+                          <td className="w-full bg-gray-400"></td>
+                          <td className="w-full bg-gray-400"></td>
                         </tr>
-                      ))}
-                    </tbody>
+
+                        {afterCutoff.map((item: any, i: number) => (
+                          <tr className="transition-200 group relative cursor-pointer active:scale-[0.995] hover-mod:hover:bg-gray-100 " key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
+                            {tableData.map((row: TableData, index: number) => (
+                              <td key={index} className={`${tableRow} ${row.className}`}>
+                                {row.content(item)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    )}
                   </table>
                 )}
                 {loading && (
