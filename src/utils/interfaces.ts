@@ -238,6 +238,8 @@ export interface Stats {
   highestWaveScore?: { label: string; value: string | number }
   totalTens?: { label: string; value: string | number }
   excellentWaves?: { label: string; value: string | number }
+  avgWavesPerEvent?: { label: string; value: string | number }
+  avgWavesPerHeat?: { label: string; value: string | number }
   wavesPerMinute?: { label: string; value: string | number }
 
   // Conditions

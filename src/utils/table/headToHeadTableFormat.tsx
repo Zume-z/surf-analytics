@@ -23,7 +23,7 @@ export const getHeadToHeadTableRows = (heats?: Heat[]) => {
     id: 'event',
     content: (item: Heat) => (
       <div className={`${heatCanceled(item) && 'opacity-50'}`}>
-        <div className="text-base text-navy  ">
+        <div className="text-sm font-semibold text-navy  ">
           {item.event.year} {item.event.name}
         </div>
         <div className="text-gray-dark ">

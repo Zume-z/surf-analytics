@@ -18,6 +18,7 @@ export interface TableData {
 interface TableWavesProps {
   tableData: TableData[]
   items: any[]
+  wavePoolEvent?: boolean | null
   handleSelection?: (item: any) => void
   loading?: boolean
 }
@@ -111,28 +112,26 @@ const WavePoolWave = ({ wave }: { wave: Wave }) => {
   )
 }
 
-export default function TableWaves({ tableData, items, handleSelection, loading }: TableWavesProps) {
+export default function TableWaves({ tableData, items, handleSelection, loading, wavePoolEvent }: TableWavesProps) {
   const loader = {
     headerColumns: [1, 2],
     columns: [1, 2, 3],
     rows: [1, 2, 3, 4, 5],
   }
 
-  // CHANGE
-  const wavePool = false
-
   const tableSpacing = 'whitespace-nowrap  px-1.5 first:pl-6 last:pr-6 sm:px-6 '
   const tableCol = tableSpacing + ' font-medium text-left sm:py-4 py-2 pt-4 leading-4 tracking-wider text-xs font-medium'
   const tableRow = tableSpacing + ' text-sm py-4'
 
-  if (!wavePool) {
+  
     return (
       <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
         <div className="flex h-min flex-col">
           <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
             <div className="inline-block min-w-full align-middle">
               <div className="scrollbar-none overflow-hidden">
-                {!loading && (
+                {/* EVENT */}
+                {!loading && !wavePoolEvent && (
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-light text-gray-dark">
                       <tr>
@@ -158,49 +157,8 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                     </tbody>
                   </table>
                 )}
-                {loading && (
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className=" bg-gray-light text-gray-dark ">
-                      <tr>
-                        <th scope="col" className={tableCol + ' align-bottom sm:min-w-[150px] sm:align-middle '}>
-                          <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
-                        </th>
-                        {loader.headerColumns.map((key: number, i: number) => (
-                          <th key={i} scope="col" className={tableCol + ' align-bottom sm:align-middle'}>
-                            <div>{SurferLoader()}</div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
-                      {loader.rows.map((item: any, index: number) => (
-                        <tr className="hover-mod:hover:bg-gray-100 " key={index}>
-                          {loader.columns.map((col: any, i: number) => (
-                            <td key={i} className={tableRow}>
-                              <div className="flex justify-center sm:block ">
-                                <div className={`pulse-loader h-5 w-full min-w-[15px] max-w-[115px]  `} />
-                              </div>
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  } else {
-    return (
-      <div className="flow-hidden my-8 w-full rounded-md bg-white  sm:my-8">
-        <div className="flex h-min flex-col">
-          <div className="scrollbar-none scrollbar-none -mx-4 overflow-x-auto border-t  shadow-md md:mx-0 md:border-none">
-            <div className="inline-block min-w-full align-middle">
-              <div className="scrollbar-none overflow-hidden">
-                {!loading && (
+                {/* WAVEPOOL EVENT */}
+                {!loading && wavePoolEvent && (
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-light text-gray-dark">
                       <tr>
@@ -216,11 +174,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                         <tr className="group hover-mod:hover:bg-gray-100" key={i} onClick={() => (handleSelection ? handleSelection(item) : null)}>
                           {tableData.map((col: any, i: number) => (
                             <td key={i} className={tableRow}>
-                              {col.key == 'surfer' && (
-                                <div className="ml-3">
-                                  <CardSurfer surfer={item.surfer.surfer} place={item.surfer.heatPlace} />{' '}
-                                </div>
-                              )}
+                              {col.key == 'surfer' && <CardSurfer surfer={item.surfer.surfer} place={item.surfer.heatPlace} />}
                               {col.key != 'surfer' && <div className="ml-3"> {item.waves[i - 1] && <WavePoolWave wave={item.waves[i - 1]} />} </div>}
                             </td>
                           ))}
@@ -229,6 +183,7 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
                     </tbody>
                   </table>
                 )}
+                {/* LOADER */}
                 {loading && (
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className=" bg-gray-light text-gray-dark ">
@@ -265,4 +220,4 @@ export default function TableWaves({ tableData, items, handleSelection, loading 
       </div>
     )
   }
-}
+// }

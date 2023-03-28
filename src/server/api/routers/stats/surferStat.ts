@@ -4,7 +4,7 @@ import { TRPCError } from '@trpc/server'
 import { Context } from '@/utils/interfaces'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryDifferential, queryDivide, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { queryDifferential, queryDivide, queryDivideRound, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 
 const surferStatSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -89,6 +89,8 @@ const getCareerAll = async (ctx: Context, input: z.infer<typeof surferStatSchema
     ...(await highestWaveScore(ctx, input)),
     ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
+    ...(await avgWavesPerEvent(ctx, input)),
+    ...(await avgWavesPerHeat(ctx, input)),
     ...(await wavesPerMinute(ctx, input)),
     ...(await totalInterferences(ctx, input)),
     ...(await mostBeaten(ctx, input)),
@@ -205,13 +207,13 @@ const avgWaveScore = async (ctx: Context, input: z.infer<typeof surferStatSchema
 const avgWavesPerEvent = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const totalEventsQ = await totalEvents(ctx, input)
   const totalWavesQ = await totalWaves(ctx, input)
-  return { avgWavesPerEvent: { label: 'Avg. Waves Per Event', value: queryDivide(totalWavesQ.totalWaves.value, totalEventsQ.totalEvents.value) } }
+  return { avgWavesPerEvent: { label: 'Avg. Waves Per Event', value: queryDivideRound(totalWavesQ.totalWaves.value, totalEventsQ.totalEvents.value) } }
 }
 
 const avgWavesPerHeat = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
   const totalHeatsQ = await totalHeats(ctx, input)
   const totalWavesQ = await totalWaves(ctx, input)
-  return { avgWavesPerHeat: { label: 'Avg. Waves Per Heat', value: queryDivide(totalWavesQ.totalWaves.value, totalHeatsQ.totalHeats.value) } }
+  return { avgWavesPerHeat: { label: 'Avg. Waves Per Heat', value: queryDivideRound(totalWavesQ.totalWaves.value, totalHeatsQ.totalHeats.value) } }
 }
 
 const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {

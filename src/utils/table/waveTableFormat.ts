@@ -1,16 +1,15 @@
 import { HeatResult, Wave } from '../interfaces'
 
-export const getWaveTableCol = (heatResults: any, waves: any) => {
+export const getWaveTableCol = (heatResults: any, waves: any, wavePoolEvent?: boolean | null) => {
   // CHANGE
-  const wavepool = false
 
-  if (!wavepool) {
+  if (!wavePoolEvent) {
     const tableColumns: any = [{ value: 'Wave', key: 'wave' }]
     heatResults.forEach((heatResult: HeatResult) => tableColumns.push({ value: heatResult, key: heatResult.surfer.slug }))
     return tableColumns
   }
 
-  if (wavepool) {
+  if (wavePoolEvent) {
     // Get heatResult with most waves
     const waveCounts: any = []
     heatResults.forEach((heatResult: HeatResult) => {
@@ -27,11 +26,10 @@ export const getWaveTableCol = (heatResults: any, waves: any) => {
   }
 }
 
-export const getWaveTableData = (heatResults: any[], waves: any[]) => {
+export const getWaveTableData = (heatResults: any[], waves: any[], wavePoolEvent?: boolean | null) => {
   // CHANGE
-  const wavepool = false
 
-  if (!wavepool) {
+  if (!wavePoolEvent) {
     const waveArray = []
     const waveCounts: any = []
     const surferData = heatResults.map((heatResult: HeatResult) => {
@@ -62,8 +60,6 @@ export const getWaveTableData = (heatResults: any[], waves: any[]) => {
       return { surfer: heatResult, waves: surferWaves }
     })
 
-    // const heatResultArray: { value: HeatResult; key: string }[] = []
-    // heatResults.forEach((heatResult: HeatResult) => heatResultArray.push({ value: heatResult, key: heatResult.surfer.slug }))
     return surferData
   }
 }

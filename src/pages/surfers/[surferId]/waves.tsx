@@ -25,13 +25,14 @@ export default function SurferWaves() {
     heatSlug: heatQuery.data && (heatQuery.data.slug as string),
     heatResults: heatQuery.data ? heatQuery.data.heatResults : [],
     eventName: heatQuery.data ? heatQuery.data.event.name : undefined,
+    wavePoolEvent: heatQuery.data ? heatQuery.data.event.wavePoolEvent : undefined,
   }
 
   const surferQuery = api.surfer.getOneHeader.useQuery({ slug: surferId }, { enabled: !!surferId })
   const heatResultStatQuery = api.heatResultStat.getWaves.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId && !heatQuery.isLoading })
   const heatResultAllStatQuery = api.heatResultStat.getAll.useQuery({ surferSlug: surferId, heatSlug: filters.heatSlug! }, { enabled: !!filters.heatSlug && !!surferId && statToggle })
-  const tableColumns = getWaveTableCol(filters.heatResults, filters.waves)
-  const tableData = getWaveTableData(filters.heatResults, filters.waves)
+  const tableColumns = getWaveTableCol(filters.heatResults, filters.waves, filters.wavePoolEvent)
+  const tableData = getWaveTableData(filters.heatResults, filters.waves, filters.wavePoolEvent)
 
   const subHeaderData = [
     { content: <SubHeaderSurfer surfer={surferQuery.data as Surfer | undefined} subData={`${year} ${filters.eventName}`} routePath={{ pathname: '/surfers/[surferId]/career', query: { surferId: surferId } }} />, primaryTab: true }, //prettier-ignore
@@ -54,7 +55,7 @@ export default function SurferWaves() {
       }}
     >
       <ButtonBack className="hidden sm:block" label={filters.eventName} routePath={{ pathname: '/surfers/[surferId]/heats', query: { surferId: surferId, year: year, event: event } }} />
-      <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} />
+      <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} wavePoolEvent={filters.wavePoolEvent} />
     </Layout>
   )
 }

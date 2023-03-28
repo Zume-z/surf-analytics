@@ -146,7 +146,7 @@ export const heatRouter = createTRPCRouter({
         heatRound: true,
         heatNumber: true,
         slug: true,
-        event: { select: { name: true, tour: { select: { year: true } } } },
+        event: { select: { name: true, wavePoolEvent: true, tour: { select: { year: true } } } },
         break: { select: { name: true, waveDirection: true, waveType: true } },
         heatResults: {
           orderBy: { heatPlace: 'asc' },

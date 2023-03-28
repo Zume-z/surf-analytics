@@ -29,8 +29,8 @@ export default function EventWaves() {
   const eventQuery = api.event.getOneHeader.useQuery({ slug: eventId }, { enabled: !!eventId })
   const heatStatQuery = api.heatStat.getWaves.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && !heatQuery.isLoading })
   const heatStatQueryAll = api.heatStat.getAll.useQuery({ heatSlug: filters.heatSlug as string }, { enabled: !!filters.heatSlug && statToggle })
-  const tableColumns = getWaveTableCol(filters.heatResults, filters.waves)
-  const tableData = getWaveTableData(filters.heatResults, filters.waves)
+  const tableColumns = getWaveTableCol(filters.heatResults, filters.waves, eventQuery.data?.wavePoolEvent)
+  const tableData = getWaveTableData(filters.heatResults, filters.waves, eventQuery.data?.wavePoolEvent)
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} />, primaryTab: true },
@@ -52,7 +52,7 @@ export default function EventWaves() {
       }}
     >
       <ButtonBack className="hidden sm:block" label="Heats" routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId, surfer: surfer ? surfer : null } }} />
-      <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} />
+      <TableWaves tableData={tableColumns} items={tableData} loading={heatQuery.isLoading} wavePoolEvent={eventQuery.data?.wavePoolEvent} />
     </Layout>
   )
 }
