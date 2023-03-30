@@ -33,11 +33,6 @@ export const eventRouter = createTRPCRouter({
         countrySlug: input.countrySlug,
         locationSlug: input.locationSlug,
       },
-      // include: {
-      //   eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
-      //   tour: true,
-      //   country: true,
-      // },
       select: {
         name: true,
         slug: true,
@@ -49,6 +44,7 @@ export const eventRouter = createTRPCRouter({
         timeZone: true,
         eventResults: { where: { place: 1 }, select: { surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
         country: { select: { flagLink: true, name: true } },
+        tour: { select: { year: true } },
       },
 
       orderBy: {
@@ -163,6 +159,35 @@ export const eventRouter = createTRPCRouter({
         eventResults: { where: { place: { not: 0 }, injured: { not: true }, withdrawn: { not: true } }, select: { surfer: { select: { name: true, slug: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
       },
     })
+  }),
+
+  getManyOptions: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
+    const event = ctx.prisma.event.findMany({
+      where: {
+        eventStatus: input.eventStatus,
+      },
+      select: {
+        name: true,
+        slug: true,
+        startDate: true,
+        endDate: true,
+        address: true,
+        eventRound: true,
+        eventStatus: true,
+        timeZone: true,
+        eventResults: { where: { place: 1 }, select: { surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
+        country: { select: { flagLink: true, name: true } },
+        tour: { select: { year: true, gender:true } },
+      },
+      orderBy: {
+        startDate: input.sortStartDate,
+        eventRound: input.sortEventRound,
+      },
+      take: input.itemsPerPage,
+      skip: input.offset,
+    })
+    if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
+    return event
   }),
 
   getOneHeats: publicProcedure.input(z.object({ slug: z.string() })).query(({ ctx, input }) => {

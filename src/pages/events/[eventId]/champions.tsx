@@ -39,7 +39,7 @@ export default function Champions() {
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: filters.slug } }} />, primaryTab: true },
-    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {} }} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {location: eventQuery.data?.locationSlug, gender: eventQuery.data?.tour.gender} }} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className="sm:hidden" label="results" value="All" subvalue="Results" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: filters.slug } }} /> },
     { content: <SubHeaderItem className='sm:hidden' label="heats" value="All" subvalue="Heats" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: filters.slug } }} /> }, //prettier-ignore
     { content: <SubHeaderItem label="Champions" value="All" subvalue="Past Champions" active={true} loading={eventQuery.isLoading} /> },

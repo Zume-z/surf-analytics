@@ -10,9 +10,10 @@ import { TwitterLogoIcon, InstagramLogoIcon, EnvelopeClosedIcon } from '@radix-u
 export default function Header() {
   const router = useRouter()
   const routerPath = '/' + router.pathname.split('/')[1]
+  const currentYear = new Date().getFullYear()
   const navigation = [
-    { name: 'Surfers', href: '/surfers' },
-    { name: 'Events', href: '/events' },
+    { name: 'Surfers', href: '/surfers', route: '/surfers?year=' + currentYear },
+    { name: 'Events', href: '/events', route: '/events?year=' + currentYear },
     { name: 'Country', href: '/country' },
     { name: 'Matchups', href: '/matchups' },
     { name: 'World Titles', href: '/worldtitles' },
@@ -39,8 +40,8 @@ export default function Header() {
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
-                        href={item.href}
-                        className={`transition-200 rounded-md px-3 py-2 text-sm whitespace-nowrap font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
+                        href={item.route ? item.route : item.href}
+                        className={`transition-200 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium active:scale-[0.98] ${routerPath == item.href ? 'bg-gray-900 text-white' : 'text-gray-400 hover-mod:hover:text-white'}`}
                         aria-current={routerPath == item.href ? 'page' : undefined}
                       >
                         {item.name}

@@ -4,7 +4,7 @@ import { TRPCError } from '@trpc/server'
 import { Context } from '@/utils/interfaces'
 import { ordinalSuffix } from '@/utils/format/ordinalSuffix'
 import { createTRPCRouter, publicProcedure } from '../../trpc'
-import { queryDifferential, queryDivide, queryDivideRound, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
+import { queryDifferential, queryDivide, queryDivideRound, queryDivideTime, queryFormat, queryMoney, queryPerc, queryRound, querySuffix } from '@/utils/format/queryFormat'
 
 const surferStatSchema = z.object({
   year: z.number().min(1900).max(2100).optional(),
@@ -220,7 +220,7 @@ const wavesPerMinute = async (ctx: Context, input: z.infer<typeof surferStatSche
   const totalWaves = await ctx.prisma.wave.count({ where: { surferSlug: input.surferSlug, heat: { heatDuration: { gt: 0 } } } })
   const totalMinutes = await ctx.prisma.heat.aggregate({ where: { heatStatus: 'COMPLETED', heatResults: { some: { surferSlug: input.surferSlug } } }, _sum: { heatDuration: true } })
   if (!totalMinutes._sum.heatDuration) return { wavesPerMinute: { label: 'Waves Per Minute', value: '-' } }
-  return { wavesPerMinute: { label: 'Waves Per Minute', value: queryDivide(totalWaves, totalMinutes._sum.heatDuration), subvalue: `Avg. ${queryDivide(totalMinutes._sum.heatDuration, totalWaves)} min per wave` } }
+  return { wavesPerMinute: { label: 'Waves Per Minute', value: queryDivide(totalWaves, totalMinutes._sum.heatDuration), subvalue: `${queryDivideTime(totalMinutes._sum.heatDuration, totalWaves)} per wave` } }
 }
 
 const totalCountedWaves = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {

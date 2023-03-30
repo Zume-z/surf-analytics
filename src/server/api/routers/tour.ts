@@ -10,6 +10,7 @@ export const TourSchema = z.object({
   gender: z.enum(GENDER).optional(),
   countrySlugSurfer: z.string().optional(),
   countrySlugEvent: z.string().optional(),
+  locationSlugEvent: z.string().optional(),
   eventStatus: z.enum(STATUS).optional(),
 
   // Sort
@@ -63,7 +64,7 @@ export const tourRouter = createTRPCRouter({
       where: {
         gender: input.gender,
         tourResults: { some: { surfer: { countrySlug: input.countrySlugSurfer } } },
-        events: { some: { countrySlug: input.countrySlugEvent, eventStatus: input.eventStatus } },
+        events: { some: { countrySlug: input.countrySlugEvent, eventStatus: input.eventStatus, locationSlug: input.locationSlugEvent  } },
       },
       distinct: ['year'],
       select: { year: true },

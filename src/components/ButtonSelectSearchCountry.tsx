@@ -10,7 +10,7 @@ type ButtonSelectSearchCountry = {
   className?: string
   placeHolder?: string
   searchPlaceHolder?: string
-  options: { label: string; value: string | number; country: Country }[] | undefined
+  options: { label: string; shortLabel?: string; value: string | number; country: Country }[] | undefined
   value?: string | number
   setValue: (value: string | null) => void
   loading?: boolean
@@ -20,11 +20,13 @@ type ButtonSelectSearchCountry = {
 export default function ButtonSelectSearchCountry({ className, placeHolder, searchPlaceHolder, value, setValue, options, loading, loadingText }: ButtonSelectSearchCountry) {
   const [btnOpen, setBtnOpen] = useState(false)
   const selectedItem = options ? options.find((option) => value == option.value) : undefined
+  React.useEffect(() => {if (value == null) setBtnOpen(false)}, [value]) // prettier-ignore
 
   const handleSearch = (label: string) => {
     const selectedOption = options?.find((option) => option.label.toLowerCase() == label)
     if (selectedOption) setValue(selectedOption.value.toString())
   }
+  
   return (
     <div>
       {!loading && options && (
@@ -44,10 +46,10 @@ export default function ButtonSelectSearchCountry({ className, placeHolder, sear
                         {options!.map((option, i) => (
                           <Command.Item key={i} value={option.label.toString()} onSelect={handleSearch} className="select-btn__item-inactive z-50">
                             <div className="flex items-center ">
-                              <div className="flex items-center h-2 w-5 flex-shrink-0">
+                              <div className="flex h-2 w-5 flex-shrink-0 items-center">
                                 <Image src={option.country.flagLink} width={40} height={24} alt="" />
                               </div>
-                              <div className='ml-2'>{option.country.name}</div>
+                              <div className="ml-2">{option.country.name}</div>
                             </div>
                           </Command.Item>
                         ))}
@@ -62,7 +64,8 @@ export default function ButtonSelectSearchCountry({ className, placeHolder, sear
             <div className={`my-1 px-2 sm:px-4 ${className}`}>
               <div className="select-btn__closed ">
                 <button className="z-40 flex items-center whitespace-nowrap outline-none" onClick={() => (setValue(null), setBtnOpen(false))}>
-                  <div>{selectedItem?.label}</div>
+                  <div className="hidden sm:block">{selectedItem?.label}</div>
+                  <div className="block sm:hidden">{selectedItem?.shortLabel ? selectedItem?.shortLabel : selectedItem?.label}</div>
                   <Cross2Icon className="ml-1" />
                 </button>
               </div>

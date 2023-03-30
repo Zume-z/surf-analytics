@@ -17,6 +17,7 @@ interface LayoutProps {
 export default function Layout({ title, metaDescription, children, slider, subHeader }: LayoutProps) {
   return (
     <div>
+      
       <Head>
         <title>{title ? `Surf Analytics | ${title}` : 'Surf Analytics'}</title>
         <link rel="icon" href="/favicon.ico" />

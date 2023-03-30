@@ -6,11 +6,12 @@ import { GENDER, SORTDIR, STATUS } from '@/utils/interfaces'
 export const CountrySchema = z.object({
   countrySlug: z.string().optional(),
   surferYear: z.number().min(1900).max(2100).optional(),
-
   eventYear: z.number().min(1900).max(2100).optional(),
   gender: z.enum(GENDER).optional(),
   eventStaus: z.enum(STATUS).optional(),
+  eventLocationSlug: z.string().optional(),
   surferEventSlug: z.string().optional(),
+
 
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
@@ -61,6 +62,7 @@ export const countryRouter = createTRPCRouter({
         name: true,
         slug: true,
         flagLink: true,
+        iso: true,
       },
       orderBy: {
         name: 'asc',
@@ -76,7 +78,7 @@ export const countryRouter = createTRPCRouter({
   getOptionByEvent: publicProcedure.input(CountrySchema).query(({ ctx, input }) => {
     const country = ctx.prisma.country.findMany({
       where: {
-        events: { some: { tour: { gender: input.gender, year: input.eventYear } } },
+        events: { some: { locationSlug: input.eventLocationSlug, tour: { gender: input.gender, year: input.eventYear } } },
       },
       select: { name: true, slug: true, flagLink: true },
       orderBy: {

@@ -18,11 +18,13 @@ type ButtonSelectSearch = {
 export default function ButtonSelectSearch({ className, placeHolder, searchPlaceHolder, value, setValue, options, loading, loadingText }: ButtonSelectSearch) {
   const [btnOpen, setBtnOpen] = useState(false)
   const selectedItem = options ? options.find((option) => value == option.value) : undefined
+  React.useEffect(() => {if (value == null) setBtnOpen(false)}, [value]) // prettier-ignore
 
   const handleSearch = (label: string) => {
     const selectedOption = options?.find((option) => option.label.toLowerCase() == label)
     if (selectedOption) setValue(selectedOption.value.toString())
   }
+
   return (
     <div>
       {!loading && options && (
@@ -33,7 +35,7 @@ export default function ButtonSelectSearch({ className, placeHolder, searchPlace
                 <Popover.Root open={btnOpen} onOpenChange={setBtnOpen}>
                   <Popover.Trigger className="z-40 flex items-center outline-none">
                     <div>{placeHolder}</div>
-                    <div className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5" /> : <ChevronDownIcon />}</div>
+                    <div className="ml-1">{btnOpen ? <DashIcon className="-mb-0.5 " /> : <ChevronDownIcon />}</div>
                   </Popover.Trigger>
                   <Popover.Content avoidCollisions={false} className="scrollbar-none z-40 -ml-2 max-h-60  overflow-auto rounded-md border border-gray-100 bg-white shadow " sideOffset={8} align="start">
                     <Command>

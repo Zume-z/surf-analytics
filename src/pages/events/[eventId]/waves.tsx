@@ -34,7 +34,7 @@ export default function EventWaves() {
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} />, primaryTab: true },
-    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} routePath={{ pathname: '/events/[eventId]/results', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
+    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} routePath={{ pathname: '/events', query: {location: eventQuery.data?.locationSlug, gender: eventQuery.data?.tour.gender} }} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className="hidden sm:block" label="round" value={heatRound} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: eventId } }} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className="" label="heat" value={leadingZero(heatNumber)} subvalue={` ${heatRound} · Heat ${leadingZero(heatNumber)}`} subInactive={true} active={true} noBorder={true} loading={eventQuery.isLoading} /> },
   ]

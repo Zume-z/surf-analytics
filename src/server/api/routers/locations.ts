@@ -5,6 +5,8 @@ import { GENDER, SORTDIR } from '@/utils/interfaces'
 
 export const LocationSchema = z.object({
   slug: z.string().optional(),
+  gender: z.enum(GENDER).optional(),
+  year: z.number().min(1900).max(2100).optional(),
   surferSlug: z.string().optional(),
   countrySlug: z.string().optional(),
 
@@ -26,7 +28,14 @@ export const locationRouter = createTRPCRouter({
       where: {
         slug: input.slug,
         countrySlug: input.countrySlug,
+        events: { some: { tour: { gender: input.gender, year: input.year } } },
       },
+      select: {
+        eventName: true,
+        name: true,
+        slug: true,
+      },
+
       orderBy: {
         name: input.sortName,
       },
