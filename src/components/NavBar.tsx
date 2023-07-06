@@ -60,12 +60,12 @@ export default function Header() {
 
               {/* Contact / Social Media */}
               <div className="absolute inset-y-0 right-0 hidden items-center space-x-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 md:flex">
-                <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
+                {/* <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <TwitterLogoIcon className="h-5 w-5 " />
                 </a>
                 <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 hidden cursor-pointer rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <InstagramLogoIcon className="h-5 w-5 " />
-                </a>
+                </a> */}
                 <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200 hidden cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:block hover-mod:hover:text-white ">
                   <EnvelopeClosedIcon className="h-5 w-5 " />
                 </a>
@@ -91,12 +91,12 @@ export default function Header() {
                   <a target="_blank" href={`mailto: ${CONTACT_URLS.EMAIL}`} type="button" className="transition-200  cursor-pointer rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <EnvelopeClosedIcon className="h-6 w-6" />
                   </a>
-                  <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
+                  {/* <a target="_blank" href={CONTACT_URLS.INSTAGRAM} type="button" className="transition-200 cursor-pointer  rounded-full p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <InstagramLogoIcon className="h-6 w-6" />
                   </a>
                   <a target="_blank" href={CONTACT_URLS.TWITTER} type="button" className="transition-200 cursor-pointer   rounded-full  p-1 text-gray-400 focus:outline-none active:scale-[0.95] sm:hidden  hover-mod:hover:text-white ">
                     <TwitterLogoIcon className="h-6 w-6" />
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </Disclosure.Panel>
