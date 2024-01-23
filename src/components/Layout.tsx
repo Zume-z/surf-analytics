@@ -17,8 +17,10 @@ interface LayoutProps {
 export default function Layout({ title, metaDescription, children, slider, subHeader }: LayoutProps) {
   return (
     <div>
-      
-      <Head>
+      <div className="flex h-screen items-center justify-center ">
+        <div>Site Under Maintenance.</div>
+      </div>
+      {/* <Head>
         <title>{title ? `Surf Analytics | ${title}` : 'Surf Analytics'}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -32,7 +34,7 @@ export default function Layout({ title, metaDescription, children, slider, subHe
       {slider && <SliderEvents events={slider.events} loading={slider.loading} />}
       <div>
         <main className="mx-auto max-w-7xl px-4 md:px-16  ">{children}</main>
-      </div>
+      </div> */}
     </div>
   )
 }
