@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import * as Tabs from '@radix-ui/react-tabs'
 
 export default function Contact() {
-  const FORM_ENDPOINT = '' // TODO - fill on the later step
+  const FORM_ENDPOINT = ''
   const [submitted, setSubmitted] = useState(false)
   const handleSubmit = () => {
     setTimeout(() => {
@@ -16,8 +16,7 @@ export default function Contact() {
       title: 'General',
       value: 'tab1',
       subTitle: 'Get in touch.',
-      subText:
-        ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
+      subText: ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
       inputs: [
         {
           label: 'Name',
@@ -39,8 +38,7 @@ export default function Contact() {
       title: 'Media Inquiry',
       value: 'tab2',
       subTitle: 'Media inquiry.',
-      subText:
-        ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
+      subText: ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
       inputs: [
         {
           label: 'Name',
@@ -70,8 +68,7 @@ export default function Contact() {
       title: 'Feature Request',
       value: 'tab3',
       subTitle: 'Request a feature.',
-      subText:
-        ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
+      subText: ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe beatae suscipit maiores possimus accusamus nemo molestiae, odio quod nisi, a dolore deserunt sapiente, illo labore voluptatem. Labore natus accusantium iste.',
       inputs: [
         {
           label: 'Name',
@@ -92,14 +89,13 @@ export default function Contact() {
   ]
 
   return (
-    <Layout >
-      
+    <Layout>
       <h1 className="py-8 text-center text-3xl font-bold">Contact</h1>
       <Tabs.Root className=" mb-8 flex flex-col rounded border bg-gray-50 " defaultValue="tab1">
         <Tabs.List className=" flex shrink-0  border-b bg-white " aria-label="Contact">
           {tabContents.map((tab) => (
             <Tabs.Trigger
-              className="flex flex-1 cursor-default select-none items-center justify-center whitespace-nowrap border-navy  px-2 py-2  text-gray-dark outline-none  hover-mod:hover:text-navy data-[state=active]:border-b-2 data-[state=active]:text-navy   "
+              className="flex flex-1 cursor-default select-none items-center justify-center whitespace-nowrap border-navy  px-2 py-2  text-gray-dark outline-none  data-[state=active]:border-b-2 data-[state=active]:text-navy hover-mod:hover:text-navy   "
               value={tab.value}
             >
               {tab.title}
@@ -144,7 +140,7 @@ export default function Contact() {
                                 type={input.type}
                                 placeholder={input.placeholder}
                                 name={input.name}
-                                className=" transition-200 w-full border-0 border-b border-gray-400   bg-white pb-1 text-gray-600 placeholder-gray-400 hover-mod:hover:border-b-2 hover-mod:hover:border-black focus:border-b-2 focus:border-black focus:outline-none"
+                                className=" transition-200 w-full border-0 border-b border-gray-400   bg-white pb-1 text-gray-600 placeholder-gray-400 focus:border-b-2 focus:border-black focus:outline-none hover-mod:hover:border-b-2 hover-mod:hover:border-black"
                                 required={input.required}
                               />
                             </div>
@@ -154,13 +150,13 @@ export default function Contact() {
                             <textarea
                               placeholder="Enter your message"
                               name="message"
-                              className=" transition-200 h-40 w-full border-0 border-b  border-gray-400 bg-white pb-1 text-gray-600 placeholder-gray-400 hover-mod:hover:border-b-2 hover-mod:hover:border-black focus:border-b-2 focus:border-black focus:outline-none"
+                              className=" transition-200 h-40 w-full border-0 border-b  border-gray-400 bg-white pb-1 text-gray-600 placeholder-gray-400 focus:border-b-2 focus:border-black focus:outline-none hover-mod:hover:border-b-2 hover-mod:hover:border-black"
                               required
                             />
                           </div>
                           <div className="mb-4">
                             <button
-                              className="mr-1 mb-1 rounded bg-navy px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover-mod:hover:shadow-lg focus:outline-none active:bg-gray-300"
+                              className="mr-1 mb-1 rounded bg-navy px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear focus:outline-none active:bg-gray-300 hover-mod:hover:shadow-lg"
                               type="submit"
                             >
                               Submit

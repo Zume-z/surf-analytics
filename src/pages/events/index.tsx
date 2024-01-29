@@ -1,32 +1,30 @@
 import { z } from 'zod'
-import React, { useState } from 'react'
+import React from 'react'
 import { api } from '@/utils/api'
 import { useRouter } from 'next/router'
 import { Gender } from '@prisma/client'
 import Layout from '@/components/Layout'
-import { Country, Event } from '@/utils/interfaces'
 import CardEvent from '@/components/CardEvent'
 import FilterBar from '@/components/FilterBar'
 import { windowSize } from '@/utils/windowSize'
 import CardSurfer from '@/components/CardSurfer'
+import { Country, Event } from '@/utils/interfaces'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { removeById } from '@/utils/format/removeById'
 import { EventSchema } from '@/server/api/routers/event'
+import { genderFormat } from '@/utils/format/genderFormat'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
-import FilterSearchBar from '@/components/FilterSearchBar'
-import { genderFormat } from '@/utils/format/genderFormat'
 
 export default function Events() {
   const router = useRouter()
   const [countrySlug, setCountrySlug] = useQueryState('country')
-  const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
+  const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(2023)) // new Date().getFullYear())
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
 
   const updateYear = React.useCallback(async (value: string) => (await setYear(parseInt(value)), await setCountrySlug(null)), [])
@@ -50,15 +48,9 @@ export default function Events() {
     { name: 'Winner', id: 'winner', content: (item: Event) => (item.eventResults[0] ? <CardSurfer surfer={item.eventResults[0].surfer} /> : <div> - </div>) },
     { name: '', id: 'link', className: 'w-px', content: (item: Event) => <div>{CardEventStatus(item)}</div> },
   ]
+
   if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
-
-  const [showSearch, setShowSearch] = useState(false)
-
-  const eventOptionQuery = api.event.getManyOptions.useQuery({ eventStatus: 'COMPLETED' })
-  const eventOptions = eventOptionQuery.data?.map((event) => ({ label: `${event.name} ${event.tour.year} ${genderFormat(event.tour.gender)}`, value: event.slug, event: event as Event }))
-  const onEventSearch = (slug: string) => router.push({ pathname: '/events/[eventId]/results', query: { eventId: slug } })
-  {/* <FilterSearchBar placeHolder='Search events' showSearch={showSearch} setShowSearch={setShowSearch} searchOptions={eventOptions} handleSearch={onEventSearch} loading={eventOptionQuery.isLoading} searchType={'EVENT'} /> */}
 
   return (
     <Layout title={'Events'}>
@@ -66,11 +58,18 @@ export default function Events() {
       <FilterBar className="justify-center">
         <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
         <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
-        <ButtonSelectSearchCountry className="border-r" placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country" />
-        {/* <ButtonSelectSearch placeHolder="Location" searchPlaceHolder="Search locations" value={locationSlug ?? undefined} setValue={updateLocation} options={locationOptions} loading={countryQuery.isLoading} loadingText="Country" /> */}
-        {/* <FilterSearchBar placeHolder='Search events' showSearch={showSearch} setShowSearch={setShowSearch} searchOptions={eventOptions} handleSearch={onEventSearch} loading={eventOptionQuery.isLoading} searchType={'EVENT'} /> */}
+        <ButtonSelectSearchCountry
+          className="border-r"
+          placeHolder="Country"
+          searchPlaceHolder="Search countries"
+          value={countrySlug ?? undefined}
+          setValue={setCountrySlug}
+          options={countryOptions}
+          loading={countryQuery.isLoading}
+          loadingText="Country"
+        />
       </FilterBar>
       <Table tableData={tableData} items={eventQuery.data || []} handleSelection={onSelectEvent} loading={eventQuery.isLoading} />
     </Layout>
-  ) // prettier-ignore
+  )
 }

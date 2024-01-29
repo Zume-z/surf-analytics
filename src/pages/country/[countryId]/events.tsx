@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import React, { useState } from 'react'
 import { api } from '@/utils/api'
+import React, { useState } from 'react'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
@@ -77,7 +77,6 @@ export default function CountryEvents() {
   if (windowSize().width! < BREAKPOINT.lg) removeById(tableData, 'winner')
   if (windowSize().width! < BREAKPOINT.md) tableData.pop()
 
-  
   return (
     <Layout
       title={countryQuery.data?.name}
