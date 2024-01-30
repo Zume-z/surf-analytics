@@ -9,9 +9,8 @@ Surf Analytics is a a comprehensive statistics platform for the World Surfing Le
 </div>
 
 ## Features
-* User driven comparisons allowing for unique insights.
+* Comprehensive filtering capabilities to generate novel insights
 * Statistics broken down by athlete, event, heat and county.
-* Custom built API.
 * Data set: 1976 - 2023
 
 ## Demo
