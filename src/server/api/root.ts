@@ -39,8 +39,7 @@ export const appRouter = createTRPCRouter({
   matchupStat: matchupStatRouter,
   countrySurferStat: countrySurferStatRouter,
   countryEventStat: countryEventStatRouter,
-  locationSurferStat: locationSurferStatRouter
-  
+  locationSurferStat: locationSurferStatRouter,
 })
 
 export type AppRouter = typeof appRouter

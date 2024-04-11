@@ -10,7 +10,7 @@ import { TwitterLogoIcon, InstagramLogoIcon, EnvelopeClosedIcon } from '@radix-u
 export default function Header() {
   const router = useRouter()
   const routerPath = '/' + router.pathname.split('/')[1]
-  const currentYear = 2023 //new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
   const navigation = [
     { name: 'Surfers', href: '/surfers', route: '/surfers?year=' + currentYear },
     { name: 'Events', href: '/events', route: '/events?year=' + currentYear },

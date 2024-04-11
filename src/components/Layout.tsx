@@ -17,9 +17,6 @@ interface LayoutProps {
 export default function Layout({ title, metaDescription, children, slider, subHeader }: LayoutProps) {
   return (
     <div>
-      {/* <div className="flex h-screen items-center justify-center ">
-        <div>Site Under Maintenance.</div>
-      </div> */}
       <Head>
         <title>{title ? `Surf Analytics | ${title}` : 'Surf Analytics'}</title>
         <link rel="icon" href="/favicon.ico" />
