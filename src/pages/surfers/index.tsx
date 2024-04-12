@@ -1,35 +1,31 @@
 import { z } from 'zod'
-import React, { useEffect, useRef, useState } from 'react'
 import { api } from '@/utils/api'
 import { Gender } from '@prisma/client'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
+import { useState, useCallback } from 'react'
 import FilterBar from '@/components/FilterBar'
 import CardSurfer from '@/components/CardSurfer'
 import { windowSize } from '@/utils/windowSize'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
+import FilterSearchBar from '@/components/FilterSearchBar'
 import { Country, Surfer, TourResult } from '@/utils/interfaces'
 import TableLink from '@/components/tableComponents/TableLink'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
-import { BREAKPOINT, GENDEROPTIONS, POPULAR_SURFERBYSLUG, YEAROPTIONS } from '@/utils/constants'
 import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-
-import { Command } from 'cmdk'
-import Image from 'next/legacy/image'
-import FilterSearchBar from '@/components/FilterSearchBar'
+import { BREAKPOINT, GENDEROPTIONS, POPULAR_SURFERBYSLUG, YEAROPTIONS } from '@/utils/constants'
 
 export default function Surfers() {
   const router = useRouter()
   const [countrySlug, setCountrySlug] = useQueryState('country')
   const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
-  const midSeasonCutLine = year == new Date().getFullYear() && !countrySlug ? (gender == 'FEMALE' ? 10 : 23) : undefined
-  const updateYear = React.useCallback(async (value: string) => (await setCountrySlug(null), await setYear(parseInt(value))), [])
-  const updateGender = React.useCallback(async (value: string) => (await setCountrySlug(null), await setGender(value)), [])
+  const midSeasonCutLine = year == new Date().getFullYear() && !countrySlug ? (gender == 'FEMALE' ? 10 : 22) : undefined
+  const updateYear = useCallback(async (value: string) => (await setCountrySlug(null), await setYear(parseInt(value))), [])
+  const updateGender = useCallback(async (value: string) => (await setCountrySlug(null), await setGender(value)), [])
   const onSelectSurfer = (item: any) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
 
   const filters: z.infer<typeof TourResultSchema> = {

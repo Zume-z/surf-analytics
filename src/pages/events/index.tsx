@@ -13,7 +13,6 @@ import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { removeById } from '@/utils/format/removeById'
 import { EventSchema } from '@/server/api/routers/event'
-import { genderFormat } from '@/utils/format/genderFormat'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
@@ -24,7 +23,7 @@ import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
 export default function Events() {
   const router = useRouter()
   const [countrySlug, setCountrySlug] = useQueryState('country')
-  const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(2023)) // new Date().getFullYear())
+  const [year, setYear] = useQueryState('year', queryTypes.integer.withDefault(new Date().getFullYear()))
   const [gender, setGender] = useQueryState('gender', queryTypes.string.withDefault('MALE'))
 
   const updateYear = React.useCallback(async (value: string) => (await setYear(parseInt(value)), await setCountrySlug(null)), [])

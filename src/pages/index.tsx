@@ -19,7 +19,6 @@ export default function Home() {
       { name: 'Points', id: 'points', content: (item: any) => <div className="table-item">{item.surferPoints.toLocaleString('en-US')}</div> },
     ]
   }
-
   return (
     <Layout slider={{ events: events.data || [], loading: events.isLoading }}>
       <div className="lg:flex lg:space-x-8">
