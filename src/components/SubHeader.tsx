@@ -50,13 +50,21 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
 
             {/* DESKTOP: TOGGLE */}
             {!statsLoading && (
-              <div className="transition-200 cursor-pointer text-gray-500 hover-mod:hover:text-navy">
-                {showStats || statToggle ? <XIcon onClick={() => (setShowStats(false), setStatToggle && setStatToggle(false))} height={24} /> : <ChevronDownIcon onClick={() => setShowStats(true)} height={24} />}
+              <div className="transition-200 flex cursor-pointer  text-gray-500 hover-mod:hover:text-navy">
+                {showStats || statToggle ? (
+                  <XIcon onClick={() => (setShowStats(false), setStatToggle && setStatToggle(false))} height={24} />
+                ) : (
+                  <div className="flex space-x-1" onClick={() => setShowStats(true)}>
+                    <div className="hidden whitespace-nowrap text-base lg:block">View Stats</div>
+                    <ChevronDownIcon height={24} />
+                  </div>
+                )}
               </div>
             )}
             {statsLoading && (
-              <div className="transition-200 cursor-pointer text-gray-300 ">
-                <MinusIcon className="animate-pulse " height={24} />
+              <div className="transition-200 flex animate-pulse cursor-pointer space-x-1 text-gray-300 ">
+                <div className="hidden  whitespace-nowrap text-base lg:block">View Stats</div>
+                <MinusIcon className=" " height={24} />
               </div>
             )}
           </div>
