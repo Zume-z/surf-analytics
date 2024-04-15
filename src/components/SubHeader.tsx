@@ -35,14 +35,14 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
   }
 
   return (
-    <div className="sticky top-[65px] z-40 flex w-full select-none justify-center border-b bg-white text-gray-900 shadow-sm backdrop-blur-md sm:bg-transparent" onMouseLeave={() => !statsLoading && setShowStats(false)}>
+    <div className="sticky top-[65px] z-40 flex w-full select-none justify-center border-b bg-white text-gray-900 shadow-sm backdrop-blur-md sm:bg-transparent">
       {/* DESKTOP */}
       <div className="hidden w-full sm:block">
         <div className="flex items-center justify-center">
           <div className="flex w-full max-w-7xl items-center py-2 px-4 md:px-16">
             <div className="flex h-full w-full items-center justify-start divide-x ">
               {subHeaderData.map((tab: any, index: number) => (
-                <div key={index} className="flex h-full cursor-pointer" onMouseEnter={() => !statsLoading && tab.primaryTab && setShowStats(true)}>
+                <div key={index} className="flex h-full cursor-pointer">
                   {tab.content}
                 </div>
               ))}
@@ -178,7 +178,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
                 </div>
               ))}
             </div>
-            <div className=" flex items-center justify-center  p-1  ">
+            <div className="flex items-center justify-center  p-1 ">
               <div
                 onClick={() => handleSelection(routerExample)}
                 className="transition-200 -mt-3.5 flex cursor-pointer space-x-1 rounded bg-white px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white"
