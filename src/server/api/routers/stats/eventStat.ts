@@ -74,7 +74,7 @@ const avgWaveRange = async (ctx: Context, input: z.infer<typeof eventStatSchema>
 
 const avgWindConditions = async (ctx: Context, input: z.infer<typeof eventStatSchema>) => {
   const query = await ctx.prisma.heat.groupBy({ by: ['windConditions'], where: { eventSlug: input.eventSlug, NOT: { windConditions: '-' } }, _count: { windConditions: true } })
-  if(!query.length) return { avgWindConditions: { label: 'Avg. Wind Conditions', value: '-' } }
+  if (!query.length) return { avgWindConditions: { label: 'Avg. Wind Conditions', value: '-' } }
   const averageWindConditions = query.reduce((a, b) => (a._count.windConditions > b._count.windConditions ? a : b))
   return { avgWindConditions: { label: 'Avg. Wind Conditions', value: averageWindConditions.windConditions ?? '-' } }
 }
@@ -162,19 +162,6 @@ const totalInterferences = async (ctx: Context, input: z.infer<typeof eventStatS
   const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }
-
-
-
-// const totalInterferences = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>) => {
-//   const query = await ctx.prisma.heatResult.findUniqueOrThrow({ where: { heatSlug_surferSlug: { heatSlug: input.heatSlug, surferSlug: input.surferSlug } }, select: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) // prettier-ignore
-//   const totalInt = (query.interferenceOne ? query.interferenceOne : 0) + (query.interferenceTwo ? query.interferenceTwo : 0) + (query.interferenceThree ? query.interferenceThree : 0)
-//   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
-// }
-
-// Conditions
-// ---------------
-// Avg.wave height
-// Avg.wind
 
 // event
 // ---------------

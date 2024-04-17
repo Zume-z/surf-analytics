@@ -18,7 +18,7 @@ import ButtonSelectX from '@/components/ButtonSelectX'
 import { EventSchema } from '@/server/api/routers/event'
 import { genderFormat } from '@/utils/format/genderFormat'
 import { eventYearSpan } from '@/utils/function/getYearSpan'
-import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
+import { BREAKPOINT, GENDER_OPTIONS } from '@/utils/constants'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { countryEventStats } from '@/utils/stat/subHeaderStats'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
@@ -90,7 +90,7 @@ export default function CountryEvents() {
     >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="Gender" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDER_OPTIONS} loading={yearOptions ? false : true} loadingText="Gender" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="Year" />
       </FilterBar>
       <Table tableData={tableData} items={countryQuery.data?.events || []} loading={countryQuery.isLoading} handleSelection={onSelectEvent} />

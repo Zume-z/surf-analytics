@@ -1,8 +1,6 @@
 import { HeatResult, Wave } from '../interfaces'
 
 export const getWaveTableCol = (heatResults: any, waves: any, wavePoolEvent?: boolean | null) => {
-  // CHANGE
-
   if (!wavePoolEvent) {
     const tableColumns: any = [{ value: 'Wave', key: 'wave' }]
     heatResults.forEach((heatResult: HeatResult) => tableColumns.push({ value: heatResult, key: heatResult.surfer.slug }))
@@ -27,8 +25,6 @@ export const getWaveTableCol = (heatResults: any, waves: any, wavePoolEvent?: bo
 }
 
 export const getWaveTableData = (heatResults: any[], waves: any[], wavePoolEvent?: boolean | null) => {
-  // CHANGE
-
   if (!wavePoolEvent) {
     const waveArray = []
     const waveCounts: any = []
@@ -37,7 +33,6 @@ export const getWaveTableData = (heatResults: any[], waves: any[], wavePoolEvent
       return { surfer: heatResult.surferSlug, waves: surferWaves }
     })
 
-    // surferData.forEach((surfer: any) => waveCounts.push(surfer.waves[surfer.waves.length - 1].waveNumber))
     surferData.forEach((surfer: any) => waveCounts.push(surfer.waves.length))
 
     waveCounts.sort()

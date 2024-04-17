@@ -16,7 +16,7 @@ import { queryTypes, useQueryState } from 'next-usequerystate'
 import { TourResultSchema } from '@/server/api/routers/tourResult'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
-import { BREAKPOINT, GENDEROPTIONS, POPULAR_SURFERBYSLUG, YEAROPTIONS } from '@/utils/constants'
+import { BREAKPOINT, GENDER_OPTIONS, POPULAR_BY_SLUG, YEAR_OPTIONS } from '@/utils/constants'
 
 export default function Surfers() {
   const router = useRouter()
@@ -58,10 +58,10 @@ export default function Surfers() {
     <Layout title={'Surfers'}>
       <h1 className="header-1">Surfers</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
+        <ButtonSelect className="border-r" placeHolder={filters.gender} value={gender} setValue={updateGender} options={GENDER_OPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAR_OPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
         <ButtonSelectSearchCountry className="border-r" placeHolder="Country" searchPlaceHolder="Search countries" value={countrySlug ?? undefined} setValue={setCountrySlug} options={countryOptions} loading={countryQuery.isLoading} loadingText="Country"/>
-        <FilterSearchBar placeHolder='Search surfers' showSearch={showSearch} setShowSearch={setShowSearch} searchOptions={surferOptions} handleSearch={onSurferSearch} popularBySlug={POPULAR_SURFERBYSLUG} loading={surferOptionsQuery.isLoading} searchType={'SURFER'} />
+        <FilterSearchBar placeHolder='Search surfers' showSearch={showSearch} setShowSearch={setShowSearch} searchOptions={surferOptions} handleSearch={onSurferSearch} popularBySlug={POPULAR_BY_SLUG} loading={surferOptionsQuery.isLoading} searchType={'SURFER'} />
       </FilterBar>
       {showSearch && <div className="absolute left-0 z-20 h-screen w-screen" />}
       <Table className={`${showSearch && 'opacity-50 blur-sm'} transition-200`} tableData={tableData} items={tourResultQuery.data || []} loading={tourResultQuery.isLoading} handleSelection={onSelectSurfer} cutOff={midSeasonCutLine} />

@@ -13,7 +13,7 @@ import { SubheaderData } from '@/components/SubHeader'
 import ButtonSelectX from '@/components/ButtonSelectX'
 import { Country, Surfer } from '@/utils/interfaces'
 import { genderFormat } from '@/utils/format/genderFormat'
-import { BREAKPOINT, GENDEROPTIONS } from '@/utils/constants'
+import { BREAKPOINT, GENDER_OPTIONS } from '@/utils/constants'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import TableLink from '@/components/tableComponents/TableLink'
 import { countrySurferStats } from '@/utils/stat/subHeaderStats'
@@ -88,7 +88,7 @@ export default function CountrySurfers() {
     >
       <SubNavbar items={subNavItems} className="hidden sm:block" />
       <FilterBar className="mt-8 justify-center sm:justify-start">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loading={yearOptions ? false : true} loadingText="GENDER" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDER_OPTIONS} loading={yearOptions ? false : true} loadingText="GENDER" />
         <ButtonSelectX placeHolder="Year" value={year ? year : undefined} setValue={handleSetYear} options={yearOptions} loading={yearOptions ? false : true} loadingText="YEAR" />
       </FilterBar>
       <Table tableData={tableData} items={surferSorted || []} loading={surferQuery.isLoading} handleSelection={onSelectSurfer} />

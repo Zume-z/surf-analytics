@@ -15,17 +15,16 @@
 
   /* BUTTONS */
   .select-btn__open {
-    @apply transition-200 rounded border border-gray-200 bg-white py-0.5 pl-2 pr-1 text-gray-500 ;
+    @apply transition-200 rounded border border-gray-200 bg-white py-0.5 pl-2 pr-1 text-gray-500;
   }
   .select-btn__closed {
-    @apply transition-200 rounded border border-gray-50 py-0.5 pl-2 pr-1 text-gray-500 active:bg-white  hover-mod:group-hover:text-navy ;
-    /* @apply transition-200 rounded border border-gray-50 py-0.5 pl-2 pr-1 text-gray-500 hover-mod:group-hover:bg-gray-400  hover-mod:group-hover:text-white ; */
+    @apply transition-200 rounded border border-gray-50 py-0.5 pl-2 pr-1 text-gray-500 active:bg-white  hover-mod:group-hover:text-navy;
   }
   .select-btn__item-active {
     @apply cursor-pointer py-2 px-4 text-blue-base outline-none focus:bg-gray-100;
   }
   .select-btn__item-inactive {
-    @apply cursor-pointer py-2 px-4 text-gray-500 outline-none focus:bg-gray-100 focus:text-navy aria-selected:bg-gray-100 aria-selected:text-navy ;
+    @apply cursor-pointer py-2 px-4 text-gray-500 outline-none focus:bg-gray-100 focus:text-navy aria-selected:bg-gray-100 aria-selected:text-navy;
   }
   .slider-btn {
     @apply absolute top-0 z-50 h-full w-8 cursor-pointer items-center bg-white text-gray-dark transition duration-200 ease-out hover-mod:hover:text-black;

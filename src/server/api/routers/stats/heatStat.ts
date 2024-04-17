@@ -120,14 +120,6 @@ const totalInterferences = async (ctx: Context, input: z.infer<typeof heatStatSc
   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }
 
-
-
-
-// const totalInterferences = async (ctx: Context, input: z.infer<typeof surferStatSchema>) => {
-//   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input), OR: [{ interferenceOne: { gte: 1 } }, { interferenceTwo: { gte: 1 } }, { interferenceThree: { gte: 1 } }] }, _sum: { interferenceOne: true, interferenceTwo: true, interferenceThree: true } }) //prettier-ignore
-//   const totalInt = (query._sum.interferenceOne ? query._sum.interferenceOne : 0) + (query._sum.interferenceTwo ? query._sum.interferenceTwo : 0) + (query._sum.interferenceThree ? query._sum.interferenceThree : 0)
-//   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
-// }
 // heat
 // ---------------
 // conditions

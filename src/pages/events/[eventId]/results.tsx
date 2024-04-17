@@ -12,14 +12,14 @@ import { useQueryState } from 'next-usequerystate'
 import ButtonSelect from '@/components/ButtonSelect'
 import Table, { TableData } from '@/components/Table'
 import { Event, EventResult } from '@/utils/interfaces'
-import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import { eventResultStats } from '@/utils/stat/subHeaderStats'
+import TableLink from '@/components/tableComponents/TableLink'
+import ButtonSelectSearch from '@/components/ButtonSelectSearch'
 import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 import { EventResultSchema } from '@/server/api/routers/eventResult'
 import SubHeaderItem from '@/components/subHeaderComponents/subHeaderItem'
 import EventERPoints from '@/components/tableComponents/TableEventERPoints'
 import SubHeaderEvent from '@/components/subHeaderComponents/subHeaderEvent'
-import TableLink from '@/components/tableComponents/TableLink'
 
 export default function EventResults() {
   const router = useRouter()
@@ -49,7 +49,18 @@ export default function EventResults() {
 
   const subHeaderData = [
     { content: <SubHeaderEvent event={eventQuery.data as Event | undefined} />, primaryTab: true },
-    { content: <SubHeaderItem className="hidden sm:block" label="year" value={eventQuery.data?.tour.year} subvalue="Events" routePath={{ pathname: '/events', query: {location: eventQuery.data?.locationSlug, gender: eventQuery.data?.tour.gender} }} loading={eventQuery.isLoading} /> },
+    {
+      content: (
+        <SubHeaderItem
+          className="hidden sm:block"
+          label="year"
+          value={eventQuery.data?.tour.year}
+          subvalue="Events"
+          routePath={{ pathname: '/events', query: { location: eventQuery.data?.locationSlug, gender: eventQuery.data?.tour.gender } }}
+          loading={eventQuery.isLoading}
+        />
+      ),
+    },
     { content: <SubHeaderItem label="results" value="All" subvalue="Results" active={true} loading={eventQuery.isLoading} /> },
     { content: <SubHeaderItem className='sm:hidden' label="heats" value="All" subvalue="Heats" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/heats', query: { eventId: filters.eventSlug } }} /> }, //prettier-ignore
     { content: <SubHeaderItem className="sm:hidden" label="Champions" value="All" subvalue="Past Champions" active={false} loading={eventQuery.isLoading} routePath={{ pathname: '/events/[eventId]/champions', query: { eventId: filters.eventSlug , location: eventQuery.data?.locationSlug } }} /> }, //prettier-ignore
@@ -64,7 +75,7 @@ export default function EventResults() {
   const tableData: TableData[] = [
     { name: 'Place', id: 'place', content: (item: EventResult) => <CardSurfer surfer={item.surfer} place={item.place} />, loader: <CardSurferLoader /> },
     { name: 'Points', id: 'points', content: (item: EventResult) => <EventERPoints eventResult={item} /> },
-    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label='View Heats'/> },
+    { name: '', id: 'link', className: 'w-px', content: () => <TableLink label="View Heats" /> },
   ]
   if (windowSize().width! < BREAKPOINT.sm) tableData.pop()
 

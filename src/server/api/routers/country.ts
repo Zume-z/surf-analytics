@@ -12,7 +12,6 @@ export const CountrySchema = z.object({
   eventLocationSlug: z.string().optional(),
   surferEventSlug: z.string().optional(),
 
-
   // Pagination
   itemsPerPage: z.number().min(1).max(100).optional(),
   offset: z.number().optional(),
@@ -177,34 +176,6 @@ export const countryRouter = createTRPCRouter({
     })
     return country
   }),
-
-  // export const eventRouter = createTRPCRouter({
-  //   getMany: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
-  //     const event = ctx.prisma.event.findMany({
-  //       where: {
-  //         slug: input.slug,
-  //         linkedEvent: input.linkedEvent,
-  //         eventStatus: input.eventStatus,
-  //         tour: { slug: input.tourSlug, gender: input.gender, year: input.year},
-  //         countrySlug: input.countrySlug,
-  //         locationSlug: input.locationSlug,
-
-  //       },
-  //       include: {
-  //         eventResults: { where: { place: 1 }, include: { surfer: { include: { country: true } } } },
-  //         tour: true,
-  //         country: true,
-  //       },
-  //       orderBy: {
-  //         startDate: input.sortStartDate,
-  //         eventRound: input.sortEventRound,
-  //       },
-  //       take: input.itemsPerPage,
-  //       skip: input.offset,
-  //     })
-  //     if (!event) throw new TRPCError({ code: 'NOT_FOUND' })
-  //     return event
-  //   }),
 
   getCountrySurfers: publicProcedure.input(z.object({ countrySlug: z.string() })).query(({ ctx, input }) => {
     return ctx.prisma.country.findUniqueOrThrow({ where: { slug: input.countrySlug }, include: { surfers: true } })

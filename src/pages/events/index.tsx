@@ -16,7 +16,7 @@ import { EventSchema } from '@/server/api/routers/event'
 import { CardEventStatus } from '@/components/CardEventStatus'
 import { queryTypes, useQueryState } from 'next-usequerystate'
 import CardEventLoader from '@/components/loaders/CardEventLoader'
-import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
+import { BREAKPOINT, GENDER_OPTIONS, YEAR_OPTIONS } from '@/utils/constants'
 import TableItemEventDate from '@/components/tableComponents/TableEventDate'
 import ButtonSelectSearchCountry from '@/components/ButtonSelectSearchCountry'
 
@@ -55,8 +55,8 @@ export default function Events() {
     <Layout title={'Events'}>
       <h1 className="header-1">Events</h1>
       <FilterBar className="justify-center">
-        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDEROPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
-        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAROPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
+        <ButtonSelect className="border-r" placeHolder={gender} value={gender} setValue={updateGender} options={GENDER_OPTIONS} loading={countryQuery.isLoading} loadingText="Gender" />
+        <ButtonSelect className="border-r" placeHolder={year.toString()} value={year} setValue={updateYear} options={YEAR_OPTIONS} loading={countryQuery.isLoading} loadingText="Year" />
         <ButtonSelectSearchCountry
           className="border-r"
           placeHolder="Country"

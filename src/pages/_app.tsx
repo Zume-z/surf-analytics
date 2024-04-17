@@ -1,10 +1,10 @@
+import '../styles/globals.css'
+import { api } from '../utils/api'
+import { Router } from 'next/router'
 import { type AppType } from 'next/app'
 import { type Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 import ProgressBar from '@badrap/bar-of-progress'
-import { api } from '../utils/api'
-import '../styles/globals.css'
-import { Router } from 'next/router'
 
 const progress = new ProgressBar({
   size: 4,
@@ -26,5 +26,3 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
 }
 
 export default api.withTRPC(MyApp)
-
-

@@ -58,7 +58,7 @@ export const eventRouter = createTRPCRouter({
     return event
   }),
 
-  getManyIndex: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
+  getManyHome: publicProcedure.input(EventSchema).query(({ ctx, input }) => {
     const event = ctx.prisma.event.findMany({
       where: {
         slug: input.slug,
@@ -177,7 +177,7 @@ export const eventRouter = createTRPCRouter({
         timeZone: true,
         eventResults: { where: { place: 1 }, select: { surfer: { select: { name: true, profileImage: true, country: { select: { flagLink: true, name: true } } } } } },
         country: { select: { flagLink: true, name: true } },
-        tour: { select: { year: true, gender:true } },
+        tour: { select: { year: true, gender: true } },
       },
       orderBy: {
         startDate: input.sortStartDate,

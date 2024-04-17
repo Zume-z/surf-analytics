@@ -196,6 +196,5 @@ const totalInterferences = async (ctx: Context, input: z.infer<typeof countrySta
 //   Excellent Waves
 //   Prize Money
 //   Boards Broken
-
-// Avg.Wave Range
-// Avg.Wave Height
+//   Avg.Wave Range
+//   Avg.Wave Height

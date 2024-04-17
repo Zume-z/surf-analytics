@@ -15,7 +15,7 @@ import FilterSearchBar from '@/components/FilterSearchBar'
 import { CountrySchema } from '@/server/api/routers/country'
 import TableLink from '@/components/tableComponents/TableLink'
 import CardCountryLoader from '@/components/loaders/CardCountryLoader'
-import { BREAKPOINT, GENDEROPTIONS, YEAROPTIONS } from '@/utils/constants'
+import { BREAKPOINT, GENDER_OPTIONS, YEAR_OPTIONS } from '@/utils/constants'
 
 export default function CountryIndex() {
   const router = useRouter()
@@ -52,8 +52,8 @@ export default function CountryIndex() {
     <Layout title={'Country'}>
       <h1 className="header-1">Country</h1>
       <FilterBar className="justify-center">
-        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDEROPTIONS} loadingText="Gender" />
-        <ButtonSelectX className="border-r" placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={YEAROPTIONS} loadingText="Year" />
+        <ButtonSelectX className="border-r" placeHolder="Gender" value={gender != null ? gender : undefined} setValue={setGender} options={GENDER_OPTIONS} loadingText="Gender" />
+        <ButtonSelectX className="border-r" placeHolder="Year" value={year ? year : undefined} setValue={setYear} options={YEAR_OPTIONS} loadingText="Year" />
         <FilterSearchBar placeHolder="Search countries" showSearch={showSearch} setShowSearch={setShowSearch} searchOptions={countryOptions} handleSearch={onCountrySearch} loading={countryQuery.isLoading} searchType={'COUNTRY'} />
       </FilterBar>
       {showSearch && <div className="absolute left-0 z-20 h-screen w-screen" />}

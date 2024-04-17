@@ -6,29 +6,18 @@ export const DATA_DISCLAIMER = 'All data is taken from the 2010-2024 WSL Champio
 export const BREAKPOINT = { sm: 640, md: 768, lg: 1024, xl: 1280 }
 export const CONTACT_URLS = { EMAIL: 'brendan@surf-analytics.com', INSTAGRAM: 'https://www.instagram.com/surf_analytics/', TWITTER: 'https://twitter.com/Surf_Analytics' }
 export const HTH_LABELS = ['Heat Wins', 'Avg. Heat Total', 'Max Heat Total', 'Heat Total Differential', 'Total Waves', 'Avg. Wave Score', 'Max Wave Score', 'Avg. Counted Wave Score', 'Interferences']
-export const POPULAR_SURFERBYSLUG = ['gabriel-medina', 'kelly-slater', 'john-john-florence', 'mick-fanning', 'stephanie-gilmore', 'carissa-moore', 'filipe-tolledo', 'jack-robinson']
+export const POPULAR_BY_SLUG = ['gabriel-medina', 'kelly-slater', 'john-john-florence', 'mick-fanning', 'stephanie-gilmore', 'carissa-moore', 'filipe-tolledo', 'jack-robinson']
 
 // ==============================
 // OPTION PRESETS
 // ==============================
 
-export const GENDEROPTIONS = [
+export const GENDER_OPTIONS = [
   { label: 'Mens', value: 'MALE' },
   { label: 'Womens', value: 'FEMALE' },
 ]
 
-export const GENDEREVENTOPTIONS = [
-  { label: 'Mens', value: '0' },
-  { label: 'Womens', value: '1' },
-]
-
-export const SUBHEADERLOADEREVENT = [
-  { label: 'eventPrimary', value: '' },
-  { label: '', value: '' },
-  { label: '', value: '' },
-]
-
-export const YEAROPTIONS = [
+export const YEAR_OPTIONS = [
   { label: '2024', value: '2024' },
   { label: '2023', value: '2023' },
   { label: '2022', value: '2022' },

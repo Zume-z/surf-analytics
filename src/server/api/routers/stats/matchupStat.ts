@@ -126,7 +126,6 @@ const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof matchup
   let surferAHd = surferATotalHd && twoDec(surferBTotalHd - surferATotalHd)
   let surferBHd = surferBTotalHd && twoDec(surferATotalHd - surferBTotalHd)
 
-  // DELETE LATER
   if (!surferAHd && surferBHd) {
     surferAHd = surferBHd < 0 ? Math.abs(surferBHd) : -Math.abs(surferBHd)
   }

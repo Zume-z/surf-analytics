@@ -136,12 +136,6 @@ export const heatRouter = createTRPCRouter({
   getOneByEvent: publicProcedure.input(z.object({ eventSlug: z.string(), heatRound: z.string(), heatNumber: z.number() })).query(({ ctx, input }) => {
     return ctx.prisma.heat.findFirstOrThrow({
       where: { eventSlug: input.eventSlug, heatRound: input.heatRound, heatNumber: input.heatNumber },
-      // include: {
-      //   event: true,
-      //   break: true,
-      //   heatResults: { orderBy: { heatPlace: 'asc' }, include: { surfer: { include: { country: true } } } },
-      //   waves: { orderBy: { waveNumber: 'asc' }, include: { surfer: { include: { country: true } } } },
-      // },
       select: {
         heatRound: true,
         heatNumber: true,

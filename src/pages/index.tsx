@@ -8,9 +8,9 @@ import CardSurferLoader from '@/components/loaders/CardSurferLoader'
 export default function Home() {
   const router = useRouter()
   const currentYear = new Date().getFullYear()
-  const events = api.event.getManyIndex.useQuery({ year: currentYear, linkedEvent: 0, sortStartDate: 'asc' })
-  const mensTourResults = api.tourResult.getManyIndex.useQuery({ year: currentYear, gender: 'MALE', sortSurferRank: 'asc', itemsPerPage: 10 })
-  const womensTourResults = api.tourResult.getManyIndex.useQuery({ year: currentYear, gender: 'FEMALE', sortSurferRank: 'asc', itemsPerPage: 10 })
+  const events = api.event.getManyHome.useQuery({ year: currentYear, linkedEvent: 0, sortStartDate: 'asc' })
+  const mensTourResults = api.tourResult.getManyHome.useQuery({ year: currentYear, gender: 'MALE', sortSurferRank: 'asc', itemsPerPage: 10 })
+  const womensTourResults = api.tourResult.getManyHome.useQuery({ year: currentYear, gender: 'FEMALE', sortSurferRank: 'asc', itemsPerPage: 10 })
   const handleSelection = (item: any) => router.replace({ pathname: '/surfers/[surferId]/career', query: { surferId: item.surfer.slug } })
 
   const tableData = (gender: string) => {

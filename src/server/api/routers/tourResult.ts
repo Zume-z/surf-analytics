@@ -94,7 +94,7 @@ export const tourResultRouter = createTRPCRouter({
     return tourResult
   }),
 
-  getManyIndex: publicProcedure.input(TourResultSchema).query(({ ctx, input }) => {
+  getManyHome: publicProcedure.input(TourResultSchema).query(({ ctx, input }) => {
     const yearSort = input.sortYear ? { year: input.sortYear } : undefined
     const tourResult = ctx.prisma.tourResult.findMany({
       where: {

@@ -33,7 +33,6 @@ const getAll = async (ctx: Context, input: z.infer<typeof heatResultStatSchema>)
     ...(await totalTens(ctx, input)),
     ...(await excellentWaves(ctx, input)),
     ...(await totalInterferences(ctx, input)),
-    
   }
   if (!query) throw new TRPCError({ code: 'NOT_FOUND' })
   return query
@@ -116,10 +115,6 @@ const totalInterferences = async (ctx: Context, input: z.infer<typeof heatResult
   const totalInt = (query.interferenceOne ? query.interferenceOne : 0) + (query.interferenceTwo ? query.interferenceTwo : 0) + (query.interferenceThree ? query.interferenceThree : 0)
   return { totalInterferences: { label: 'Interferences', value: queryFormat(totalInt) } }
 }
-
-
-
-// const totalInterferences
 
 // heatResult
 // ---------------

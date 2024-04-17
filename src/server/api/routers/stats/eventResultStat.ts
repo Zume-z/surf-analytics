@@ -42,7 +42,7 @@ const getAll = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>
     ...(await avgWaveScore(ctx, input)),
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
-    
+
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await totalTens(ctx, input)),
@@ -73,7 +73,7 @@ const getAnalytics = async (ctx: Context, input: z.infer<typeof eventResultStatS
     ...(await avgWaveScore(ctx, input)),
     ...(await totalCountedWaves(ctx, input)),
     ...(await avgCountedWaveScore(ctx, input)),
-    
+
     ...(await avgHeatTotalDifferential(ctx, input)),
     ...(await highestWaveScore(ctx, input)),
     ...(await excellentWaves(ctx, input)),
@@ -168,11 +168,6 @@ const avgHeatTotal = async (ctx: Context, input: z.infer<typeof eventResultStatS
   })
   return { avgHeatTotal: { label: 'Avg. Heat Total', value: queryRound(query._avg.heatTotal) } }
 }
-
-// const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
-//   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _sum: { heatDifferential: true } })
-//   return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
-// }
 
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof eventResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: heatResultFilter(input), _avg: { heatDifferential: true } })

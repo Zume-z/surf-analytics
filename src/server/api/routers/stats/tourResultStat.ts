@@ -191,11 +191,6 @@ const highestHeatTotal = async (ctx: Context, input: z.infer<typeof tourResultSt
   return { highestHeatTotal: { label: 'Highest Heat Total', value: queryRound(query._max.heatTotal) } }
 }
 
-// const heatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
-//   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _sum: { heatDifferential: true } })
-//   return { heatTotalDifferential: { label: 'Heat Total Differential', value: queryDifferential(query._sum.heatDifferential) } }
-// }
-
 const avgHeatTotalDifferential = async (ctx: Context, input: z.infer<typeof tourResultStatSchema>) => {
   const query = await ctx.prisma.heatResult.aggregate({ where: { ...heatResultFilter(input) }, _avg: { heatDifferential: true } })
   return { avgHeatTotalDifferential: { label: 'Avg. Heat Differential', value: queryDifferential(query._avg.heatDifferential) } }
