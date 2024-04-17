@@ -49,7 +49,6 @@ export default function Surfers() {
   // SEARCH BAR
   const [showSearch, setShowSearch] = useState(false)
 
-  // Change query
   const surferOptionsQuery = api.surfer.getManyOptions.useQuery({})
   const surferOptions = surferOptionsQuery.data?.map((surfer) => ({ label: surfer.name, value: surfer.slug, surfer: surfer as Surfer }))
   const onSurferSearch = (slug: string) => router.push({ pathname: '/surfers/[surferId]/career', query: { surferId: slug } })

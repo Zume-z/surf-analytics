@@ -4,11 +4,11 @@ import Table from '@/components/Table'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import TableHeat from '@/components/TableHeat'
-import { DATA_DISCLAIMER, HTH_LABELS } from '@/utils/constants'
 import { Heat, Surfer } from '@/utils/interfaces'
 import ButtonSwitch from '@/components/ButtonSwitch'
 import { leadingZero } from '@/utils/format/leadingZero'
 import { queryTypes, useQueryState } from 'next-usequerystate'
+import { DATA_DISCLAIMER, HTH_LABELS } from '@/utils/constants'
 import ButtonSelectSearchSurfer from '@/components/ButtonSelectSearchSurfer'
 import { getHeadToHeadTableBlocks, getHeadToHeadTableRows } from '@/utils/table/headToHeadTableFormat'
 
@@ -22,18 +22,17 @@ export default function MatchupsDev() {
   const handleSetSurferSlugA = (value: string | null) => (setSurferSlugA(value), setHeatCheck(false))
   const handleSetSurferSlugB = (value: string | null) => (setSurferSlugB(value), setHeatCheck(false))
   const onSelectHeat = (item: Heat) => {item.heatStatus != 'CANCELED' && router.replace({ pathname: '/matchups/waves', query: { eventId: item.eventSlug, heatRound: item.heatRound, heatNumber: item.heatNumber, surfera: filters.surferSlugA, surferb: filters.surferSlugB } })} //prettier-ignore
-  
+
   const filters = {
     surferSlugA: surferSlugA || undefined,
     surferSlugB: surferSlugB || undefined,
   }
-  
+
   const heatQuery = api.heat.getManyMatchup.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck, heatStatus: 'COMPLETED' }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
   const heatStatQuery = api.matchupStat.getAll.useQuery({ surferASlug: filters.surferSlugA!, surferBSlug: surferSlugB!, matchupFilter: heatCheck }, { enabled: !!filters.surferSlugA && !!filters.surferSlugB })
   const tableDataRows = getHeadToHeadTableRows(heatQuery.data as Heat[] | undefined)
   const tableDataBlocks = getHeadToHeadTableBlocks(heatQuery.data as Heat[] | undefined)
 
-  // FIX SELECT WHEN NO SURFERSLUGFILTER SELECTED
   const surferOptionsQuery = api.surfer.getManyMatchup.useQuery({ surferSlugFilter: filters.surferSlugA ? filters.surferSlugA : filters.surferSlugB })
   const surferOptions = surferOptionsQuery.data?.map((surfer) => ({ label: surfer.name, value: surfer.slug, surfer: surfer as Surfer, matchupCount: surfer.heatResults.length ? surfer.heatResults.length : undefined }))
 
@@ -43,10 +42,10 @@ export default function MatchupsDev() {
   return (
     <Layout title={'Matchups'}>
       <h1 className="header-1 pb-2 sm:pb-4">Matchups{!heatQuery.isLoading && ' · ' + leadingZero(heatQuery.data?.length)}</h1>
-      <div className='flex items-baseline justify-between'>
+      <div className="flex items-baseline justify-between">
         {heatQuery.data && <ButtonSwitch className={`my-4 ${checkDisabled && 'opacity-50'}`} label="Head to Head Matchups" checked={heatCheck} onCheckedChange={setHeatCheck} checkDisable={checkDisabled} />}
         {heatQuery.isLoading && <ButtonSwitch className="my-4 opacity-50" label="Head to Head Matchups" checked={false} checkDisable={true} />}
-        <div className="sm:block hidden text-end text-xs text-gray-400 ">{DATA_DISCLAIMER}</div>
+        <div className="hidden text-end text-xs text-gray-400 sm:block ">{DATA_DISCLAIMER}</div>
       </div>
       <div className="relative -mx-4 flex items-center justify-center sm:-mx-0 ">
         <div className="w-full rounded shadow">
