@@ -2,17 +2,16 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import Image from 'next/legacy/image'
 import { useRouter } from 'next/router'
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
+import { BREAKPOINT } from '@/utils/constants'
+import { windowSize } from '@/utils/windowSize'
 import { CardEventStatus } from './CardEventStatus'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Pagination, Navigation, FreeMode } from 'swiper'
 import { ChevronLeftIcon } from '@heroicons/react/outline'
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
-
-import { BREAKPOINT } from '@/utils/constants'
-import { windowSize } from '@/utils/windowSize'
-import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress'
 import { waitingPeriod } from '@/utils/function/getWaitingPeriod'
+import { shortEventAddress } from '@/utils/format/truncate/shortEventAddress'
 
 export interface SliderEventProps {
   events: any
@@ -22,8 +21,6 @@ export interface SliderEventProps {
 export default function ({ events, loading }: SliderEventProps) {
   const router = useRouter()
   const [isShown, setIsShown] = useState(false)
-  // const [sliderEnd, setSliderEnd] = useState(false)
-  // const [sliderStart, setSliderStart] = useState(true)
 
   const SwiperButton = ({ className, dir }: { className?: string; dir: 'NEXT' | 'PREV' }) => {
     const swiper = useSwiper()
@@ -45,20 +42,13 @@ export default function ({ events, loading }: SliderEventProps) {
     )
   }
 
-  const loadingCards = [1, 2, 3, 4]
-
   return (
     <div className="bg-gray-white flex w-full select-none items-center justify-center rounded-lg shadow " onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>
       <div className="w-full max-w-7xl justify-center">
         {!loading && (
           <Swiper
             freeMode={true}
-            // initialSlide={2}
             modules={[Pagination, Navigation, FreeMode]}
-            // onReachEnd={() => setSliderEnd(true)}
-            // onReachBeginning={() => setSliderStart(true)}
-            // onSlideNextTransitionStart={() => setSliderStart(false)}
-            // onSlidePrevTransitionStart={() => setSliderEnd(false)}
             breakpoints={{
               320: { slidesPerView: 1 },
               640: { slidesPerView: 2 },
@@ -107,7 +97,7 @@ export default function ({ events, loading }: SliderEventProps) {
             <SwiperButton dir="NEXT" />
             <div>
               <div>
-                {loadingCards.map((index: number) => (
+                {[1, 2, 3, 4].map((index: number) => (
                   <SwiperSlide key={index} className="cursor-pointer py-2">
                     <div className="group h-full border-r-2  border-gray-md px-10">
                       <div className="pulse-loader h-5 w-full"></div>

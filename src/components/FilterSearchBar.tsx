@@ -1,9 +1,8 @@
 import { Command } from 'cmdk'
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { Key, useEffect, useRef, useState } from 'react'
 import Image from 'next/legacy/image'
 import { Event, Surfer } from '@/utils/interfaces'
-import Fuse from 'fuse.js'
+import { Key, useEffect, useRef, useState } from 'react'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
 interface FilterSearchBarProps {
   placeHolder: string
