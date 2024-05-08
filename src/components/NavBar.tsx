@@ -34,8 +34,8 @@ export default function Header() {
                 </div>
 
                 {/* Desktop NavBar */}
-                <div className="hidden sm:ml-6 sm:block ">
-                  <div className="flex space-x-2 lg:space-x-4">
+                <div className="hidden w-full  sm:block ">
+                  <div className="flex justify-center space-x-2 lg:space-x-4">
                     {navigation.map((item) => (
                       <Link
                         key={item.name}

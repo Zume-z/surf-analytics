@@ -79,7 +79,7 @@ export default function ({ subHeaderData, stats, statsLoading, buttonBack, statT
                   <SliderStats statsBody={stats} loading={statsLoading} />
                 </div>
               </div>
-              <div className=" flex items-center justify-center p-1">
+              <div className="flex items-center justify-center p-1">
                 <div
                   onClick={() => (setShowStats(false), setStatToggle && setStatToggle(true))}
                   className="transition-200 -mt-5 mb-1 flex cursor-pointer space-x-1 rounded px-1 py-0.5 text-xs font-semibold text-blue-base hover-mod:hover:bg-blue-base  hover-mod:hover:text-white"
